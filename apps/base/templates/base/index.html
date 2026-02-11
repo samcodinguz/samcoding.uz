@@ -24,7 +24,7 @@
                 <td>{{ user.id }}</td>
                 <td>
                     {% if user.img %}
-                    <img src="" width="35px" height="35px" alt="{{ user.img.name }}">
+                    <img src="{{ user.img.url }}" width="35px" height="35px" alt="{{ user.img.name }}">
                     {% else %}
                     <img src="{% static 'img/avatar.jpg' %}" width="35px" height="35px" alt="User avatar">
                     {% endif %}
