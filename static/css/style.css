@@ -11,3 +11,6 @@ tr, td, th {
 img {
     border-radius: 50%;
 }
+.text-danger {
+    color: red;
+}
