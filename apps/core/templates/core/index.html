@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-layout="topnav" data-skin="mono" data-topbar-color="dark" data-menu-color="light">
+    <head>
+        <meta charset="utf-8" />
+        <title>SamCoding | {{ title }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="..." />
+        <meta name="keywords" content="..." />
+        <meta name="author" content="..." />
+        <!-- App favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+        <!-- Theme Config Js -->
+        <script src="{% static 'js/config.js' %}"></script>
+        <!-- Vendor css -->
+        <link href="{% static 'css/vendors.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- App css -->
+        <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" />
+        {% block css %} {% endblock css %}
+    </head>
+
+    <body>
+        {% include 'core/layout/messages.html' %}
+        <div class="wrapper">
+            {% include 'core/layout/topbar.html' %}
+            {% include 'core/layout/topnav.html' %}
+            <div class="content-page">
+                {% block content %}
+                <div class="container">
+                    {% include 'core/layout/breadcrumb.html' %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h4 class="m-0">Your custom content here {{ request.user.username }} </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock content %}
+                {% include 'core/layout/footer.html' %}
+            </div>
+        </div>
+        <!-- Vendor js -->
+        <script src="{% static 'js/vendors.min.js' %}"></script>
+        <!-- App js -->
+        <script src="{% static 'js/app.js' %}"></script>
+        {% block js %} {% endblock js %}
+    </body>
+</html>

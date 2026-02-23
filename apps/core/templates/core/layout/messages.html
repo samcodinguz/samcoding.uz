@@ -1,0 +1,30 @@
+{% load static %}
+{% if messages %}
+
+<link href="{% static 'plugins/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet">
+<script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        {% for message in messages %}
+        successToastConfig.icon = "{{ message.tags|escapejs }}";
+        successToastConfig.text = "{{ message|escapejs }}";
+        if (successToastConfig.icon === "error") {
+            Swal.fire({
+                ...successToastConfig
+            });
+        }
+        else {
+            Swal.fire({
+                timerProgressBar: true,
+                ...successToastConfig
+            });
+        }
+        {% endfor %}
+
+    });
+</script>
+
+<script src="{% static 'js/pages/plugins-sweetalerts.js' %}"></script>
+{% endif %}
