@@ -288,7 +288,15 @@
                     <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
                         <!-- <img src="{% static 'images/users/user-1.jpg' %}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" /> -->
                         <div class="rounded-circle me-lg-2 d-flex bg-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; color: black;">
-                            <span>{{ request.user.first_name|first|upper }}</span>
+                            <span class="fw-bold">
+                            {% if user.first_name %}
+                                {{ user.first_name|first|upper }}
+                            {% elif user.last_name %}
+                                {{ user.last_name|first|upper }}
+                            {% else %}
+                                {{ user.username|first|upper }}
+                            {% endif %}
+                            </span>
                         </div>
                         <div class="d-lg-flex align-items-center gap-1 d-none">
                             <span>
