@@ -1,0 +1,10 @@
+{% if request.user.is_authenticated and not request.user.is_profile_complete %}
+<div class="alert alert-warning alert-dismissible d-flex align-items-center" role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <i class="ti ti-alert-circle fs-24 me-1"></i>
+    <div>
+        <strong> Diqqat! </strong> Iltimos, to'liq ro'yxatdan o'ting. <span class="d-none d-md-inline">To'liq ma'lumotlaringiz sizga yaxshiroq xizmat ko'rsatishimizga yordam beradi.</span>
+    </div>
+    <a href="{% url 'profile' request.user.username %}" class="text-reset text-decoration-underline ms-auto link-offset-2"><b>Ro'yxatdan o'tish</b></a>
+</div>
+{% endif %}

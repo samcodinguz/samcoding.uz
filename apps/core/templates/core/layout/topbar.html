@@ -288,15 +288,7 @@
                     <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
                         <!-- <img src="{% static 'images/users/user-1.jpg' %}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" /> -->
                         <div class="rounded-circle me-lg-2 d-flex bg-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; color: black;">
-                            <span class="fw-bold">
-                            {% if user.first_name %}
-                                {{ user.first_name|first|upper }}
-                            {% elif user.last_name %}
-                                {{ user.last_name|first|upper }}
-                            {% else %}
-                                {{ user.username|first|upper }}
-                            {% endif %}
-                            </span>
+                            <span class="fw-bold">{{ user.username|first|upper }}</span>
                         </div>
                         <div class="d-lg-flex align-items-center gap-1 d-none">
                             <span>
@@ -309,9 +301,9 @@
                     <div class="dropdown-menu dropdown-menu-end">
 
                         <!-- My Profile -->
-                        <a href="#!" class="dropdown-item">
+                        <a href="{% url 'profile' request.user.username %}" class="dropdown-item">
                             <i class="ti ti-user-circle me-1 fs-lg align-middle"></i>
-                            <span class="align-middle">Profile</span>
+                            <span class="align-middle">Profil</span>
                         </a>
 
                         <!-- Notifications -->

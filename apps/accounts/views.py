@@ -2,7 +2,7 @@ import hashlib
 from . import utils
 from django.contrib import messages
 from apps.core.utils import get_base_context
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, PasswordResetToken
 from django.contrib.auth import authenticate, login, logout
 
@@ -154,3 +154,21 @@ def reset_confirm(request, token):
     }
     
     return render(request, "accounts/reset-confirm.html", context)
+
+def profile(request, username):
+    user = get_object_or_404(CustomUser, username=username)
+
+    breadcrumb = [
+        {"title": "home", "url": "index", 'args': []},
+        {"title": "profile", "url": "profile", 'args': [user.username]},
+        {"title": f"@{user.username}", "url": "profile", 'args': [user.username]},
+    ]
+
+    context = {
+        **get_base_context(request),
+        'title': "Profil ma'lumotlari",
+        'profile_user': user,
+        'breadcrumb': breadcrumb,
+    }
+
+    return render(request, "accounts/profile.html", context)

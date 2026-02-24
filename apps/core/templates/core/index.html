@@ -3,7 +3,7 @@
 <html lang="en" data-layout="topnav" data-skin="mono" data-topbar-color="dark" data-menu-color="light">
     <head>
         <meta charset="utf-8" />
-        <title>SamCoding | {{ title }}</title>
+        <title>{% block title %}SamCoding | {{ title }}{% endblock title %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="..." />
         <meta name="keywords" content="..." />
@@ -28,6 +28,7 @@
                 {% block content %}
                 <div class="container">
                     {% include 'core/layout/breadcrumb.html' %}
+                    {% include 'core/layout/alert-profile.html' %}
                     <div class="row">
                         <div class="col-12">
                             <div class="card">

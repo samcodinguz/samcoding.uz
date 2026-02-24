@@ -5,7 +5,18 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     # You can add additional fields here if needed
-    pass
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    tg_link = models.URLField(max_length=200, null=True, blank=True)
+    gh_link = models.URLField(max_length=200, null=True, blank=True)
+    cf_link = models.URLField(max_length=200, null=True, blank=True)
+
+    def is_profile_complete(self):
+        return all([
+            self.first_name,
+            self.last_name,
+            self.email,
+            self.has_usable_password(),
+        ])
 
     def __str__(self):
         return self.username
