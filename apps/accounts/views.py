@@ -1,9 +1,10 @@
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+import hashlib
+from . import utils
 from django.contrib import messages
 from apps.core.utils import get_base_context
-from .models import CustomUser
-from . import utils
+from django.shortcuts import render, redirect
+from .models import CustomUser, PasswordResetToken
+from django.contrib.auth import authenticate, login, logout
 
 def sign_in(request):
     if request.user.is_authenticated:
@@ -42,7 +43,7 @@ def sign_up(request):
         return redirect("index")
     
     if request.method == "POST":
-        username = request.POST.get("username").strip()
+        username = request.POST.get("username").lower().strip()
         email = request.POST.get("email").lower().strip()
         password = request.POST.get("password").strip()
         remember = request.POST.get("rememberme")
@@ -87,3 +88,69 @@ def sign_out(request):
         messages.success(request, "Tizimdan muvaffaqiyatli chiqdingiz.")
     
     return redirect("index")
+
+
+def reset_password(request):
+    if request.user.is_authenticated:
+        return redirect("index")
+    
+    if request.method == "POST":
+        email = request.POST.get("email").lower().strip()
+
+        if email:
+            user = CustomUser.objects.filter(email=email).first()
+            if user:
+                utils.send_password_reset_email(user)
+        
+        messages.success(request, "Agar email mavjud bo'lsa, parolni tiklash ko'rsatmalari yuborildi. Pochtangizni tekshiring!")
+        return redirect("sign-in")    
+
+    context = {
+        **get_base_context(request),
+        'title': 'Parolni tiklash',
+    }
+
+    return render(request, 'accounts/reset-password.html', context)
+
+
+def reset_confirm(request, token):
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+    reset_obj = PasswordResetToken.objects.filter(token=token_hash).first()
+    
+    if not reset_obj:
+        messages.error(request, "Havola yaroqsiz!")
+        return redirect("sign-in")
+
+    if reset_obj.is_expired():
+        reset_obj.delete()
+        messages.error(request, "Havola muddati tugagan!")
+        return redirect("sign-in")
+
+    
+    if request.method == "POST":
+        password = request.POST.get("password")
+
+        if not password:
+            messages.error(request, "Parolni kiriting!")
+            return redirect(request.path)
+        
+        if not utils.is_strong_password(password):
+            messages.error(request, "Kechirasiz, parol yetarli darajada kuchli emas!")
+            return redirect(request.path)
+
+        user = reset_obj.user
+        user.set_password(password)
+        user.save()
+
+        reset_obj.delete()
+
+        messages.success(request, "Parolingiz muvaffaqiyatli yangilandi!")
+        return redirect("sign-in")
+
+    context = {
+        **get_base_context(request),
+        'title': 'Yangi parolni o\'rnatish',
+    }
+    
+    return render(request, "accounts/reset-confirm.html", context)

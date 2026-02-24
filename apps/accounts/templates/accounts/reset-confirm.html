@@ -1,0 +1,47 @@
+{% extends "accounts/sign-in.html" %} {% load socialaccount %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="card p-4">
+    <div class="auth-brand text-center mb-2">
+        <a href="{% url 'index' %}" class="logo-dark">
+            <img src="{% static 'images/logo-black.png' %}" alt="dark logo" />
+        </a>
+        <a href="{% url 'index' %}" class="logo-light">
+            <img src="{% static 'images/logo.png' %}" alt="logo" />
+        </a>
+        <p class="text-muted w-lg-75 mt-3 mx-auto">Yangi parol o'rnatish</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3" data-password="bar">
+            <label for="password" class="form-label">
+                Parol
+                <span class="text-danger">*</span>
+            </label>
+            <div class="input-group app-search" data-password>
+                <input type="password" id="password" class="form-control form-password" name="password" placeholder="••••••••" required />
+                <i class="ti ti-lock-password app-search-icon text-muted"></i>
+                <div class="input-group-text password-eye" data-password="false">
+                    <i class="ti ti-eye d-block eye-icon" data-pass="show"></i>
+                    <i class="ti ti-eye-off d-none eye-icon" data-pass="hide"></i>
+                </div>
+            </div>
+
+            <div class="password-bar my-2"></div>
+            <p class="text-muted fs-xs mb-0">Kuchli parol: 8+ belgi, A–Z, a–z, 0–9 va maxsus belgi.</p>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary fw-semibold py-2">Parolni yangilash</button>
+        </div>
+    </form>
+
+    <p class="text-muted text-center mt-4 mb-0">
+        Ortga qaytish
+        <a href="{% url 'sign-in' %}" class="text-decoration-underline link-offset-3 fw-semibold">Kirish</a>
+    </p>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Password Suggestion Js -->
+<script src="{% static 'js/pages/auth-password.js' %}"></script>
+{% endblock js %}
