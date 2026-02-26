@@ -14,22 +14,19 @@
     --wrapper-border: #e5e7eb;
 
     /* Text */
-    --text-muted: #6b7280;
+    --text-muted: #4c4c5c;
 
-    /* Empty cell */
     --level-0: #e3eafb;
-
-    /* Contribution Levels (GitHub Light style) */
     --level-1: #b9cff1;
-    --level-2: #4778ee;
-    --level-3: #5e89f0;
-    --level-4: #2460f0;
+    --level-2: #6a94f0;
+    --level-3: #4778ee;
+    --level-4: #1051ea;
 
-    --level-border-0: #c6d0e7;
-    --level-border-1: #9db0e0;
-    --level-border-2: #7c90d0;
-    --level-border-3: #5e89f0;
-    --level-border-4: #2460f0;
+    --level-border-0: #d1d9e6;
+    --level-border-1: #a0c0e3;
+    --level-border-2: #5b8de0;
+    --level-border-3: #3b6de0;
+    --level-border-4: #0e44c8;
 
     /* Scroll */
     --scroll-thumb: rgba(0, 0, 0, 0.25);
@@ -49,7 +46,7 @@
 
     --wrapper-border: #30363d;
 
-    --text-muted: #8b949e;
+    --text-muted: #aab8c5;
 
     /* Ko'kranga mos tanla */
     --level-0: #3e453e;
@@ -75,7 +72,7 @@
 ===================================================== */
 
 .contrib-wrapper {
-    padding: 20px;
+    padding: 16px;
     border-radius: 12px;
     border: 1px solid var(--wrapper-border);
     background: var(--wrapper-bg);
@@ -214,7 +211,7 @@
 .months {
     position: relative;
     height: 20px;
-    margin-left: 28px;
+    margin-left: 21px;
     /* weekdays kengligi */
     margin-bottom: 6px;
     font-size: 11px;
