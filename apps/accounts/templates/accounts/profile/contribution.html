@@ -55,37 +55,55 @@ document.addEventListener("DOMContentLoaded", function () {
         "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"
     ];
 
-    // Yilning 1-yanvari
-    const startDate = new Date(year, 0, 1);
+    function renderMonths() {
 
-    // Monday-first offset
-    const firstWeekday = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
+        // 🔥 eski oy label’larni o‘chiramiz
+        monthsContainer.innerHTML = "";
 
-    // Gridning real boshlanish sanasi
-    const firstGridDate = new Date(startDate);
-    firstGridDate.setDate(startDate.getDate() - firstWeekday);
+        // Yil bosh sanasi
+        const startDate = new Date(year, 0, 1);
 
-    const cellSize = parseInt(getComputedStyle(document.documentElement)
-        .getPropertyValue('--cell-size'));
+        // Monday-first offset
+        const firstWeekday = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
 
-    const cellGap = parseInt(getComputedStyle(document.documentElement)
-        .getPropertyValue('--cell-gap'));
+        // Grid real boshlanish sanasi
+        const firstGridDate = new Date(startDate);
+        firstGridDate.setDate(startDate.getDate() - firstWeekday);
 
-    for (let month = 0; month < 12; month++) {
+        // 🔥 Har safar qayta o‘qiymiz (responsive uchun muhim)
+        const cellSize = parseInt(getComputedStyle(document.documentElement)
+            .getPropertyValue('--cell-size'));
 
-        const date = new Date(year, month, 1);
+        const cellGap = parseInt(getComputedStyle(document.documentElement)
+            .getPropertyValue('--cell-gap'));
 
-        const diffDays = Math.floor((date - firstGridDate) / (1000 * 60 * 60 * 24));
-        const weekIndex = Math.floor(diffDays / 7);
+        const weekdaysWidth = document.querySelector('.weekdays').offsetWidth;
 
-        const label = document.createElement("div");
-        label.classList.add("month-label");
-        label.textContent = monthNames[month];
+        for (let month = 0; month < 12; month++) {
 
-        label.style.left = weekIndex * (cellSize + cellGap) + "px";
+            const date = new Date(year, month, 1);
 
-        monthsContainer.appendChild(label);
+            const diffDays = Math.floor((date - firstGridDate) / 86400000);
+            const weekIndex = Math.floor(diffDays / 7);
+
+            const label = document.createElement("div");
+            label.classList.add("month-label");
+            label.textContent = monthNames[month];
+
+            label.style.left =
+                weekdaysWidth +
+                weekIndex * (cellSize + cellGap)
+                + "px";
+
+            monthsContainer.appendChild(label);
+        }
     }
+
+    // Dastlab chizish
+    renderMonths();
+
+    // 🔥 Responsive fix
+    window.addEventListener("resize", renderMonths);
 
 });
 </script>

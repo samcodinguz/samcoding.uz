@@ -211,8 +211,7 @@
 .months {
     position: relative;
     height: 20px;
-    margin-left: 21px;
-    /* weekdays kengligi */
+    margin-left: 8px;
     margin-bottom: 6px;
     font-size: 11px;
     color: var(--text-muted);
