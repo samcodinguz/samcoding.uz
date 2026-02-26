@@ -160,15 +160,17 @@ def profile(request, username):
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
-        {"title": "profile", "url": "profile", 'args': [user.username]},
+        {"title": "users", "url": "profile", 'args': [user.username]},
         {"title": f"@{user.username}", "url": "profile", 'args': [user.username]},
     ]
 
     context = {
         **get_base_context(request),
         'title': "Profil ma'lumotlari",
-        'profile_user': user,
+        'user': user,
         'breadcrumb': breadcrumb,
+        'days': utils.contribution(request),
+        'year': 2026,
     }
 
-    return render(request, "accounts/profile.html", context)
+    return render(request, "accounts/profile/profile.html", context)

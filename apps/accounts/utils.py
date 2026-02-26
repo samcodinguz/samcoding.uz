@@ -1,3 +1,5 @@
+import datetime
+import random
 import secrets
 import hashlib
 from django.urls import reverse
@@ -41,3 +43,50 @@ def send_password_reset_email(user):
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
     )
+
+def contribution(request, year=2026):
+    import datetime, random
+
+    if year is None:
+        year = datetime.date.today().year
+
+    start_date = datetime.date(year, 1, 1)
+    end_date = datetime.date(year, 12, 31)
+
+    days = []
+
+    # ✅ Monday-first (GitHub style)
+    first_weekday = start_date.weekday()
+
+    # boshiga empty
+    days += [None] * first_weekday
+
+    current = start_date
+    while current <= end_date:
+
+        count = [0] * 100 + [1] + [0] * 100 + [2] + [0] * 100 + [3] + [0] * 100 + [4] + [0] * 100
+        count = count[random.randint(0, len(count) - 1)] 
+
+        if count == 0:
+            level = 0
+        elif count == 1:
+            level = 1
+        elif count <= 3:
+            level = 2
+        else:
+            level = 3
+
+        days.append({
+            "date": current,
+            "count": count,
+            "level": level
+        })
+
+        current += datetime.timedelta(days=1)
+
+    # oxirini 7 ga to‘ldirish
+    remainder = len(days) % 7
+    if remainder:
+        days += [None] * (7 - remainder)
+
+    return days

@@ -1,0 +1,91 @@
+{% load static %}
+<div class="contrib-wrapper card rounded-1">
+    <div id="contrib-year" data-year="{{ year }}" style="display:none;"></div>
+  <div class="contrib-scroll">
+
+      <div class="months">
+          <!-- JS orqali joylashtiriladi -->
+      </div>
+
+      <div class="contrib-body">
+
+          <div class="weekdays">
+                <span></span>
+                <span>Se</span>
+                <span></span>
+                <span>Pa</span>
+                <span></span>
+                <span>Sh</span>
+                <span></span>
+            </div>
+
+          <div class="grid">
+                {% for day in days %}
+                    {% if day %}
+                        <div class="cell level-{{ day.level }}" data-date="{{ day.date }}"></div>
+                    {% else %}
+                        <div class="cell level-0 empty"></div>
+                    {% endif %}
+                {% endfor %}
+          </div>
+
+      </div>
+
+  </div>
+
+  <div class="legend">
+      <span>Less</span>
+      <div class="cell level-0"></div>
+      <div class="cell level-1"></div>
+      <div class="cell level-2"></div>
+      <div class="cell level-3"></div>
+      <div class="cell level-4"></div>
+      <span>More</span>
+  </div>
+
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const monthsContainer = document.querySelector(".months");
+    const year = parseInt(document.getElementById("contrib-year").dataset.year);
+
+    const monthNames = [
+        "Yan", "Fev", "Mar", "Apr", "May", "Iyn",
+        "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"
+    ];
+
+    // Yilning 1-yanvari
+    const startDate = new Date(year, 0, 1);
+
+    // Monday-first offset
+    const firstWeekday = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
+
+    // Gridning real boshlanish sanasi
+    const firstGridDate = new Date(startDate);
+    firstGridDate.setDate(startDate.getDate() - firstWeekday);
+
+    const cellSize = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--cell-size'));
+
+    const cellGap = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue('--cell-gap'));
+
+    for (let month = 0; month < 12; month++) {
+
+        const date = new Date(year, month, 1);
+
+        const diffDays = Math.floor((date - firstGridDate) / (1000 * 60 * 60 * 24));
+        const weekIndex = Math.floor(diffDays / 7);
+
+        const label = document.createElement("div");
+        label.classList.add("month-label");
+        label.textContent = monthNames[month];
+
+        label.style.left = weekIndex * (cellSize + cellGap) + "px";
+
+        monthsContainer.appendChild(label);
+    }
+
+});
+</script>

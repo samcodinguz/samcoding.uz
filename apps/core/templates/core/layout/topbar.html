@@ -287,14 +287,15 @@
                 <div class="dropdown">
                     <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
                         <!-- <img src="{% static 'images/users/user-1.jpg' %}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" /> -->
-                        <div class="rounded-circle me-lg-2 d-flex bg-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; color: black;">
-                            <span class="fw-bold">{{ user.username|first|upper }}</span>
+                        <div class="d-lg-flex align-items-center me-lg-2 d-none">
+                            <span>
+                                <h5 class="my-0 lh-1 pro-username fs-5">{{ request.user.username }}</h5>
+                            </span>
+                        </div>
+                        <div class="rounded-circle me-lg-2 d-flex bg-white d-flex align-items-center justify-content-center" style="width: 27px; height: 27px; color: black;">
+                            <img src="{% if user.image %}{{ user.image.url }}{% else %}{% static 'images/users/no-avatar.jpg' %}{% endif %}" class="rounded-circle d-flex w-100 h-100" alt="user-avatar">
                         </div>
                         <div class="d-lg-flex align-items-center gap-1 d-none">
-                            <span>
-                                <h5 class="my-0 lh-1 pro-username">@{{ request.user.username }}</h5>
-                                <span class="fs-xs lh-1">{{ request.user.first_name }} {{ request.user.last_name }}</span>
-                            </span>
                             <i class="ti ti-chevron-down align-middle"></i>
                         </div>
                     </a>
@@ -309,19 +310,19 @@
                         <!-- Notifications -->
                         <a href="#" class="dropdown-item d-flex d-xl-none">
                             <i class="ti ti-bell-ringing me-1 fs-lg align-middle"></i>
-                            <span class="align-middle">Notifications</span>
+                            <span class="align-middle">Bildirishnomalar</span>
                         </a>
 
                         <!-- Settings -->
                         <a href="#" class="dropdown-item">
                             <i class="ti ti-settings-2 me-1 fs-lg align-middle"></i>
-                            <span class="align-middle">Account Settings</span>
+                            <span class="align-middle">Profil sozlamalari</span>
                         </a>
 
                         <!-- Support -->
                         <a href="#" class="dropdown-item">
                             <i class="ti ti-headset me-1 fs-lg align-middle"></i>
-                            <span class="align-middle">Support Center</span>
+                            <span class="align-middle">Yordam</span>
                         </a>
 
                         <!-- Divider -->

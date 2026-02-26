@@ -551,7 +551,8 @@ select:disabled {
 [type=reset],
 [type=submit],
 button {
-    -webkit-appearance: button
+    -webkit-appearance: button;
+    appearance: button;
 }
 
 [type=button]:not(:disabled),
@@ -612,6 +613,7 @@ legend+* {
 
 [type=search] {
     -webkit-appearance: textfield;
+    appearance: textfield;
     outline-offset: -2px
 }
 
@@ -636,7 +638,8 @@ legend+* {
 
 ::file-selector-button {
     font: inherit;
-    -webkit-appearance: button
+    -webkit-appearance: button;
+    appearance: button;
 }
 
 output {
@@ -27062,7 +27065,7 @@ html[data-layout=topnav] .card-out-of-container {
 }
 
 .card-top-sticky {
-    top: calc(var(--theme-topbar-height) + 1.25rem)
+    top: calc(var(--theme-topbar-height) + 3.3rem)
 }
 
 .card-tabs {

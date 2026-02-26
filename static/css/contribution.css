@@ -1,0 +1,246 @@
+/* =====================================================
+   THEME VARIABLES
+   Default = Light
+===================================================== */
+
+:root,
+[data-bs-theme=light] {
+
+    /* Layout */
+    --cell-size: 12px;
+    --cell-gap: 3px;
+    --radius: 3px;
+
+    --wrapper-border: #e5e7eb;
+
+    /* Text */
+    --text-muted: #6b7280;
+
+    /* Empty cell */
+    --level-0: #e3eafb;
+
+    /* Contribution Levels (GitHub Light style) */
+    --level-1: #b9cff1;
+    --level-2: #4778ee;
+    --level-3: #5e89f0;
+    --level-4: #2460f0;
+
+    --level-border-0: #c6d0e7;
+    --level-border-1: #9db0e0;
+    --level-border-2: #7c90d0;
+    --level-border-3: #5e89f0;
+    --level-border-4: #2460f0;
+
+    /* Scroll */
+    --scroll-thumb: rgba(0, 0, 0, 0.25);
+    --scroll-track: transparent;
+
+    /* Hover */
+    --hover-ring: rgba(0, 0, 0, 0.15);
+}
+
+
+/* =====================================================
+   DARK THEME
+   Activate with: data-theme="dark"
+===================================================== */
+
+[data-bs-theme="dark"] {
+
+    --wrapper-border: #30363d;
+
+    --text-muted: #8b949e;
+
+    /* Ko'kranga mos tanla */
+    --level-0: #3e453e;
+    --level-1: #797;
+    --level-2: #5eb95e;
+    --level-3: #42d242;
+    --level-4: #11e811;
+    --level-border-0: #4a524a;
+    --level-border-1: #86a486;
+    --level-border-2: #70c170;
+    --level-border-3: #57d757;
+    --level-border-4: #24ef24;
+
+    --scroll-thumb: rgba(255, 255, 255, 0.25);
+    --scroll-track: transparent;
+
+    --hover-ring: rgba(255, 255, 255, 0.25);
+}
+
+
+/* =====================================================
+   WRAPPER
+===================================================== */
+
+.contrib-wrapper {
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--wrapper-border);
+    background: var(--wrapper-bg);
+    transition: background 0.3s ease, border 0.3s ease;
+}
+
+.empty {
+    visibility: hidden;
+}
+
+
+/* =====================================================
+   SCROLL
+===================================================== */
+
+.contrib-scroll {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+.contrib-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.contrib-scroll::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+
+.contrib-scroll::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+    border-radius: 8px;
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.contrib-body {
+    display: flex;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-rows: repeat(7, var(--cell-size));
+    gap: var(--cell-gap);
+    margin-right: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+
+/* =====================================================
+   GRID
+===================================================== */
+
+.grid {
+    display: grid;
+    grid-template-rows: repeat(7, var(--cell-size));
+    grid-auto-columns: var(--cell-size);
+    grid-auto-flow: column;
+    gap: var(--cell-gap);
+}
+
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-radius: var(--radius);
+    background: var(--level-0);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+
+/* =====================================================
+   HOVER (Professional, subtle)
+===================================================== */
+
+.cell:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 1px var(--hover-ring);
+}
+
+
+/* =====================================================
+   LEVELS
+===================================================== */
+
+.level-0 {
+    background: var(--level-0);
+    border: 1px solid var(--level-border-0);
+}
+
+.level-1 {
+    background: var(--level-1);
+    border: 1px solid var(--level-border-1);
+}
+
+.level-2 {
+    background: var(--level-2);
+    border: 1px solid var(--level-border-2);
+}
+
+.level-3 {
+    background: var(--level-3);
+    border: 1px solid var(--level-border-3);
+}
+
+.level-4 {
+    background: var(--level-4);
+    border: 1px solid var(--level-border-4);
+}
+
+
+/* =====================================================
+   LEGEND
+===================================================== */
+
+.legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 10px;
+}
+
+.legend .cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+}
+
+
+
+.months {
+    position: relative;
+    height: 20px;
+    margin-left: 28px;
+    /* weekdays kengligi */
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.month-label {
+    position: absolute;
+    white-space: nowrap;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    :root {
+        --cell-gap: 2px;
+    }
+
+    .contrib-wrapper {
+        padding: 14px;
+    }
+
+    .weekdays {
+        font-size: 10px;
+    }
+}
