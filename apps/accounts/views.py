@@ -157,13 +157,31 @@ def reset_confirm(request, token):
     
     return render(request, "accounts/reset-confirm.html", context)
 
+def users(request):
+
+    users = CustomUser.objects.all()
+
+    breadcrumb = [
+        {"title": "home", "url": "index", 'args': []},
+        {"title": "users", "url": "users", 'args': []}
+    ]
+
+    context = {
+        **get_base_context(request),
+        'title': "Foydalanuvchilar",
+        'users': users,
+        'breadcrumb': breadcrumb
+    }
+
+    return render(request, "accounts/users/users.html", context)
+
 def profile(request, username):
     user = get_object_or_404(CustomUser, username=username)
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
         {"title": "users", "url": "profile", 'args': [user.username]},
-        {"title": f"{user.first_name} {user}", "url": "profile", 'args': [user.username]},
+        {"title": f"{user.first_name} {user.last_name}", "url": "profile", 'args': [user.username]},
     ]
 
     context = {

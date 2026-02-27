@@ -37,7 +37,7 @@
                 </div>
                 <p class="mb-0 fs-sm">
                     Ta'lim muassasa
-                    <span class="text-dark fw-semibold">SamSU</span>
+                    <span class="text-dark fw-semibold">{{ user.school }}</span>
                 </p>
             </div>
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -47,7 +47,7 @@
                 </div>
                 <p class="mb-0 fs-sm">
                     Manzil
-                    <span class="text-dark fw-semibold">Samarqand, Oqdaryo</span>
+                    <span class="text-dark fw-semibold">{{ user.region }}, {{ user.district.name }}</span>
                 </p>
             </div>
 
@@ -68,7 +68,7 @@
                 </div>
                 <p class="mb-0 fs-sm">
                     Fudbolka o'lchami
-                    <span class="text-dark fw-semibold">XL</span>
+                    <span class="text-dark fw-semibold">{{ user.shirt_size }}</span>
                 </p>
             </div>
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -92,7 +92,7 @@
             <hr class="border-bottom border-dashed my-3">
 
             <div class="d-flex justify-content-center gap-2">
-                <a href="#!" title="Telegram">
+                <a href="{% if user.tg_link %}https://t.me/{{user.tg_link}}{% else %}#{% endif %}" title="Telegram">
                     <h5>
                         <span class="badge text-bg-primary">
                             <i class="ti ti-brand-telegram"></i>
@@ -100,7 +100,7 @@
                         </span>
                     </h5>
                 </a>
-                <a href="#!" title="GitHub">
+                <a href="{% if user.gh_link %}https://github.com/{{user.gh_link}}{% else %}#{% endif %}" title="GitHub">
                     <h5>
                         <span class="badge text-bg-dark">
                             <i class="ti ti-brand-github"></i>
@@ -108,7 +108,7 @@
                         </span>
                     </h5>
                 </a>
-                <a href="#!" title="Facebook">
+                <a href="{% if user.fb_link %}https://www.facebook.com/{{user.fb_link}}{% else %}#{% endif %}" title="Facebook">
                     <h5>
                         <span class="badge text-bg-primary">
                             <i class="ti ti-brand-facebook"></i>

@@ -1,0 +1,77 @@
+{% extends "core/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} {% endblock css %} {% block profilecss %} {% endblock profilecss %}
+{% block content %}
+<div class="container">
+    {% include 'core/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-xl-9">
+            <div data-table data-table-rows-per-page="8" class="card">
+                <div class="card-header border-light justify-content-between">
+                    <div class="d-flex gap-2">
+                        <div class="app-search">
+                            <input data-table-search type="search" class="form-control" placeholder="Search users..." />
+                            <i class="ti ti-search app-search-icon text-muted"></i>
+                        </div>
+                        <button data-table-delete-selected class="btn btn-danger d-none">Delete</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                            <tr class="text-uppercase fs-xxs">
+                                <th data-table-sort>T/R</th>
+                                <th data-table-sort="user">Foydalanuvchi</th>
+                                <th data-table-sort data-column="roles">Role</th>
+                                <th data-table-sort>Last Updated</th>
+                                <th data-table-sort data-column="status">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in users %}
+                            <tr>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#{{ forloop.counter|stringformat:"04d" }}</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm d-flex align-items-center">
+                                            <img src="{% if item.avatar %}{{ item.avatar.url }}{% else %}{% static 'images/users/no-avatar.jpg' %}{% endif %}" class="rounded-circle" width="22px" height="22px" alt="user-avatar" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="{% url 'profile' item.username %}" class="link-reset">{{ item.first_name|title }} {{ item.last_name|title }}</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0 d-none d-md-block">{{ item.school }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Project Manager</td>
+                                <td>
+                                    18 Apr, 2025
+                                    <small class="text-muted">9:45 AM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning-subtle text-warning badge-label">Inactive</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div data-table-pagination-info="roles"></div>
+                        <div data-table-pagination></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 p-5"></div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
+{% endblock js %}
