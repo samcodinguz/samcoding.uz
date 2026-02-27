@@ -20293,7 +20293,7 @@ html[data-skin=mono][data-menu-color=image] {
 html[data-skin=mono][data-bs-theme=dark][data-menu-color=dark],
 html[data-skin=mono][data-bs-theme=dark][data-menu-color=gray],
 html[data-skin=mono][data-bs-theme=dark][data-menu-color=light] {
-    --theme-sidenav-bg: #1e1f27;
+    --theme-sidenav-bg: #161616;
     --theme-sidenav-border-color: #2c2d38;
     --theme-sidenav-item-color: #8495ab;
     --theme-sidenav-item-hover-color: #bccee4;
@@ -20337,33 +20337,33 @@ html[data-skin=mono][data-topbar-color=gradient] {
 html[data-skin=mono][data-bs-theme=dark][data-topbar-color=dark],
 html[data-skin=mono][data-bs-theme=dark][data-topbar-color=gray],
 html[data-skin=mono][data-bs-theme=dark][data-topbar-color=light] {
-    --theme-topbar-bg: #252630;
+    --theme-topbar-bg: #111111;
     --theme-topbar-item-color: #adb5bf;
     --theme-topbar-item-hover-color: #e0eeff;
-    --theme-topbar-search-bg: #2d2e3c;
-    --theme-topbar-search-border: #2d2e3c
+    --theme-topbar-search-bg: #1C1C1C;
+    --theme-topbar-search-border: #1C1C1C
 }
 
 [data-bs-theme=dark][data-skin=mono] {
-    --theme-body-bg: #17181e;
+    --theme-body-bg: #0D0D0D;
     --theme-body-bg-rgb: 23, 24, 30;
-    --theme-light: #252630;
+    --theme-light: #111111;
     --theme-light-rgb: 37, 38, 48;
-    --theme-secondary-bg: #1b1c22;
+    --theme-secondary-bg: #161616;
     --theme-secondary-bg-rgb: 27, 28, 34;
     --theme-theme-card-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
     --theme-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
-    --theme-theme-card-border-color: #293036;
-    --theme-tertiary-bg: #252630;
+    --theme-theme-card-border-color: #242424;
+    --theme-tertiary-bg: #111111;
     --theme-secondary-color: #8391a2;
-    --theme-border-color: #293036;
+    --theme-border-color: #242424;
     --theme-chart-gray: #40424f;
     --theme-chart-gray-rgb: 64, 66, 79
 }
 
 [data-bs-theme=dark][data-skin=mono] .dropdown-menu,
 [data-bs-theme=dark][data-skin=mono] .offcanvas {
-    background-color: #1b1c22
+    background-color: #161616
 }
 
 html[data-skin=mono] .container-fluid,
