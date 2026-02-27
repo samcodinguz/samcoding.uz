@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from apps.core.utils import get_base_context
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, PasswordResetToken
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from apps.locations.models import Region, District
 
 def sign_in(request):
@@ -163,12 +163,12 @@ def profile(request, username):
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
         {"title": "users", "url": "profile", 'args': [user.username]},
-        {"title": f"@{user.username}", "url": "profile", 'args': [user.username]},
+        {"title": f"{user.first_name} {user}", "url": "profile", 'args': [user.username]},
     ]
 
     context = {
         **get_base_context(request),
-        'title': "Profil ma'lumotlari",
+        'title': "Profil",
         'user': user,
         'breadcrumb': breadcrumb,
         'days': utils.contribution(),
@@ -179,7 +179,7 @@ def profile(request, username):
 
 def profile_settings(request, username):
     user = get_object_or_404(CustomUser, username=username)
-
+    
     if request.user != user:
         return redirect("profile", username=username)
     
@@ -199,14 +199,23 @@ def profile_settings(request, username):
         
         user.first_name = first_name
         user.last_name = last_name
-        user.region_id = region
-        user.district_id = district
+
+        region = get_object_or_404(Region, id=region)
+        district = get_object_or_404(District, id=district, region=region)
+
+        user.region = region
+        user.district = district
         user.school = school
         
         if shirt_size:
             user.shirt_size = shirt_size
         
         user.phone = phone
+
+        if CustomUser.objects.exclude(id=user.id).filter(email=email).exists():
+            messages.error(request, "Bu email allaqachon mavjud!")
+            return redirect('profile-settings', username=username)
+        
         user.email = email
         
         tg_link = request.POST.get("tg_link", "").strip()
@@ -224,28 +233,54 @@ def profile_settings(request, username):
             user.cf_link = cf_link
 
         if fb_link:
-            user.fb_link = fb_link
+            user.fb_link = fb_link     
+        
+        old_password = request.POST.get("old_password","").strip()
+        new_password1 = request.POST.get("new_password1", "").strip()
+        new_password2 = request.POST.get("new_password2", "").strip()
 
-        old_password = request.POST.get("old_password", "").strip()
-        new_password1 = request.POST.get("new_password", "").strip()
-        new_password2 = request.POST.get("new_password_confirm", "").strip()
+        if not user.has_usable_password():
 
-        if old_password and not user.check_password(old_password):
-            if not user.check_password(old_password):
-                messages.error(request, "Kechirasiz, eski parol noto'g'ri!")
-                return redirect('profile-settings', username=username)
+            if not all([new_password1, new_password2]):
+                messages.error(request, "Parol kiritish majburiy!")
+                return redirect('profile-settings',username=username)
+
+            if new_password1 != new_password2:
+                messages.error(request,"Parollar mos emas!")
+                return redirect('profile-settings',username=username)
             
-        if new_password1 != new_password2:
-            messages.error(request, "Yangi parollar mos kelmadi!")
-            return redirect('profile-settings', username=username)
-        
-        if not utils.is_strong_password(new_password1):
-            messages.error(request, "Kechirasiz, yangi parol yetarli darajada kuchli emas!")
-            return redirect('profile-settings', username=username)
-        
-        user.set_password(new_password1)
-        user.save()
+            if not utils.is_strong_password(new_password1):
+                messages.error(request,"Parol yetarli darajada kuchli emas!")
+                return redirect('profile-settings',username=username)
 
+            user.set_password(new_password1)
+        else:
+
+            if new_password1 or new_password2:
+
+                if new_password1 != new_password2:
+                    messages.error(request,"Yangi parollar mos emas!")
+                    return redirect('profile-settings',username=username)
+
+                if not user.check_password(old_password):
+                    messages.error(request,"Eski parol noto'g'ri!")
+                    return redirect('profile-settings',username=username)
+
+                if not utils.is_strong_password(new_password1):
+                    messages.error(request,"Yangi parol yetarli darajada kuchli emas!")
+                    return redirect('profile-settings',username=username)
+                
+                user.set_password(new_password1)
+                update_session_auth_hash(request, user)
+        
+        avatar = request.FILES.get("avatar")
+        if avatar:
+            avatar.name = utils.uid_filename(avatar.name)
+            if user.avatar:
+                user.avatar.delete(save=False)
+            user.avatar = avatar
+
+        user.save()
         messages.success(request, "Profilingiz muvaffaqiyatli yangilandi!")
         return redirect('profile-settings', username=username)
     
@@ -254,12 +289,12 @@ def profile_settings(request, username):
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
         {"title": "users", "url": "profile", 'args': [user.username]},
-        {"title": f"@{user.username}", "url": "profile-settings", 'args': [user.username]},
+        {"title": f"{user.first_name} {user.last_name}", "url": "profile-settings", 'args': [user.username]},
     ]
 
     context = {
         **get_base_context(request),
-        'title': "Profil sozlamalari",
+        'title': "Sozlamalar",
         'user': user,
         'breadcrumb': breadcrumb,
         'regions': regions

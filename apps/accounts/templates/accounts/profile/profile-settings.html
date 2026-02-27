@@ -1,192 +1,208 @@
-{% extends 'accounts/profile/profile.html' %} {% load static %} {% block title %}SamCoding | Profil sozlamalari{% endblock title %} {% block css %} {% endblock css %}
-{% block profile %}
-<div class="card rounded-1">
-    <div class="card-body">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <!-- Personal Info -->
-            <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
-                <i class="ti ti-user-circle fs-lg"></i>
-                Shaxsiy ma'lumotlar
-            </h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="firstname" class="form-label">Ism <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <input type="text" class="form-control" id="firstname" name="first_name" placeholder="Ismingizni kiriting" value="{{ user.first_name|default:'' }}" required />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="lastname" class="form-label">Familiya <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <input type="text" class="form-control" id="lastname" name="last_name" placeholder="Familiyangizni kiriting" value="{{ user.last_name|default:'' }}" required />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="region" class="form-label">Viloyat <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <select class="form-control" name="region" id="region">
-                            {% for region in regions %}
-                            <option value="{{ region.id }}" {% if user.region and user.region.id == region.id %}selected{% endif %}>{{ region.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="district" class="form-label">Tuman <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <select class="form-control" name="district" id="district"></select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <label for="school" class="form-label">Ta'lim muassasasi <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <input type="text" class="form-control" id="school" name="school" placeholder="Maktab, Kollej, Universitet" value="{{ user.school|default:'' }}" required />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="shirt_size" class="form-label">Taxallus <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text">@</span>
-                            <input type="text" class="form-control" id="username" placeholder="Username" value="{{ user.username }}" aria-label="Username" readonly />
+{% extends "core/index.html" %} {% load static %} {% block title %}SamCoding | Profil sozlamalari (@{{ user.username }}){% endblock title %} {% block css %} {% endblock css %} {% block profilecss %} {% endblock profilecss %}
+{% block content %}
+<div class="container">
+    {% include 'core/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-xl-4 d-none d-xl-block">
+            {% include 'accounts/profile/profile-card.html' %}
+        </div>
+        <div class="col-xl-8">
+            <div class="card rounded-1">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Personal Info -->
+                        <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
+                            <i class="ti ti-user-circle fs-lg"></i>
+                            Shaxsiy ma'lumotlar
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstname" class="form-label">Ism <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="text" class="form-control" id="firstname" name="first_name" placeholder="Ismingizni kiriting" value="{{ user.first_name|default:'' }}" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastname" class="form-label">Familiya <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="text" class="form-control" id="lastname" name="last_name" placeholder="Familiyangizni kiriting" value="{{ user.last_name|default:'' }}" required />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="shirt_size" class="form-label">Ko'ylak o'lchami</label>
-                        <select class="form-control" name="shirt_size" id="shirt_size">
-                            <option value="XS" {% if user.shirt_size == 'XS' %}selected{% endif %}>XS</option>
-                            <option value="S" {% if user.shirt_size == 'S' %}selected{% endif %}>S</option>
-                            <option value="M" {% if user.shirt_size == 'M' %}selected{% endif %}>M</option>
-                            <option value="L" {% if user.shirt_size == 'L' %}selected{% endif %}>L</option>
-                            <option value="XL" {% if user.shirt_size == 'XL' %}selected{% endif %}>XL</option>
-                            <option value="XXL" {% if user.shirt_size == 'XXL' %}selected{% endif %}>XXL</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Telefon raqami <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="+998 90 123 45 67" value="{{ user.phone|default:'' }}" required />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Elektron pochta <span class="text-danger" title="Majburiy maydon">*</span></label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="user@example.com" value="{{ user.email|default:'' }}" required />
-                    </div>
-                </div>
-            </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="region" class="form-label">Viloyat <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <select class="form-control" name="region" id="region">
+                                        {% for region in regions %}
+                                        <option value="{{ region.id }}" {% if user.region and user.region.id == region.id %}selected{% endif %}>{{ region.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="district" class="form-label">Tuman <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <select class="form-control" name="district" id="district"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="school" class="form-label">Ta'lim muassasasi <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="text" class="form-control" id="school" name="school" placeholder="Maktab, Kollej, Universitet" value="{{ user.school|default:'' }}" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shirt_size" class="form-label">Taxallus <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">@</span>
+                                        <input type="text" class="form-control" id="username" placeholder="Username" value="{{ user.username }}" aria-label="Username" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shirt_size" class="form-label">Ko'ylak o'lchami</label>
+                                    <select class="form-control" name="shirt_size" id="shirt_size">
+                                        <option value="XS" {% if user.shirt_size == 'XS' %}selected{% endif %}>XS</option>
+                                        <option value="S" {% if user.shirt_size == 'S' %}selected{% endif %}>S</option>
+                                        <option value="M" {% if user.shirt_size == 'M' %}selected{% endif %}>M</option>
+                                        <option value="L" {% if user.shirt_size == 'L' %}selected{% endif %}>L</option>
+                                        <option value="XL" {% if user.shirt_size == 'XL' %}selected{% endif %}>XL</option>
+                                        <option value="XXL" {% if user.shirt_size == 'XXL' %}selected{% endif %}>XXL</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Telefon raqami <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="text" class="form-control" id="phone" name="phone" placeholder="+998 90 123 45 67" value="{{ user.phone|default:'' }}" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Elektron pochta <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="user@example.com" value="{{ user.email|default:'' }}" required />
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="mb-4">
-                <label for="avatar" class="form-label">Profil rasmi</label>
-                <input class="form-control" type="file" id="avatar" name="avatar" />
-            </div>
+                        <div class="mb-4">
+                            <label for="avatar" class="form-label">Profil rasmi</label>
+                            <input class="form-control" type="file" id="avatar" name="avatar" />
+                        </div>
 
-            <!-- Social -->
-            <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
-                <i class="ti ti-world fs-lg"></i>
-                Ijtimoiy tarmoqlar
-            </h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="social-tg" class="form-label">Telegram</label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="ti ti-brand-telegram fs-4"></i>
-                            </span>
-                            <input type="text" class="form-control" id="social-tg" name="tg_link" placeholder="username" value="{{ user.tg_link|default:'' }}" />
+                        <!-- Social -->
+                        <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
+                            <i class="ti ti-world fs-lg"></i>
+                            Ijtimoiy tarmoqlar
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="social-tg" class="form-label">Telegram</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-telegram fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-tg" name="tg_link" placeholder="username" value="{{ user.tg_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="social-gh" class="form-label">GitHub</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-github fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-gh" name="gh_link" placeholder="username" value="{{ user.gh_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="social-fb" class="form-label">Facebook</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-facebook fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-fb" name="fb_link" placeholder="username" value="{{ user.fb_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="social-tw" class="form-label">Twitter X</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-x fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-tw" name="tw_link" placeholder="username" value="{{ user.tw_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="social-gh" class="form-label">GitHub</label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="ti ti-brand-github fs-4"></i>
-                            </span>
-                            <input type="text" class="form-control" id="social-gh" name="gh_link" placeholder="username" value="{{ user.gh_link|default:'' }}" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label for="social-fb" class="form-label">Facebook</label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="ti ti-brand-facebook fs-4"></i>
-                            </span>
-                            <input type="text" class="form-control" id="social-fb" name="fb_link" placeholder="username" value="{{ user.fb_link|default:'' }}" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-4">
-                        <label for="social-tw" class="form-label">Twitter X</label>
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="ti ti-brand-x fs-4"></i>
-                            </span>
-                            <input type="text" class="form-control" id="social-tw" name="tw_link" placeholder="username" value="{{ user.tw_link|default:'' }}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Lock -->
-            <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
-                <i class="ti ti-lock fs-lg"></i>
-                Maxfiylik va xavfsizlik
-            </h5>
-            <div class="row">
-                {% if user.has_usable_password %}
-                <div class="col-md-12">
-                    <div class="mb-3">
-                        <label class="form-label">Joriy parol</label>
-                        <input type="password" name="old_password" class="form-control" placeholder="Joriy parolni kiriting">
-                    </div>
-                </div>
-                {% endif %}
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Yangi parol</label>
-                        <input type="password" name="new_password1" class="form-control" placeholder="Yangi parol">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Yangi parolni tasdiqlang</label>
-                        <input type="password" name="new_password2" class="form-control" placeholder="Parolni qayta kiriting">
-                    </div>
+                        <!-- Lock -->
+                        <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
+                            <i class="ti ti-lock fs-lg"></i>
+                            Maxfiylik va xavfsizlik
+                        </h5>
+                        <div class="row">
+                            {% if user.has_usable_password %}
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Joriy parol</label>
+                                    <input type="password" name="old_password" class="form-control" placeholder="Joriy parolni kiriting">
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {% if user.has_usable_password %}
+                                    <label class="form-label">Yangi parol</label>
+                                    <input type="password" name="new_password1" class="form-control" placeholder="Yangi parol">
+                                    {% else %}
+                                    <label class="form-label">Parol <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="password" name="new_password1" class="form-control" placeholder="Parol" required>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {% if user.has_usable_password %}
+                                    <label class="form-label">Yangi parolni tasdiqlang</label>
+                                    <input type="password" name="new_password2" class="form-control" placeholder="Yangi parol">
+                                    {% else %}
+                                    <label class="form-label">Parolni tasdiqlang <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <input type="password" name="new_password2" class="form-control" placeholder="Parolni qayta kiriting" required>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-muted">
+                            Kuchli parol: 8+ belgi, A–Z, a–z, 0–9 va maxsus belgi.
+                        </span>
+                        <!-- Submit -->
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <span>
-                Kuchli parol: 8+ belgi, A–Z, a–z, 0–9 va maxsus belgi.
-                {% if not user.has_usable_password %}
-                <span class="text-danger">Siz parol o'rnatmagansiz.</span> 
-                Maxfiylik uchun kuchli parol o'rnatish tavsiya etiladi.
-                {% endif %}
-            </span>
-            <!-- Submit -->
-            <div class="text-end mt-4">
-                <button type="submit" class="btn btn-primary">Saqlash</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-{% endblock profile %} {% block js %} 
+{% endblock content %} {% block js %} 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
     const regionElement = document.getElementById("region");

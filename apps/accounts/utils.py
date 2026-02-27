@@ -1,3 +1,4 @@
+import os
 import datetime
 import random
 import secrets
@@ -86,3 +87,8 @@ def contribution(year=None):
         days += [None] * (7 - remainder)
 
     return days
+
+def uid_filename(filename: str, length: int = 16) -> str:
+    ext = os.path.splitext(filename)[1]
+    random_name = secrets.token_hex(length // 2)
+    return f"{random_name}{ext}"
