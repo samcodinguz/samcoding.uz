@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'apps.problems',
     'apps.ratings',
     'apps.submissions',
+    'apps.locations',
 ]
 
 MIDDLEWARE = [

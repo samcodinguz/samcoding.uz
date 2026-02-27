@@ -44,8 +44,7 @@ def send_password_reset_email(user):
         recipient_list=[user.email],
     )
 
-def contribution(request, year=2026):
-    import datetime, random
+def contribution(year=None):
 
     if year is None:
         year = datetime.date.today().year
@@ -55,10 +54,7 @@ def contribution(request, year=2026):
 
     days = []
 
-    # ✅ Monday-first (GitHub style)
     first_weekday = start_date.weekday()
-
-    # boshiga empty
     days += [None] * first_weekday
 
     current = start_date

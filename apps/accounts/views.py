@@ -1,10 +1,12 @@
 import hashlib
 from . import utils
 from django.contrib import messages
+from django.http import JsonResponse
 from apps.core.utils import get_base_context
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, PasswordResetToken
 from django.contrib.auth import authenticate, login, logout
+from apps.locations.models import Region, District
 
 def sign_in(request):
     if request.user.is_authenticated:
@@ -169,8 +171,103 @@ def profile(request, username):
         'title': "Profil ma'lumotlari",
         'user': user,
         'breadcrumb': breadcrumb,
-        'days': utils.contribution(request),
+        'days': utils.contribution(),
         'year': 2026,
     }
 
     return render(request, "accounts/profile/profile.html", context)
+
+def profile_settings(request, username):
+    user = get_object_or_404(CustomUser, username=username)
+
+    if request.user != user:
+        return redirect("profile", username=username)
+    
+    if request.method == "POST":
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        region = request.POST.get("region")
+        district = request.POST.get("district")
+        school = request.POST.get("school", "").strip()
+        shirt_size = request.POST.get("shirt_size")
+        phone = request.POST.get("phone", "").strip()
+        email = request.POST.get("email", "").lower().strip()
+
+        if not all([first_name, last_name, region, district, school, phone, email]):
+            messages.error(request, "Iltimos, barcha majburiy maydonlarni to'ldiring!")
+            return redirect('profile-settings', username=username)
+        
+        user.first_name = first_name
+        user.last_name = last_name
+        user.region_id = region
+        user.district_id = district
+        user.school = school
+        
+        if shirt_size:
+            user.shirt_size = shirt_size
+        
+        user.phone = phone
+        user.email = email
+        
+        tg_link = request.POST.get("tg_link", "").strip()
+        gh_link = request.POST.get("gh_link", "").strip()
+        cf_link = request.POST.get("cf_link", "").strip()
+        fb_link = request.POST.get("fb_link", "").strip()
+
+        if tg_link:
+            user.tg_link = tg_link
+        
+        if gh_link:
+            user.gh_link = gh_link
+
+        if cf_link:
+            user.cf_link = cf_link
+
+        if fb_link:
+            user.fb_link = fb_link
+
+        old_password = request.POST.get("old_password", "").strip()
+        new_password1 = request.POST.get("new_password", "").strip()
+        new_password2 = request.POST.get("new_password_confirm", "").strip()
+
+        if old_password and not user.check_password(old_password):
+            if not user.check_password(old_password):
+                messages.error(request, "Kechirasiz, eski parol noto'g'ri!")
+                return redirect('profile-settings', username=username)
+            
+        if new_password1 != new_password2:
+            messages.error(request, "Yangi parollar mos kelmadi!")
+            return redirect('profile-settings', username=username)
+        
+        if not utils.is_strong_password(new_password1):
+            messages.error(request, "Kechirasiz, yangi parol yetarli darajada kuchli emas!")
+            return redirect('profile-settings', username=username)
+        
+        user.set_password(new_password1)
+        user.save()
+
+        messages.success(request, "Profilingiz muvaffaqiyatli yangilandi!")
+        return redirect('profile-settings', username=username)
+    
+    regions = Region.objects.all()
+
+    breadcrumb = [
+        {"title": "home", "url": "index", 'args': []},
+        {"title": "users", "url": "profile", 'args': [user.username]},
+        {"title": f"@{user.username}", "url": "profile-settings", 'args': [user.username]},
+    ]
+
+    context = {
+        **get_base_context(request),
+        'title': "Profil sozlamalari",
+        'user': user,
+        'breadcrumb': breadcrumb,
+        'regions': regions
+    }
+
+    return render(request, "accounts/profile/profile-settings.html", context)
+
+def districts(request,region_id):
+    region = get_object_or_404(Region,id=region_id)
+    districts = District.objects.filter(region=region).values("id","name")
+    return JsonResponse(list(districts), safe=False)

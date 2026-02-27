@@ -2,13 +2,8 @@
 <div class="contrib-wrapper card rounded-1">
     <div id="contrib-year" data-year="{{ year }}" style="display:none;"></div>
   <div class="contrib-scroll">
-
-      <div class="months">
-          <!-- JS orqali joylashtiriladi -->
-      </div>
-
+      <div class="months"></div>
       <div class="contrib-body">
-
           <div class="weekdays">
                 <span></span>
                 <span>Se</span>
@@ -18,7 +13,6 @@
                 <span>Sh</span>
                 <span></span>
             </div>
-
           <div class="grid">
                 {% for day in days %}
                     {% if day %}
@@ -28,11 +22,8 @@
                     {% endif %}
                 {% endfor %}
           </div>
-
       </div>
-
   </div>
-
   <div class="legend">
       <span>Less</span>
       <div class="cell level-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="0"></div>
@@ -42,68 +33,4 @@
       <div class="cell level-4" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="50"></div>
       <span>More</span>
   </div>
-
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    const monthsContainer = document.querySelector(".months");
-    const year = parseInt(document.getElementById("contrib-year").dataset.year);
-
-    const monthNames = [
-        "Yan", "Fev", "Mar", "Apr", "May", "Iyn",
-        "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"
-    ];
-
-    function renderMonths() {
-
-        // 🔥 eski oy label’larni o‘chiramiz
-        monthsContainer.innerHTML = "";
-
-        // Yil bosh sanasi
-        const startDate = new Date(year, 0, 1);
-
-        // Monday-first offset
-        const firstWeekday = startDate.getDay() === 0 ? 6 : startDate.getDay() - 1;
-
-        // Grid real boshlanish sanasi
-        const firstGridDate = new Date(startDate);
-        firstGridDate.setDate(startDate.getDate() - firstWeekday);
-
-        // 🔥 Har safar qayta o‘qiymiz (responsive uchun muhim)
-        const cellSize = parseInt(getComputedStyle(document.documentElement)
-            .getPropertyValue('--cell-size'));
-
-        const cellGap = parseInt(getComputedStyle(document.documentElement)
-            .getPropertyValue('--cell-gap'));
-
-        const weekdaysWidth = document.querySelector('.weekdays').offsetWidth;
-
-        for (let month = 0; month < 12; month++) {
-
-            const date = new Date(year, month, 1);
-
-            const diffDays = Math.floor((date - firstGridDate) / 86400000);
-            const weekIndex = Math.floor(diffDays / 7);
-
-            const label = document.createElement("div");
-            label.classList.add("month-label");
-            label.textContent = monthNames[month];
-
-            label.style.left =
-                weekdaysWidth +
-                weekIndex * (cellSize + cellGap)
-                + "px";
-
-            monthsContainer.appendChild(label);
-        }
-    }
-
-    // Dastlab chizish
-    renderMonths();
-
-    // 🔥 Responsive fix
-    window.addEventListener("resize", renderMonths);
-
-});
-</script>
