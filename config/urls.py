@@ -14,6 +14,8 @@ urlpatterns = [
 #     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler400 = errors.error_400
+handler401 = errors.error_401
+handler402 = errors.error_402
 handler403 = errors.error_403
 handler404 = errors.error_404
 handler500 = errors.error_500

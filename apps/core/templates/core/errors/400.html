@@ -1,0 +1,45 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-layout="topnav" data-skin="mono" data-topbar-color="dark" data-menu-color="light">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}Error - 400{% endblock title %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="..." />
+        <meta name="keywords" content="..." />
+        <meta name="author" content="..." />
+        <!-- App favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+        <!-- Theme Config Js -->
+        <script src="{% static 'js/config.js' %}"></script>
+        <!-- Vendor css -->
+        <link href="{% static 'css/vendors.min.css' %}" rel="stylesheet" type="text/css" />
+        <!-- App css -->
+        <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" />
+        {% block css %} {% endblock css %}
+    </head>
+
+    <body>
+        <div class="auth-box overflow-hidden align-items-center d-flex">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xxl-5 col-md-6 col-sm-8">
+                        <div class="card shadow-none border-0 p-4" style="background: none !important;">
+                            <div class="p-4 text-center">
+                                {% block content %}
+                                <div class="error-text-alt fs-72 text-warning">400</div>
+                                <h3 class="fw-bold text-uppercase">Xatolik yuz berdi</h3>
+                                {% endblock content %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Vendor js -->
+        <script src="{% static 'js/vendors.min.js' %}"></script>
+        <!-- App js -->
+        <script src="{% static 'js/app.js' %}"></script>
+        {% block js %} {% endblock js %}
+    </body>
+</html>
