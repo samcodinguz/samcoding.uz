@@ -81,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.accounts.middleware.UpdateLastActivityMiddleware',
+    'apps.accounts.middleware.Redirect401Middleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

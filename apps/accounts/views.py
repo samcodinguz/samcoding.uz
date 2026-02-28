@@ -91,7 +91,6 @@ def sign_out(request):
     
     return redirect("index")
 
-
 def reset_password(request):
     if request.user.is_authenticated:
         return redirect("index")
@@ -113,7 +112,6 @@ def reset_password(request):
     }
 
     return render(request, 'accounts/reset-password.html', context)
-
 
 def reset_confirm(request, token):
     token_hash = hashlib.sha256(token.encode()).hexdigest()
@@ -297,7 +295,7 @@ def profile_settings(request, username):
         if avatar:
             if user.avatar:
                 user.avatar.delete(save=False)
-                
+
             new_filename, processed_avatar = utils.square_avatar(avatar)
             user.avatar.save(new_filename, processed_avatar, save=False)
 
