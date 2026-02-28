@@ -1,73 +1,78 @@
-{% extends "core/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} 
-<link href="{% static 'plugins/datatables/responsive.bootstrap5.min.css' %}" rel="stylesheet" />
-{% endblock css %}
+{% extends "core/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
 {% block content %}
 <div class="container">
     {% include 'core/layout/breadcrumb.html' %}
     <div class="row">
         <div class="col-xl-9">
-            <div class="card">
+            <div data-table class="card">
                 <div class="card-header border-light justify-content-between">
-                    <div class="d-flex gap-2">
-                        <div class="app-search">
-                            <input type="search" class="form-control" placeholder="Qidirish..." />
+
+                    <div class="d-flex align-items-center gap-2 w-100">
+
+                        <div class="app-search w-100">
+                            <input class="form-control" placeholder="Foydalanuvchi izlash..." />
                             <i class="ti ti-search app-search-icon text-muted"></i>
+                        </div>
+
+                        <!-- Records Per Page -->
+                        <div>
+                            <button class="btn btn-primary">Izlash</button>
                         </div>
                     </div>
                 </div>
 
-                <table data-tables="usersTable" class="table table-striped table-hover w-100 mb-0 dt-responsive">
-                    <thead class="bg-light align-middle bg-opacity-25 thead-sm">
-                        <tr class="text-uppercase fs-xxs">
-                            <th style="width: 1%;"></th>
-                            <th style="width: 1%;">T/R</th>
-                            <th>Foydalanuvchi</th>
-                            <th>Role</th>
-                            <th>Faolligi</th>
-                            <th>Last Updated</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in users %}
-                        <tr>
-                            <td></td>
-                            <td>
-                                <h5 class="m-0">
-                                    <a href="#" class="link-reset ms-1">{{ forloop.counter }}</a>
-                                </h5>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="avatar avatar-sm d-flex align-items-center">
-                                        <img src="{% if item.avatar %}{{ item.avatar.url }}{% else %}{% static 'images/users/no-avatar.jpg' %}{% endif %}" class="rounded-circle" width="22px" height="22px" alt="user-avatar" />
+                <div class="table-responsive">
+                    <table class="table table-custom table-nowrap table-centered table-select table-hover w-100 mb-0">
+                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                            <tr class="fs-xxs">
+                                <th data-table-sort style="width: 1%;">T/R</th>
+                                <th data-table-sort>Foydalanuvchi</th>
+                                <th data-table-sort style="width: 1%;" class="text-center">Rating</th>
+                                <th data-table-sort style="width: 1%;" class="text-center">Solved</th>
+                                <th data-table-sort style="width: 1%;" class="text-center">Active</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in users %}
+                            <tr>
+                                <td>
+                                    <a href="#!" class="fw-medium text-reset ms-1">{{ forloop.counter}}</a>
+                                </td>
+                                <td>
+                                    <div class="avatar-xs d-inline-block me-1">
+                                        {% if item.avatar %}
+                                        <img src="{{ item.avatar.url }}" class="image-fluid rounded-circle w-100 h-100" alt="user avatar">
+                                        {% else %}
+                                        <span class="avatar-title bg-primary-subtle text-primary fw-bold rounded-circle"> 
+                                        {% if item.first_name %}
+                                            {{ item.first_name|first|upper }}
+                                        {% elif item.last_name %}
+                                            {{ item.last_name|first|upper }}
+                                        {% else %}
+                                            {{ item.username|first|upper }}
+                                        {% endif %}
+                                        </span>
+                                        {% endif %}
                                     </div>
-                                    <div>
-                                        <h5 class="fs-base mb-0">
-                                            <a href="{% url 'profile' item.username %}" class="link-reset">{{ item.first_name|title }} {{ item.last_name|title }}</a>
-                                        </h5>
-                                        <p class="text-muted fs-xs mb-0 d-none d-md-block">{{ item.school }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>Project Manager</td>
-                            <td>
-                                {% if item.username == 'admin' %}
-                                <span class="badge bg-success-subtle text-success badge-label">saytda</span>
-                                {% else %}
-                                <span class="badge bg-warning-subtle text-warning badge-label">Inactive</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                18 Apr, 2025
-                                <small class="text-muted">9:45 AM</small>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    <a href="{% url 'profile' item.username %}" class="text-reset">{{ item.first_name }} {{ item.last_name }}</a>
+                                </td>
+                                <td class="text-center">20 Apr, 2024</td>
+                                <td class="text-center">
+                                    USD $100.1K
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge {% if item.is_online %}bg-info-subtle text-info{% else %}bg-danger-subtle text-danger{% endif %} rounded-1 p-1">{{ item.last_seen }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <!-- end tbody -->
+                    </table>
+                </div>
                 <div class="card-footer border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <!-- Keyinchalik shu yerdan pagination ni yasayman -->
+                        <div data-table-pagination-info="deals"></div>
+                        <div data-table-pagination></div>
                     </div>
                 </div>
             </div>
@@ -76,24 +81,6 @@
     </div>
 </div>
 {% endblock content %} {% block js %} 
-<!-- Jquery for Datatables-->
-<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-
-<!-- Datatables js -->
-<script src="{% static 'plugins/datatables/dataTables.min.js' %}"></script>
-<script src="{% static 'plugins/datatables/dataTables.bootstrap5.min.js' %}"></script>
-<script src="{% static 'plugins/datatables/dataTables.responsive.min.js' %}"></script>
-
-<script>
-$(document).ready(function () {
-    $('table[data-tables="usersTable"]').DataTable({
-        responsive: true,
-        paging: false,        // pagination o‘chadi
-        info: false,          // "Showing 1 to 3 of 3 entries" o‘chadi
-        lengthChange: false,  // "10 entries per page" o‘chadi
-        searching: false,     // pastdagi search o‘chadi
-        ordering: true       // column sort o‘chadi (kerak bo‘lmasa)
-    });
-});
-</script>
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
 {% endblock js %}

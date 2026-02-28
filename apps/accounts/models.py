@@ -33,6 +33,8 @@ class CustomUser(AbstractUser):
     cf_link = models.URLField(max_length=200, null=True, blank=True)
     fb_link = models.URLField(max_length=200, null=True, blank=True)
 
+    last_activity = models.DateTimeField(null=True, blank=True)
+
     def is_profile_complete(self):
         return all([
             self.first_name,
@@ -40,6 +42,46 @@ class CustomUser(AbstractUser):
             self.email,
             self.has_usable_password(),
         ])
+    
+    def is_online(self):
+        if not self.last_activity:
+            return False
+        return timezone.now() - self.last_activity <= timedelta(minutes=1)
+
+    def last_seen(self):
+        if not self.last_activity:
+            return "Kirilmagan"
+
+        now = timezone.now()
+        diff = now - self.last_activity
+        seconds = diff.total_seconds()
+
+        minutes = int(seconds // 60)
+        hours   = int(seconds // 3600)
+        days    = int(seconds // 86400)
+
+        if minutes < 1:
+            return "Hozir saytda"
+
+        if minutes < 60:
+            return f"{minutes} daqiqa oldin"
+
+        if hours < 24:
+            return f"{hours} soat oldin"
+
+        if days < 7:
+            return f"{days} kun oldin"
+
+        weeks = days // 7
+        if weeks < 4:
+            return f"{weeks} hafta oldin"
+
+        months = days // 30
+        if months < 12:
+            return f"{months} oy oldin"
+
+        years = days // 365
+        return f"{years} yil oldin"
 
     def __str__(self):
         return self.username

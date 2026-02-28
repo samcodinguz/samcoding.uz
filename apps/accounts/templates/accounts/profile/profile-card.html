@@ -14,7 +14,7 @@
                     <img src="{% static 'images/flags/uz.svg' %}" alt="UZ" class="ms-2 rounded-circle" height="16" />
                 </h5>
                 <p class="text-muted mb-2">Middle dasturchi</p>
-                <span class="badge text-bg-light badge-label">1 oy avval</span>
+                <span class="badge {% if user.is_online %}bg-info-subtle text-info{% else %}bg-danger-subtle text-danger{% endif %} rounded-1">{{ user.last_seen }}</span>
             </div>
             <div class="ms-auto">
                 <div class="dropdown">
