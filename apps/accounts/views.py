@@ -2,7 +2,7 @@ import hashlib
 from . import utils
 from django.contrib import messages
 from django.http import JsonResponse
-from apps.core.utils import get_base_context
+from apps.core.utils import get_base_context, paginate_queryset
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser, PasswordResetToken
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -160,6 +160,7 @@ def reset_confirm(request, token):
 def users(request):
 
     users = CustomUser.objects.all()
+    users, page_range = paginate_queryset(users, request, per_page=25)
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
@@ -170,6 +171,7 @@ def users(request):
         **get_base_context(request),
         'title': "Foydalanuvchilar",
         'users': users,
+        'page_range': page_range,
         'breadcrumb': breadcrumb
     }
 
@@ -180,7 +182,7 @@ def profile(request, username):
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
-        {"title": "users", "url": "profile", 'args': [user.username]},
+        {"title": "users", "url": "users", 'args': []},
         {"title": f"{user.first_name} {user.last_name}", "url": "profile", 'args': [user.username]},
     ]
 
@@ -293,10 +295,11 @@ def profile_settings(request, username):
         
         avatar = request.FILES.get("avatar")
         if avatar:
-            avatar.name = utils.uid_filename(avatar.name)
             if user.avatar:
                 user.avatar.delete(save=False)
-            user.avatar = avatar
+                
+            new_filename, processed_avatar = utils.square_avatar(avatar)
+            user.avatar.save(new_filename, processed_avatar, save=False)
 
         user.save()
         messages.success(request, "Profilingiz muvaffaqiyatli yangilandi!")

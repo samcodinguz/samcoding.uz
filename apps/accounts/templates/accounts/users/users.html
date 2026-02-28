@@ -6,15 +6,11 @@
         <div class="col-xl-9">
             <div data-table class="card">
                 <div class="card-header border-light justify-content-between">
-
                     <div class="d-flex align-items-center gap-2 w-100">
-
                         <div class="app-search w-100">
                             <input class="form-control" placeholder="Foydalanuvchi izlash..." />
                             <i class="ti ti-search app-search-icon text-muted"></i>
                         </div>
-
-                        <!-- Records Per Page -->
                         <div>
                             <button class="btn btn-primary">Izlash</button>
                         </div>
@@ -34,9 +30,9 @@
                         </thead>
                         <tbody>
                             {% for item in users %}
-                            <tr>
+                            <tr class="{% if item == request.user %}bg-primary-subtle{% endif %}">
                                 <td>
-                                    <a href="#!" class="fw-medium text-reset ms-1">{{ forloop.counter}}</a>
+                                    <a href="{% url 'profile' item.username %}" class="fw-medium link-reset ms-1">{{ users.start_index|add:forloop.counter0 }}</a>
                                 </td>
                                 <td>
                                     <div class="avatar-xs d-inline-block me-1">
@@ -54,11 +50,17 @@
                                         </span>
                                         {% endif %}
                                     </div>
-                                    <a href="{% url 'profile' item.username %}" class="text-reset">{{ item.first_name }} {{ item.last_name }}</a>
+                                    <a href="{% url 'profile' item.username %}" class="link-reset">
+                                        {% if item.first_name or item.last_name %}
+                                            {{ item.first_name }} {{ item.last_name }}
+                                        {% else %}
+                                            {{ item.username }}
+                                        {% endif %}
+                                    </a>
                                 </td>
-                                <td class="text-center">20 Apr, 2024</td>
+                                <td class="text-center"><i class="ti ti-chart-line"></i> 2025</td>
                                 <td class="text-center">
-                                    USD $100.1K
+                                    <i class="ti ti-check"></i> 253
                                 </td>
                                 <td class="text-center">
                                     <span class="badge {% if item.is_online %}bg-info-subtle text-info{% else %}bg-danger-subtle text-danger{% endif %} rounded-1 p-1">{{ item.last_seen }}</span>
@@ -71,8 +73,27 @@
                 </div>
                 <div class="card-footer border-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div data-table-pagination-info="deals"></div>
-                        <div data-table-pagination></div>
+                        <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
+                            <li class="page-item {% if not users.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% else %}#{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% for page in page_range %}
+                            {% if page == '...' %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% elif page == users.number %}
+                            <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            <li class="page-item {% if not users.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{% if users.has_next %}?page={{ users.next_page_number }}{% else %}#{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

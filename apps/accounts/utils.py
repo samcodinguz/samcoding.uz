@@ -3,10 +3,13 @@ import datetime
 import random
 import secrets
 import hashlib
+from io import BytesIO
+from PIL import Image, ImageOps
 from django.urls import reverse
 from django.conf import settings
 from .models import PasswordResetToken
 from django.core.mail import send_mail
+from django.core.files.base import ContentFile
 
 def is_strong_password(password: str) -> bool:
     if len(password) < 8:
@@ -92,3 +95,31 @@ def uid_filename(filename: str, length: int = 16) -> str:
     ext = os.path.splitext(filename)[1]
     random_name = secrets.token_hex(length // 2)
     return f"{random_name}{ext}"
+
+def square_avatar(image_file, size=300):
+    image = Image.open(image_file)
+    image = ImageOps.exif_transpose(image)
+
+    width, height = image.size
+
+    if width > height:
+        left = (width - height) / 2
+        top = 0
+        right = left + height
+        bottom = height
+    else:
+        left = 0
+        top = (height - width) / 2
+        right = width
+        bottom = top + width
+
+    image = image.crop((left, top, right, bottom))
+    image = image.resize((size, size), Image.Resampling.LANCZOS)
+    image = image.convert("RGB")
+
+    img_io = BytesIO()
+    image.save(img_io, format='JPEG')
+
+    new_filename = uid_filename("avatar.jpg")
+
+    return new_filename, ContentFile(img_io.getvalue(), new_filename)

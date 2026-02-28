@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from apps.locations.models import Region, District
 
 class CustomUser(AbstractUser):
-    # You can add additional fields here if needed
+    
     class ShirtSize(models.TextChoices):
         XS = "XS", "XS"
         S = "S", "S"
