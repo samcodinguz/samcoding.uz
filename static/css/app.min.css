@@ -2556,7 +2556,7 @@ progress {
     width: 100%;
     margin-bottom: 1.25rem;
     vertical-align: middle;
-    border-color: var(--theme-table-border-color)
+    border-color: var(--theme-border-color);
 }
 
 .table>:not(caption)>*>* {
