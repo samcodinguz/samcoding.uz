@@ -318,11 +318,13 @@
                             <span class="align-middle">Profil sozlamalari</span>
                         </a>
 
-                        <!-- Support -->
-                        <!-- <a href="#" class="dropdown-item">
-                            <i class="ti ti-headset me-1 fs-lg align-middle"></i>
-                            <span class="align-middle">Yordam</span>
-                        </a> -->
+                        {% if request.user.is_judge or request.user.is_superuser %}
+                        <!-- Judge -->
+                        <a href="#" class="dropdown-item">
+                            <i class="ti ti-lock-open-2 me-1 fs-lg align-middle"></i>
+                            <span class="align-middle">Judge</span>
+                        </a>
+                        {% endif %}
 
                         <!-- Divider -->
                         <div class="dropdown-divider"></div>

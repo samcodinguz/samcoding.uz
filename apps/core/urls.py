@@ -1,6 +1,11 @@
 from django.urls import path
-from . import views
+from .views import public, judge, admin
 
 urlpatterns = [
-    path('', views.index, name='index')
+
+    # -------- PUBLIC --------
+    path('', public.index, name='index')
+
+    # -------- JUDGE --------
+    # -------- ADMIN --------
 ]

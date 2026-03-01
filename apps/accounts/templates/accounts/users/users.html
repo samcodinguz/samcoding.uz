@@ -6,15 +6,15 @@
         <div class="col-xl-9">
             <div class="card">
                 <div class="card-header border-light justify-content-between">
-                    <div class="d-flex align-items-center gap-2 w-100">
+                    <form method="get" class="d-flex align-items-center gap-2 w-100">
                         <div class="app-search w-100">
-                            <input class="form-control" placeholder="Foydalanuvchi izlash..." />
+                            <input class="form-control" name="search" value="{{ search|default:'' }}" placeholder="Foydalanuvchi izlash..." />
                             <i class="ti ti-search app-search-icon text-muted"></i>
                         </div>
                         <div>
-                            <button class="btn btn-primary">Izlash</button>
+                            <button type="submit" class="btn btn-primary">Izlash</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div class="table-responsive">

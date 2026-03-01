@@ -33,6 +33,7 @@ class CustomUser(AbstractUser):
     cf_link = models.URLField(max_length=200, null=True, blank=True)
     fb_link = models.URLField(max_length=200, null=True, blank=True)
 
+    is_judge = models.BooleanField(default=False)
     last_activity = models.DateTimeField(null=True, blank=True)
 
     def is_profile_complete(self):

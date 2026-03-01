@@ -1,10 +1,11 @@
 import hashlib
-from . import utils
+from apps.accounts import utils
+from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse
 from apps.core.utils import get_base_context, paginate_queryset
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import CustomUser, PasswordResetToken
+from apps.accounts.models import CustomUser, PasswordResetToken
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from apps.locations.models import Region, District
 
@@ -157,7 +158,12 @@ def reset_confirm(request, token):
 
 def users(request):
 
-    users = list(CustomUser.objects.all())*30
+    search = request.GET.get('search', '').strip()
+
+    users = CustomUser.objects.all()
+    if search:
+        users = users.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(username__icontains=search))
+
     users, page_range = paginate_queryset(users, request, per_page=25)
     online_users = utils.get_top_active_users(limit=50)
 
@@ -171,8 +177,9 @@ def users(request):
         'title': "Foydalanuvchilar",
         'users': users,
         'page_range': page_range,
-        'online_users': list(online_users)[:4],
-        'breadcrumb': breadcrumb
+        'online_users': online_users,
+        'breadcrumb': breadcrumb,
+        'search': search
     }
 
     return render(request, "accounts/users/users.html", context)

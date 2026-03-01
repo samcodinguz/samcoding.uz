@@ -10,8 +10,8 @@ urlpatterns = [
     path('', include('apps.accounts.urls')),
     path('accounts/', include('allauth.urls')),
 ]
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler400 = errors.error_400
 handler401 = errors.error_401

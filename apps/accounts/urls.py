@@ -1,16 +1,19 @@
 from django.urls import path
-from . import views
+from .views import public, judge, admin
 
 urlpatterns = [
-    path('sign-in', views.sign_in, name='sign-in'),
-    path('sign-up', views.sign_up, name='sign-up'),
-    path('sign-out', views.sign_out, name='sign-out'),
-    
-    path('reset-password', views.reset_password, name='reset-password'),
-    path('reset-confirm/<str:token>', views.reset_confirm, name='reset-confirm'),
 
-    path('users', views.users, name='users'),
-    path('profile/<str:username>', views.profile, name='profile'),
-    path('profile/<str:username>/settings', views.profile_settings, name='profile-settings'),
-    path('regions/<int:region_id>',views.districts, name='districts'),
+    # -------- PUBLIC --------
+    path('sign-in', public.sign_in, name='sign-in'),
+    path('sign-up', public.sign_up, name='sign-up'),
+    path('sign-out', public.sign_out, name='sign-out'),
+    path('reset-password', public.reset_password, name='reset-password'),
+    path('reset-confirm/<str:token>', public.reset_confirm, name='reset-confirm'),
+    path('users', public.users, name='users'),
+    path('profile/<str:username>', public.profile, name='profile'),
+    path('profile/<str:username>/settings', public.profile_settings, name='profile-settings'),
+    path('regions/<int:region_id>', public.districts, name='districts'),
+
+    # -------- JUDGE --------
+    # -------- ADMIN --------
 ]
