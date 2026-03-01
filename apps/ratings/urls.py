@@ -3,7 +3,6 @@ from .views import public, judge, admin
 
 urlpatterns = [
     # -------- PUBLIC --------
-    path('', public.index, name='index')
     # -------- JUDGE --------
     # -------- ADMIN --------
 ]

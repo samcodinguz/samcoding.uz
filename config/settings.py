@@ -65,10 +65,10 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.accounts',
     'apps.contests',
+    'apps.locations',
     'apps.problems',
     'apps.ratings',
     'apps.submissions',
-    'apps.locations',
 ]
 
 MIDDLEWARE = [

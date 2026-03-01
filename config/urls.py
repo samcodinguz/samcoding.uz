@@ -8,6 +8,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.core.urls')),
     path('', include('apps.accounts.urls')),
+    path('', include('apps.contests.urls')),
+    path('', include('apps.locations.urls')),
+    path('', include('apps.problems.urls')),
+    path('', include('apps.ratings.urls')),
+    path('', include('apps.submissions.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 if settings.DEBUG:
