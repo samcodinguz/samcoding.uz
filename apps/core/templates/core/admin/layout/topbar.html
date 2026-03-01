@@ -1,24 +1,19 @@
 {% load static %}
 <header class="app-topbar">
-    <div class="container topbar-menu">
+    <div class="container-fluid topbar-menu">
         <div class="d-flex align-items-center gap-2">
+
             <!-- Topbar Brand Logo -->
             <div class="logo-topbar me-1 me-xl-4">
                 <!-- Logo light -->
-                <a href="{% url 'index' %}" class="logo-light">
-                    <span class="logo-lg">
-                        <img src="{% static 'images/logo.png' %}" alt="logo" />
-                    </span>
+                <a href="{% url 'admin-index' %}" class="logo-light">
                     <span class="logo-sm">
                         <img src="{% static 'images/logo-sm.png' %}" alt="small logo" />
                     </span>
                 </a>
 
                 <!-- Logo Dark -->
-                <a href="{% url 'index' %}" class="logo-dark">
-                    <span class="logo-lg">
-                        <img src="{% static 'images/logo-black.png' %}" alt="dark logo" />
-                    </span>
+                <a href="{% url 'admin-index' %}" class="logo-dark">
                     <span class="logo-sm">
                         <img src="{% static 'images/logo-sm.png' %}" alt="small logo" />
                     </span>
@@ -323,14 +318,6 @@
                         <a href="#" class="dropdown-item">
                             <i class="ti ti-lock-open-2 me-1 fs-lg align-middle"></i>
                             <span class="align-middle">Judge</span>
-                        </a>
-                        {% endif %}
-
-                        {% if request.user.is_superuser %}
-                        <!-- Admin -->
-                        <a href="{% url 'admin-index' %}" target="_blank" class="dropdown-item">
-                            <i class="ti ti-shield-check me-1 fs-lg align-middle"></i>
-                            <span class="align-middle">Admin</span>
                         </a>
                         {% endif %}
 

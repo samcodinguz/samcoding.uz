@@ -3935,7 +3935,7 @@ textarea.form-control.is-invalid {
     font-size: var(--theme-btn-font-size);
     font-weight: var(--theme-btn-font-weight);
     line-height: var(--theme-btn-line-height);
-    color: var(--theme-btn-color);
+    color: var(--theme-topbar-item-color);
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
@@ -24303,7 +24303,7 @@ html[data-topbar-color=dark] .logo-topbar .logo-dark {
 
 html[data-topbar-color=dark] .app-topbar .btn-primary,
 html[data-topbar-color=gradient] .app-topbar .btn-primary {
-    background-color: rgba(var(--theme-white-rgb), .1);
+    background-color: var(--theme-topbar-search-bg);
     border-color: transparent !important
 }
 

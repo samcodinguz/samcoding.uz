@@ -1,13 +1,11 @@
 {% load static %}
 <!doctype html>
-<html lang="en" data-layout="topnav" data-skin="mono" data-topbar-color="dark" data-menu-color="light">
+<html lang="en" data-layout="vertical" data-skin="mono" data-topbar-color="dark" data-menu-color="light">
     <head>
         <meta charset="utf-8" />
-        <title>{% block title %}SamCoding | {{ title }}{% endblock title %}</title>
+        <title>{% block title %}Admin | {{ title }}{% endblock title %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="..." />
-        <meta name="keywords" content="..." />
-        <meta name="author" content="..." />
+        <meta name="robots" content="noindex, nofollow">
         <!-- App favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
         <!-- Theme Config Js -->
@@ -16,23 +14,20 @@
         <link href="{% static 'css/vendors.min.css' %}" rel="stylesheet" type="text/css" />
         <!-- App css -->
         <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" />
-        <!-- Contribution css -->
-        <link href="{% static 'css/contribution.css' %}" rel="stylesheet" type="text/css" />
-        <!-- Public css -->
-        <link href="{% static 'css/public.css' %}" rel="stylesheet" type="text/css">
+        <!-- Admin css -->
+        <link href="{% static 'css/admin.css' %}" rel="stylesheet" type="text/css">
         {% block css %} {% endblock css %}
     </head>
 
     <body>
-        {% include 'core/public/layout/messages.html' %}
+        {% include 'core/admin/layout/messages.html' %}
         <div class="wrapper">
-            {% include 'core/public/layout/topbar.html' %}
-            {% include 'core/public/layout/topnav.html' %}
+            {% include 'core/admin/layout/topbar.html' %}
+            {% include 'core/admin/layout/sidenav.html' %}
             <div class="content-page">
                 {% block content %}
-                <div class="container">
-                    {% include 'core/public/layout/breadcrumb.html' %}
-                    {% include 'core/public/layout/alert-profile.html' %}
+                <div class="container-fluid">
+                    {% include 'core/admin/layout/breadcrumb.html' %}
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -44,7 +39,7 @@
                     </div>
                 </div>
                 {% endblock content %}
-                {% include 'core/public/layout/footer.html' %}
+                {% include 'core/admin/layout/footer.html' %}
             </div>
         </div>
         <!-- Vendor js -->
