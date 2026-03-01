@@ -39,7 +39,7 @@ def sign_in(request):
         'title': 'Kirish',
     }
 
-    return render(request, 'accounts/sign-in.html', context)
+    return render(request, 'accounts/public/sign-in.html', context)
 
 def sign_up(request):
     if request.user.is_authenticated:
@@ -83,7 +83,7 @@ def sign_up(request):
         'title': 'Ro\'yxatdan o\'tish',
     }
 
-    return render(request, 'accounts/sign-up.html', context)
+    return render(request, 'accounts/public/sign-up.html', context)
 
 def sign_out(request):
     if request.user.is_authenticated:
@@ -112,7 +112,7 @@ def reset_password(request):
         'title': 'Parolni tiklash',
     }
 
-    return render(request, 'accounts/reset-password.html', context)
+    return render(request, 'accounts/public/reset-password.html', context)
 
 def reset_confirm(request, token):
     token_hash = hashlib.sha256(token.encode()).hexdigest()
@@ -154,7 +154,7 @@ def reset_confirm(request, token):
         'title': 'Yangi parolni o\'rnatish',
     }
     
-    return render(request, "accounts/reset-confirm.html", context)
+    return render(request, "accounts/public/reset-confirm.html", context)
 
 def users(request):
 
@@ -182,7 +182,7 @@ def users(request):
         'search': search
     }
 
-    return render(request, "accounts/users/users.html", context)
+    return render(request, "accounts/public/users/users.html", context)
 
 def profile(request, username):
     user = get_object_or_404(CustomUser, username=username)
@@ -202,7 +202,7 @@ def profile(request, username):
         'year': 2026,
     }
 
-    return render(request, "accounts/profile/profile.html", context)
+    return render(request, "accounts/public/profile/profile.html", context)
 
 def profile_settings(request, username):
     user = get_object_or_404(CustomUser, username=username)
@@ -328,7 +328,7 @@ def profile_settings(request, username):
         'regions': regions
     }
 
-    return render(request, "accounts/profile/profile-settings.html", context)
+    return render(request, "accounts/public/profile/profile-settings.html", context)
 
 def districts(request,region_id):
     region = get_object_or_404(Region,id=region_id)

@@ -24,15 +24,15 @@
     </head>
 
     <body>
-        {% include 'core/layout/messages.html' %}
+        {% include 'core/public/layout/messages.html' %}
         <div class="wrapper">
-            {% include 'core/layout/topbar.html' %}
-            {% include 'core/layout/topnav.html' %}
+            {% include 'core/public/layout/topbar.html' %}
+            {% include 'core/public/layout/topnav.html' %}
             <div class="content-page">
                 {% block content %}
                 <div class="container">
-                    {% include 'core/layout/breadcrumb.html' %}
-                    {% include 'core/layout/alert-profile.html' %}
+                    {% include 'core/public/layout/breadcrumb.html' %}
+                    {% include 'core/public/layout/alert-profile.html' %}
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -44,7 +44,7 @@
                     </div>
                 </div>
                 {% endblock content %}
-                {% include 'core/layout/footer.html' %}
+                {% include 'core/public/layout/footer.html' %}
             </div>
         </div>
         <!-- Vendor js -->

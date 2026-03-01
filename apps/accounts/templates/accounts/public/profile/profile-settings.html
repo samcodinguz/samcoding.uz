@@ -1,10 +1,10 @@
-{% extends "core/index.html" %} {% load static %} {% block title %}SamCoding | Profil sozlamalari (@{{ user.username }}){% endblock title %} {% block css %} {% endblock css %} {% block profilecss %} {% endblock profilecss %}
+{% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | Profil sozlamalari (@{{ user.username }}){% endblock title %} {% block css %} {% endblock css %} {% block profilecss %} {% endblock profilecss %}
 {% block content %}
 <div class="container">
-    {% include 'core/layout/breadcrumb.html' %}
+    {% include 'core/public/layout/breadcrumb.html' %}
     <div class="row">
         <div class="col-xl-4 d-none d-xl-block">
-            {% include 'accounts/profile/profile-card.html' %}
+            {% include 'accounts/public/profile/profile-card.html' %}
         </div>
         <div class="col-xl-8">
             <div class="card rounded-1">

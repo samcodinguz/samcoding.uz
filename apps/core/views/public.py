@@ -8,4 +8,4 @@ def index(request):
         'title': 'Bosh sahifa',
     }
 
-    return render(request, "core/index.html", context)
+    return render(request, "core/public/index.html", context)

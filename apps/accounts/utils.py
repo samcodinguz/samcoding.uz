@@ -12,7 +12,6 @@ from django.core.mail import send_mail
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Case, When, Value, IntegerField
 from .models import CustomUser
 
 def is_strong_password(password: str) -> bool:
