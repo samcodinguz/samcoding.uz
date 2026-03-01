@@ -18,4 +18,5 @@ handler401 = errors.error_401
 handler402 = errors.error_402
 handler403 = errors.error_403
 handler404 = errors.error_404
+handler408 = errors.error_408
 handler500 = errors.error_500

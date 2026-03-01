@@ -10,6 +10,10 @@ from django.conf import settings
 from .models import PasswordResetToken
 from django.core.mail import send_mail
 from django.core.files.base import ContentFile
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Case, When, Value, IntegerField
+from .models import CustomUser
 
 def is_strong_password(password: str) -> bool:
     if len(password) < 8:
@@ -123,3 +127,8 @@ def square_avatar(image_file, size=300):
     new_filename = uid_filename("avatar.jpg")
 
     return new_filename, ContentFile(img_io.getvalue(), new_filename)
+
+def get_top_active_users(limit=50, online_minutes=1):
+    now = timezone.now()
+    threshold = now - timedelta(minutes=online_minutes)
+    return (CustomUser.objects.filter(last_activity__gte=threshold).order_by('-last_activity')[:limit])

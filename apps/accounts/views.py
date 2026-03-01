@@ -157,8 +157,9 @@ def reset_confirm(request, token):
 
 def users(request):
 
-    users = CustomUser.objects.all()
+    users = list(CustomUser.objects.all())*30
     users, page_range = paginate_queryset(users, request, per_page=25)
+    online_users = utils.get_top_active_users(limit=50)
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
@@ -170,6 +171,7 @@ def users(request):
         'title': "Foydalanuvchilar",
         'users': users,
         'page_range': page_range,
+        'online_users': list(online_users)[:4],
         'breadcrumb': breadcrumb
     }
 

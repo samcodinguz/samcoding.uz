@@ -15,5 +15,8 @@ def error_403(request, exception=None):
 def error_404(request, exception=None):
     return render(request, 'core/errors/404.html', status=404)
 
+def error_408(request, exception=None):
+    return render(request, 'core/errors/408.html', status=408)
+
 def error_500(request):
     return render(request, 'core/errors/500.html', status=500)
