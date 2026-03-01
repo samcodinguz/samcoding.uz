@@ -1,0 +1,502 @@
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="container-fluid">
+    {% include 'core/admin/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-12">
+            <div data-table data-table-rows-per-page="8" class="card">
+                <div class="card-header border-light justify-content-between">
+                    <div class="d-flex gap-2">
+                        <div class="app-search">
+                            <input data-table-search type="search" class="form-control" placeholder="Search users..." />
+                            <i class="ti ti-search app-search-icon text-muted"></i>
+                        </div>
+                        <button data-table-delete-selected class="btn btn-danger d-none">Delete</button>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="me-2 fw-semibold">Filter By:</span>
+
+                        <!-- Role Type Filter -->
+                        <div class="app-search">
+                            <select data-table-filter="roles" class="form-select form-control my-1 my-md-0">
+                                <option value="All">Role</option>
+                                <option value="Security Officer">Security Officer</option>
+                                <option value="Project Manager">Project Manager</option>
+                                <option value="Developer">Developer</option>
+                                <option value="Support Lead">Support Lead</option>
+                            </select>
+                            <i class="ti ti-user-hexagon app-search-icon text-muted"></i>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="app-search">
+                            <select data-table-filter="status" class="form-select form-control my-1 my-md-0">
+                                <option value="All">Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Suspended">Suspended</option>
+                            </select>
+                            <i class="ti ti-user-check app-search-icon text-muted"></i>
+                        </div>
+
+                        <!-- Records Per Page -->
+                        <div>
+                            <select data-table-set-rows-per-page class="form-select form-control my-1 my-md-0">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#addUserModal" class="btn btn-secondary">Add User</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-custom table-centered table-select table-hover w-100 mb-0">
+                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                            <tr class="text-uppercase fs-xxs">
+                                <th class="ps-3" style="width: 1%">
+                                    <input data-table-select-all class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-files" value="option" />
+                                </th>
+                                <th data-table-sort>ID</th>
+                                <th data-table-sort="user">User</th>
+                                <th data-table-sort data-column="roles">Role</th>
+                                <th data-table-sort>Last Updated</th>
+                                <th data-table-sort data-column="status">Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Row 1 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" value="option" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00123</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-5.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Nathan Young</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">nathan@companymail.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Project Manager</td>
+                                <td>
+                                    18 Apr, 2025
+                                    <small class="text-muted">9:45 AM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning-subtle text-warning badge-label">Inactive</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 2 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00145</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-3.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Leah Kim</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">leah@wavehub.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Developer</td>
+                                <td>
+                                    21 Apr, 2025
+                                    <small class="text-muted">3:15 PM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success-subtle text-success badge-label">Active</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 3 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00162</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-1.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Sophie Lee</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">sophie@infrakit.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Support Lead</td>
+                                <td>
+                                    19 Apr, 2025
+                                    <small class="text-muted">10:00 AM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger-subtle text-danger badge-label">Suspended</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 4 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00178</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-2.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">David Tran</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">david@devsync.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Developer</td>
+                                <td>
+                                    22 Apr, 2025
+                                    <small class="text-muted">8:15 AM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success-subtle text-success badge-label">Active</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 5 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00189</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-4.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Isabella Moore</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">isabella@tracklog.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Security Officer</td>
+                                <td>
+                                    20 Apr, 2025
+                                    <small class="text-muted">2:45 PM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success-subtle text-success badge-label">Active</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 6 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00203</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-6.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Daniel Cooper</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">daniel@cloudops.dev</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Support Lead</td>
+                                <td>
+                                    15 Apr, 2025
+                                    <small class="text-muted">11:20 AM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning-subtle text-warning badge-label">Inactive</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 7 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00215</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-8.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Ava Thompson</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">ava@digitalsphere.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Developer</td>
+                                <td>
+                                    23 Apr, 2025
+                                    <small class="text-muted">4:25 PM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success-subtle text-success badge-label">Active</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 8 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00228</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-9.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Mason Carter</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">mason@buildzone.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Security Officer</td>
+                                <td>
+                                    17 Apr, 2025
+                                    <small class="text-muted">6:10 PM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger-subtle text-danger badge-label">Suspended</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Row 9 -->
+                            <tr>
+                                <td class="ps-3">
+                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" />
+                                </td>
+                                <td>
+                                    <h5 class="m-0">
+                                        <a href="#" class="link-reset">#USR00239</a>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-sm">
+                                            <img src="assets/images/users/user-10.jpg" class="img-fluid rounded-circle" alt="" />
+                                        </div>
+                                        <div>
+                                            <h5 class="fs-base mb-0">
+                                                <a data-sort="user" href="#" class="link-reset">Chloe Adams</a>
+                                            </h5>
+                                            <p class="text-muted fs-xs mb-0">chloe@infraops.io</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Project Manager</td>
+                                <td>
+                                    11 Apr, 2025
+                                    <small class="text-muted">1:30 PM</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning-subtle text-warning badge-label">Inactive</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-eye fs-lg"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-edit fs-lg"></i>
+                                        </a>
+                                        <a href="#" data-table-delete-row class="btn btn-default btn-icon btn-sm">
+                                            <i class="ti ti-trash fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div data-table-pagination-info="roles"></div>
+                        <div data-table-pagination></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
+{% endblock js %}

@@ -82,6 +82,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.accounts.middleware.UpdateLastActivityMiddleware',
     'apps.accounts.middleware.Redirect401Middleware',
+    'apps.accounts.middleware.AdminAccessMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

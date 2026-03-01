@@ -9,7 +9,6 @@ def admin_index(request):
         raise PermissionDenied
 
     breadcrumb = [
-        {"title": "admin", "url": "admin-index", 'args': []},
         {"title": "dashboard", "url": "admin-index", 'args': []},
     ]
 
@@ -20,3 +19,4 @@ def admin_index(request):
     }
 
     return render(request, "core/admin/index.html", context)
+    

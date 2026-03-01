@@ -6,5 +6,5 @@ urlpatterns = [
     path('', public.index, name='index'),
     # -------- JUDGE --------
     # -------- ADMIN --------
-    path('admin/dashboard', admin.admin_index, name='admin-index'),
+    path('dashboard', admin.admin_index, name='admin-index'),
 ]

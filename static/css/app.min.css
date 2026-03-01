@@ -25077,7 +25077,7 @@ html[data-sidenav-size=on-hover-active] .sidenav-menu .button-on-hover .ti-circl
     top: 0;
     inset-inline-end: calc(var(--theme-sidenav-width-sm) * .5 - var(--theme-logo-sm-height) * .7);
     cursor: pointer;
-    color: var(--theme-sidenav-item-color);
+    color: var(--theme-topbar-item-color);
     line-height: var(--theme-topbar-height);
     font-size: var(--theme-sidenav-item-icon-size)
 }

@@ -14,4 +14,5 @@ urlpatterns = [
     path('regions/<int:region_id>', public.districts, name='districts'),
     # -------- JUDGE --------
     # -------- ADMIN --------
+    path('dashboard/users', admin.admin_users, name='admin-users'),
 ]

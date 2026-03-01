@@ -75,7 +75,7 @@
                 <!-- end dropdown-->
             </div>
 
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
             <div id="notification-dropdown-people" class="topbar-item d-none d-xl-flex">
                 <div class="dropdown">
                     <button class="topbar-link dropdown-toggle drop-arrow-none" data-bs-toggle="dropdown" type="button" data-bs-auto-close="outside" aria-haspopup="false" aria-expanded="false">
@@ -268,7 +268,7 @@
                 <!-- end dropdown-->
             </div>
             {% endif %}
-            {% if user.is_superuser %}
+            {% if request.user.is_superuser %}
             <div id="fullscreen-toggler" class="topbar-item d-none d-md-flex">
                 <button class="topbar-link" type="button" data-toggle="fullscreen">
                     <i class="ti ti-maximize topbar-link-icon"></i>
@@ -282,7 +282,7 @@
                     <i class="ti ti-palette topbar-link-icon"></i>
                 </button>
             </div>
-            {% if user.is_authenticated %}
+            {% if request.user.is_authenticated %}
             <div id="user-dropdown-detailed" class="topbar-item nav-user">
                 <div class="dropdown">
                     <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
@@ -291,7 +291,7 @@
                                 <h5 class="my-0 lh-1 pro-username">{{ request.user.username }}</h5>
                             </span>
                         </div>
-                        <div class="rounded-circle me-lg-2 d-flex {% if not request.user.avatar %}bg-white{% endif %} d-flex align-items-center justify-content-center" style="width: 27px; height: 27px; color: black;">
+                        <div class="rounded-circle me-lg-2 d-flex {% if not request.user.avatar %}bg-white{% endif %} d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; color: black;">
                             <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'images/users/no-avatar.jpg' %}{% endif %}" class="rounded-circle d-flex w-100 h-100" alt="user-avatar">
                         </div>
                         <div class="d-lg-flex align-items-center gap-1 d-none">
