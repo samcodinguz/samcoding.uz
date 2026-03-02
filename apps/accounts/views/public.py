@@ -281,6 +281,7 @@ def profile_settings(request, username):
                 return redirect('profile-settings',username=username)
 
             user.set_password(new_password1)
+            update_session_auth_hash(request, user)
         else:
 
             if new_password1 or new_password2:

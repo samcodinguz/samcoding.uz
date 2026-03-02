@@ -30,45 +30,60 @@ class Table {
   }
   init() {
     (this.setupCheckAll(),
+      this.deleteSelected(),
       this.setupCheckboxListeners(),
       this.setupSearch(),
       0 < this.headers.length && (this.setupFilters(), this.setupSort()),
       this.setupRowsPerPage(),
       this.setupPagination(),
       this.setupPaginationInfo(),
-      this.deleteSelected(),
       this.deleteRow(),
       this.update());
   }
   setupCheckAll() {
-    this.thead &&
-      ((this.checkAllCheckBox = this.thead.querySelector(
-        this.parentInstance.checkAllSelector,
-      )),
-      this.checkAllCheckBox) &&
-      this.checkAllCheckBox.addEventListener("click", (t) => {
-        var e = this.rows
-          .map((e) => e.querySelector('input[type="checkbox"]'))
-          .filter(
-            (e) => e && !e.parentElement.classList.contains("form-switch"),
-          );
-        e && 0 < e.length && e.forEach((e) => (e.checked = t.target.checked));
-      });
+    if (!this.thead) return;
+
+    this.checkAllCheckBox = this.thead.querySelector(
+      this.parentInstance.checkAllSelector,
+    );
+
+    if (!this.checkAllCheckBox) return;
+
+    this.checkAllCheckBox.addEventListener("click", (e) => {
+      let checkboxes = this.rows
+        .map((row) => row.querySelector('input[type="checkbox"]'))
+        .filter((cb) => cb);
+
+      checkboxes.forEach((cb) => (cb.checked = e.target.checked));
+
+      if (this.deleteSelectedSelectors && this.deleteSelectedSelectors.length) {
+        this.deleteSelectedSelectors.forEach((btn) => {
+          btn.classList.toggle("d-none", !e.target.checked);
+        });
+      }
+    });
   }
   setupCheckboxListeners() {
-    let t = this.table.querySelectorAll(
+    let checkboxes = this.table.querySelectorAll(
       'input[type="checkbox"]:not(.form-switch > input)',
     );
-    this.checkAllCheckBox &&
-      0 < t.length &&
-      t.forEach((e) => {
-        e.addEventListener("change", () => {
-          var e = Array.from(t).some((e) => e.checked);
-          this.deleteSelectedSelector &&
-            0 < this.filteredRows.length &&
-            this.deleteSelectedSelector.classList.toggle("d-none", !e);
-        });
+
+    if (!checkboxes.length) return;
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        let anyChecked = Array.from(checkboxes).some((cb) => cb.checked);
+
+        if (
+          this.deleteSelectedSelectors &&
+          this.deleteSelectedSelectors.length
+        ) {
+          this.deleteSelectedSelectors.forEach((btn) => {
+            btn.classList.toggle("d-none", !anyChecked);
+          });
+        }
       });
+    });
   }
   setupSearch() {
     ((this.searchInput = this.table.querySelector(
@@ -372,30 +387,37 @@ class Table {
       });
   }
   deleteSelected() {
-    ((this.deleteSelectedSelector = this.table.querySelector(
+    this.deleteSelectedSelectors = this.table.querySelectorAll(
       this.parentInstance.deleteSelectedSelector,
-    )),
-      this.deleteSelectedSelector &&
-        this.deleteSelectedSelector.addEventListener("click", (e) => {
-          e.preventDefault(); // vaqtincha to‘xtatamiz (modal uchun)
+    );
 
-          let r = this.rows.filter(
-            (e) => e.querySelector('input[type="checkbox"]').checked,
-          );
+    if (!this.deleteSelectedSelectors.length) return;
 
-          if (0 < r.length) {
-            let { modal: t, confirmButton: btn } = this.alert(
-              1 < r.length
-                ? this.deleteMultipleRowsMessage
-                : this.deleteRowMessage,
-            );
+    this.deleteSelectedSelectors.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
 
-            t.show();
-            btn.addEventListener("click", () => {
-              this.deleteSelectedSelector.closest("form").submit();
-            });
-          }
-        }));
+        let checkedRows = this.rows.filter(
+          (row) => row.querySelector('input[type="checkbox"]')?.checked,
+        );
+
+        if (checkedRows.length === 0) return;
+
+        let { modal, confirmButton } = this.alert(
+          checkedRows.length > 1
+            ? this.deleteMultipleRowsMessage
+            : this.deleteRowMessage,
+        );
+
+        if (!modal || !confirmButton) return;
+
+        modal.show();
+
+        confirmButton.onclick = () => {
+          button.closest("form").submit();
+        };
+      });
+    });
   }
 
   deleteRow() {
@@ -409,7 +431,7 @@ class Table {
         let userId = btn.value;
 
         let { modal, confirmButton } = this.alert(
-          "Haqiqatan ham o'chirmoqchimisiz?"
+          "Haqiqatan ham o'chirmoqchimisiz?",
         );
 
         modal.show();
@@ -426,7 +448,7 @@ class Table {
       });
     });
   }
-  
+
   alert(e) {
     var t,
       e = `

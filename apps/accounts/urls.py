@@ -15,4 +15,5 @@ urlpatterns = [
     # -------- JUDGE --------
     # -------- ADMIN --------
     path('dashboard/users', admin.admin_users, name='admin-users'),
+    path("dashboard/users/toggle-judge", admin.toggle_judge, name="admin-toggle-judge"),
 ]

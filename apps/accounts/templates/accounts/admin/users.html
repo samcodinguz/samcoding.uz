@@ -9,10 +9,15 @@
                 <div data-table data-table-rows-per-page="{{ 25 }}" class="card">
                     <div class="card-header border-light d-block justify-content-between">
                         <div class="row gap-2">
-                            <div class="col-12 col-md-4 col-xl-3 col-xxl-2">
+                            <div class="col-12 col-md-4 col-xl-3 col-xxl-2 gap-2 d-flex">
                                 <div class="app-search w-100">
                                     <input type="search" class="form-control" placeholder="Qidiruv..." id="searchInput" value="{{ search|default:'' }}" />
                                     <i class="ti ti-search app-search-icon text-muted"></i>
+                                </div>
+                                <div class="d-none d-md-block">
+                                    <button data-table-delete-selected type="submit" name="bulk_delete" class="btn btn-danger btn-icon px-3 d-none">
+                                        <i class="ti ti-trash fs-xl" ></i>
+                                    </button>
                                 </div>
                             </div>
                             <div class="col-12 col-md-auto ms-auto d-flex align-items-center gap-2">
@@ -28,9 +33,11 @@
                                 <button type="button" class="btn btn-primary px-3">
                                     Qo'shish
                                 </button>
-                                <button data-table-delete-selected type="submit" name="bulk_delete" class="btn btn-danger btn-icon px-3 d-none">
-                                    <i class="ti ti-trash fs-xl" ></i>
-                                </button>
+                                <div class="d-block d-md-none">
+                                    <button data-table-delete-selected type="submit" name="bulk_delete" class="btn btn-danger btn-icon px-3 d-none">
+                                        <i class="ti ti-trash fs-xl" ></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -42,12 +49,103 @@
                                     <th class="ps-3" style="width: 1%">
                                         <input data-table-select-all class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-files" value="option" />
                                     </th>
-                                    <th data-table-sort style="width: 1%;">ID</th>
-                                    <th data-table-sort>User</th>
-                                    <th data-table-sort>Contact</th>
-                                    <th data-table-sort>Region</th>
-                                    <th data-table-sort>Created at</th>
-                                    <th data-table-sort data-column="status" class="text-center">Status</th>
+                                    <th style="width: 1%;">
+                                        <a href="?sort=id&direction={% if sort == 'id' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
+                                            ID
+                                            <span>
+                                                {% if sort == 'id' %}
+                                                    {% if direction == 'asc' %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
+                                                    {% else %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
+                                                {% endif %}
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="?sort=user&direction={% if sort == 'user' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
+                                            User
+                                            <span>
+                                                {% if sort == 'user' %}
+                                                    {% if direction == 'asc' %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
+                                                    {% else %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
+                                                {% endif %}
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="?sort=phone&direction={% if sort == 'phone' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
+                                            Contact
+                                            <span>
+                                                {% if sort == 'phone' %}
+                                                    {% if direction == 'asc' %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
+                                                    {% else %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
+                                                {% endif %}
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="?sort=region&direction={% if sort == 'region' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
+                                            Region
+                                            <span>
+                                                {% if sort == 'region' %}
+                                                    {% if direction == 'asc' %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
+                                                    {% else %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
+                                                {% endif %}
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="?sort=date_joined&direction={% if sort == 'date_joined' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
+                                            Created at
+                                            <span>
+                                                {% if sort == 'date_joined' %}
+                                                    {% if direction == 'asc' %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
+                                                    {% else %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
+                                                {% endif %}
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th class="text-center">
+                                        <a href="?sort=last_activity&direction={% if sort == 'last_activity' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
+                                            Status
+                                            <span>
+                                                {% if sort == 'last_activity' %}
+                                                    {% if direction == 'asc' %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
+                                                    {% else %}
+                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
+                                                {% endif %}
+                                            </span>
+                                        </a>
+                                    </th>
+                                    <th class="text-center">Judge</th>
                                     <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -63,7 +161,9 @@
                                     </td>
                                     <td>
                                         <h5 class="m-0">
-                                            <a href="{% url 'profile' item.username %}" class="link-reset">#{{ users.start_index|add:forloop.counter0 }}</a>
+                                            <a href="{% url 'profile' item.username %}" class="link-reset">
+                                                <code>#{{ item.id|stringformat:"04d" }}</code>
+                                            </a>
                                         </h5>
                                     </td>
                                     <td>
@@ -132,6 +232,11 @@
                                         <span class="badge {% if item.is_online %}bg-info-subtle text-info{% else %}bg-danger-subtle text-danger{% endif %} rounded-1 p-1">{{ item.last_seen }}</span>
                                     </td>
                                     <td>
+                                        <div class="form-check form-check-primary form-switch d-flex justify-content-center">
+                                            <input type="checkbox" class="form-check-input judge-toggle" data-user-id="{{ item.id }}" {% if item.is_judge %}checked{% endif %}>
+                                        </div>
+                                    </td>
+                                    <td>
                                         <div class="d-flex justify-content-center gap-1">
                                             <a href="{% url 'profile' item.username %}" target="_blank" class="btn btn-default btn-icon btn-sm">
                                                 <i class="ti ti-eye fs-lg"></i>
@@ -159,7 +264,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
                                 <li class="page-item {% if not users.has_previous %}disabled{% endif %}">
-                                    <a class="page-link" href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
+                                    <a class="page-link" href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
@@ -167,13 +272,13 @@
                                 {% if page == '...' %}
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
                                 {% elif page == users.number %}
-                                <li class="page-item active"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}">{{ page }}</a></li>
+                                <li class="page-item active"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}">{{ page }}</a></li>
                                 {% else %}
-                                <li class="page-item"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}">{{ page }}</a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}">{{ page }}</a></li>
                                 {% endif %}
                                 {% endfor %}
                                 <li class="page-item {% if not users.has_next %}disabled{% endif %}">
-                                    <a class="page-link" href="{% if users.has_next %}?page={{ users.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
+                                    <a class="page-link" href="{% if users.has_next %}?page={{ users.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>
@@ -190,6 +295,8 @@
 <script src="{% static 'js/pages/custom-table.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== Role Select (Choices) =====
         const roleFilterElement = document.getElementById("role");
         if (roleFilterElement) {
             new Choices(roleFilterElement, {
@@ -200,42 +307,71 @@
                 placeholderValue: '------',
             });
         }
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
 
+        // ===== Search + Filter =====
         const searchInput = document.getElementById("searchInput");
         const roleFilter = document.getElementById("role");
-
         function goWithQuery() {
             const params = new URLSearchParams(window.location.search);
-
-            if (searchInput.value) {
-                params.set("search", searchInput.value);
+            const searchValue = searchInput.value.trim();
+            if (searchValue) {
+                params.set("search", searchValue);
             } else {
                 params.delete("search");
             }
-
             if (roleFilter.value && roleFilter.value !== "all") {
                 params.set("role", roleFilter.value);
             } else {
                 params.delete("role");
             }
-
             params.delete("page");
-
-            window.location.search = params.toString();
+            const query = params.toString();
+            if (query) {
+                window.location.search = "?" + query;
+            } else {
+                window.location.href = window.location.pathname;
+            }
+        }
+        if (searchInput) {
+            searchInput.addEventListener("keydown", function(e){
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    goWithQuery();
+                }
+            });
+        }
+        if (roleFilter) {
+            roleFilter.addEventListener("change", goWithQuery);
         }
 
-        searchInput.addEventListener("keydown", function(e){
-            if (e.key === "Enter") {
-                e.preventDefault();
-                goWithQuery();
-            }
+        // ===== Judge Toggle =====
+        document.querySelectorAll(".judge-toggle").forEach(function(toggle) {
+            toggle.addEventListener("change", function() {
+                const userId = this.dataset.userId;
+                const checkbox = this;
+                fetch("{% url 'admin-toggle-judge' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        user_id: userId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        checkbox.checked = !checkbox.checked;
+                        alert("Xatolik yuz berdi");
+                    }
+                })
+                .catch(() => {
+                    checkbox.checked = !checkbox.checked;
+                    alert("Server xatosi");
+                });
+            });
         });
-
-        roleFilter.addEventListener("change", goWithQuery);
     });
 </script>
 {% endblock js %}

@@ -1,5 +1,7 @@
-from apps.accounts import utils
+import json
 from django.db.models import Q
+from apps.accounts import utils
+from django.http import JsonResponse
 from django.contrib import messages
 from django.shortcuts import render
 from apps.core.utils import get_base_context
@@ -21,7 +23,6 @@ def admin_users(request):
         ids = request.POST.getlist("ids")
 
         if single_id:
-            print(single_id)
             user = get_object_or_404(CustomUser, id=single_id)
 
             if user.is_staff:
@@ -47,11 +48,28 @@ def admin_users(request):
             messages.success(request, f"{deleted_count} ta user muvaffaqiyatli o'chirildi!")
         
         return redirect(request.get_full_path())
+    
+    sort = request.GET.get("sort")
+    direction = request.GET.get("direction")
+
+    allowed_sorts = {
+        "id": "id",
+        "user": "username",
+        "contact": "phone",
+        "region": "region__name",
+        "created": "date_joined",
+        "status": "last_activity",
+    }
+
+    sort_field = allowed_sorts.get(sort, "id")
+
+    if direction == "desc":
+        sort_field = f"-{sort_field}"
 
     search = request.GET.get('search', '').strip()
     role = request.GET.get('role', 'all')
 
-    users = CustomUser.objects.all().order_by('id')
+    users = CustomUser.objects.all().order_by(sort_field)
     if search:
         users = users.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(username__icontains=search))
 
@@ -75,6 +93,26 @@ def admin_users(request):
         'breadcrumb': breadcrumb,
         'search': search,
         'role': role,
+        'sort': sort,
+        'direction': direction,
     }
 
     return render(request, "accounts/admin/users.html", context)
+
+@login_required
+def toggle_judge(request):
+    if not request.user.is_superuser:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        user_id = data.get("user_id")
+
+        user = get_object_or_404(CustomUser, id=user_id)
+
+        user.is_judge = not user.is_judge
+        user.save()
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False})
