@@ -16,10 +16,16 @@ def admin_users(request):
         raise PermissionDenied
 
     search = request.GET.get('search', '').strip()
+    role = request.GET.get('role','all')
 
     users = CustomUser.objects.all()
     if search:
         users = users.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(username__icontains=search))
+
+    if role == 'judge':
+        users = users.filter(is_judge=True)
+    elif role == 'nojudge':
+        users = users.filter(is_judge=False)
 
     users, page_range = paginate_queryset(users, request, per_page=25)
 
@@ -34,7 +40,8 @@ def admin_users(request):
         'users': users,
         'page_range': page_range,
         'breadcrumb': breadcrumb,
-        'search': search
+        'search': search,
+        'role': role,
     }
 
     return render(request, "accounts/admin/users.html", context)
