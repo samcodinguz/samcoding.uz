@@ -399,27 +399,34 @@ class Table {
   }
 
   deleteRow() {
-  let buttons = this.table.querySelectorAll(".single-delete-btn");
+    let buttons = this.table.querySelectorAll(".single-delete-btn");
 
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
 
-      let url = btn.getAttribute("href");
+        let form = btn.closest("form");
+        let userId = btn.value;
 
-      let { modal, confirmButton } = this.alert(
-        "Haqiqatan ham o‘chirmoqchimisiz?"
-      );
+        let { modal, confirmButton } = this.alert(
+          "Haqiqatan ham o'chirmoqchimisiz?"
+        );
 
-      modal.show();
+        modal.show();
 
-      confirmButton.addEventListener("click", () => {
-        window.location.href = url;   // <<< ASOSIY JOY
+        confirmButton.onclick = function () {
+          let input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "single_delete";
+          input.value = userId;
+          form.appendChild(input);
+
+          form.submit();
+        };
       });
     });
-  });
-}
-
+  }
+  
   alert(e) {
     var t,
       e = `

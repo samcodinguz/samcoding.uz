@@ -4,147 +4,184 @@
     {% include 'core/admin/layout/breadcrumb.html' %}
     <div class="row">
         <div class="col-12">
-            <div data-table data-table-rows-per-page="{{ 25 }}" class="card">
-                <div class="card-header border-light d-block justify-content-between">
-                    <div class="row gap-2">
-                        <div class="col-12 col-md-4 col-xl-3 col-xxl-2">
-                            <form method="get">
+            <form method="post">
+                {% csrf_token %}
+                <div data-table data-table-rows-per-page="{{ 25 }}" class="card">
+                    <div class="card-header border-light d-block justify-content-between">
+                        <div class="row gap-2">
+                            <div class="col-12 col-md-4 col-xl-3 col-xxl-2">
                                 <div class="app-search w-100">
-                                    <input type="search" class="form-control" placeholder="Qidiruv..." name="search" value="{{ search|default:'' }}" />
+                                    <input type="search" class="form-control" placeholder="Qidiruv..." id="searchInput" value="{{ search|default:'' }}" />
                                     <i class="ti ti-search app-search-icon text-muted"></i>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="col-12 col-md-auto ms-auto d-flex align-items-center gap-2">
-                            <span class="fw-semibold">Filter:</span>
-                            <form method="get" class="w-100" style="min-width: 120px;">
-                                <select class="form-control w-100" id="role" name="role" onchange="this.form.submit()">
-                                    <option value="all" {% if role == 'all' %}selected{% endif %}>All</option>
-                                    <option value="judge" {% if role == 'judge' %}selected{% endif %}>Judge</option>
-                                    <option value="nojudge" {% if role == 'nojudge' %}selected{% endif %}>No Judge</option>
-                                </select>
-                            </form>
+                            </div>
+                            <div class="col-12 col-md-auto ms-auto d-flex align-items-center gap-2">
+                                <span class="fw-semibold">Filter:</span>
+                                <div class="w-100" style="min-width: 120px;">
+                                    <select class="form-control w-100" id="role">
+                                        <option value="all" {% if role == 'all' %}selected{% endif %}>All</option>
+                                        <option value="judge" {% if role == 'judge' %}selected{% endif %}>Judge</option>
+                                        <option value="nojudge" {% if role == 'nojudge' %}selected{% endif %}>No Judge</option>
+                                    </select>
+                                </div>
 
-                            <button type="button" class="btn btn-primary px-3">
-                                Qo'shish
-                            </button>
-                            <button data-table-delete-selected class="btn btn-danger btn-icon px-3 d-none">
-                                <i class="ti ti-trash fs-xl" ></i>
-                            </button>
+                                <button type="button" class="btn btn-primary px-3">
+                                    Qo'shish
+                                </button>
+                                <button data-table-delete-selected type="submit" name="bulk_delete" class="btn btn-danger btn-icon px-3 d-none">
+                                    <i class="ti ti-trash fs-xl" ></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom table-nowrap table-centered table-select table-striped table-hover w-100 mb-0">
+                            <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                <tr class="text-uppercase fs-xxs">
+                                    <th class="ps-3" style="width: 1%">
+                                        <input data-table-select-all class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-files" value="option" />
+                                    </th>
+                                    <th data-table-sort style="width: 1%;">ID</th>
+                                    <th data-table-sort>User</th>
+                                    <th data-table-sort>Contact</th>
+                                    <th data-table-sort>Region</th>
+                                    <th data-table-sort>Created at</th>
+                                    <th data-table-sort data-column="status" class="text-center">Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in users %}
+                                <tr class="{% if item == request.user %}bg-primary-subtle{% endif %}">
+                                    <td class="ps-3">
+                                        {% if item.is_staff %}
+                                        <input class="form-check-input form-check-input-light fs-14 mt-0" disabled type="checkbox" />
+                                        {% else %}
+                                        <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" name="ids" type="checkbox" value="{{ item.id }}" />
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <h5 class="m-0">
+                                            <a href="{% url 'profile' item.username %}" class="link-reset">#{{ users.start_index|add:forloop.counter0 }}</a>
+                                        </h5>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar-xs d-inline-block me-1">
+                                                {% if item.avatar %}
+                                                <img src="{{ item.avatar.url }}" class="image-fluid rounded-circle w-100 h-100" alt="user avatar">
+                                                {% else %}
+                                                <span class="avatar-title bg-primary-subtle text-primary fw-bold rounded-circle"> 
+                                                {% if item.first_name %}
+                                                    {{ item.first_name|first|upper }}
+                                                {% elif item.last_name %}
+                                                    {{ item.last_name|first|upper }}
+                                                {% else %}
+                                                    {{ item.username|first|upper }}
+                                                {% endif %}
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        
+                                            <div>
+                                                <h5 class="fs-base mb-0">
+                                                    <a href="{% url 'profile' item.username %}" class="link-reset">
+                                                        {% if item.first_name or item.last_name %}
+                                                            {{ item.first_name }} {{ item.last_name }}
+                                                        {% else %}
+                                                            None None
+                                                        {% endif %}
+                                                    </a>
+                                                </h5>
+                                                <p class="text-muted fs-xs mb-0">
+                                                    <a href="{% url 'profile' item.username %}" class="link-reset">
+                                                        @{{ item.username }}
+                                                        {% if item.is_superuser %}
+                                                            <i class="ti ti-rosette-discount-check-filled text-warning" title="Admin"></i>
+                                                        {% elif item.is_judge %}
+                                                            <i class="ti ti-rosette-discount-check text-info" title="Judge"></i>
+                                                        {% endif %}
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <h5 class="fs-base mb-0">
+                                            {{ item.phone }}
+                                        </h5>
+                                        <p class="text-muted fs-xs mb-0">{{ item.email }}</p>
+                                    </td>
+                                    <td>
+                                        <h5 class="fs-base mb-0">
+                                            {{ item.region }}
+                                        </h5>
+                                        <p class="text-muted fs-xs mb-0">
+                                            {% if item.district %}
+                                                {{ item.district.name }}
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        {{ item.date_joined|date:"M. d, Y, H:i" }}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {% if item.is_online %}bg-info-subtle text-info{% else %}bg-danger-subtle text-danger{% endif %} rounded-1 p-1">{{ item.last_seen }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="{% url 'profile' item.username %}" target="_blank" class="btn btn-default btn-icon btn-sm">
+                                                <i class="ti ti-eye fs-lg"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-default btn-icon btn-sm">
+                                                <i class="ti ti-edit fs-lg"></i>
+                                            </a>
+                                            {% if item.is_staff %}
+                                            <button class="btn btn-default btn-icon btn-sm disabled">
+                                                <i class="ti ti-trash fs-lg"></i>
+                                            </button>
+                                            {% else %}
+                                            <button type="submit" name="single_delete" value="{{ item.id }}" class="btn btn-default btn-icon btn-sm single-delete-btn">
+                                                <i class="ti ti-trash fs-lg"></i>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
+                                <li class="page-item {% if not users.has_previous %}disabled{% endif %}">
+                                    <a class="page-link" href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {% for page in page_range %}
+                                {% if page == '...' %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                {% elif page == users.number %}
+                                <li class="page-item active"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}">{{ page }}</a></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}">{{ page }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                                <li class="page-item {% if not users.has_next %}disabled{% endif %}">
+                                    <a class="page-link" href="{% if users.has_next %}?page={{ users.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-
-                <div class="table-responsive">
-                    <table class="table table-custom table-nowrap table-centered table-select table-striped table-hover w-100 mb-0">
-                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
-                            <tr class="text-uppercase fs-xxs">
-                                <th class="ps-3" style="width: 1%">
-                                    <input data-table-select-all class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-files" value="option" />
-                                </th>
-                                <th data-table-sort style="width: 1%;">ID</th>
-                                <th data-table-sort="user">User</th>
-                                <th data-table-sort data-column="roles">Role</th>
-                                <th data-table-sort>Last Updated</th>
-                                <th data-table-sort data-column="status" class="text-center">Status</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in users %}
-                            <tr class="{% if item == request.user %}bg-primary-subtle{% endif %}">
-                                <td class="ps-3">
-                                    <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" type="checkbox" value="option" />
-                                </td>
-                                <td>
-                                    <h5 class="m-0">
-                                        <a href="{% url 'profile' item.username %}" class="link-reset">#{{ users.start_index|add:forloop.counter0 }}</a>
-                                    </h5>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="avatar-xs d-inline-block me-1">
-                                            {% if item.avatar %}
-                                            <img src="{{ item.avatar.url }}" class="image-fluid rounded-circle w-100 h-100" alt="user avatar">
-                                            {% else %}
-                                            <span class="avatar-title bg-primary-subtle text-primary fw-bold rounded-circle"> 
-                                            {% if item.first_name %}
-                                                {{ item.first_name|first|upper }}
-                                            {% elif item.last_name %}
-                                                {{ item.last_name|first|upper }}
-                                            {% else %}
-                                                {{ item.username|first|upper }}
-                                            {% endif %}
-                                            </span>
-                                            {% endif %}
-                                        </div>
-                                    
-                                        <div>
-                                            <h5 class="fs-base mb-0">
-                                                <a href="{% url 'profile' item.username %}" data-sort="user" class="link-reset">
-                                                    {% if item.first_name or item.last_name %}
-                                                        {{ item.first_name }} {{ item.last_name }}
-                                                    {% else %}
-                                                        {{ item.username }}
-                                                    {% endif %}
-                                                </a>
-                                            </h5>
-                                            <p class="text-muted fs-xs mb-0">{{ item.email }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Project Manager</td>
-                                <td>
-                                    18 Apr, 2025
-                                    <small class="text-muted">9:45 AM</small>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge {% if item.is_online %}bg-info-subtle text-info{% else %}bg-danger-subtle text-danger{% endif %} rounded-1 p-1">{{ item.last_seen }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <a href="#" class="btn btn-default btn-icon btn-sm">
-                                            <i class="ti ti-eye fs-lg"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-default btn-icon btn-sm">
-                                            <i class="ti ti-edit fs-lg"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-default btn-icon btn-sm">
-                                            <i class="ti ti-trash fs-lg"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
-                            <li class="page-item {% if not users.has_previous %}disabled{% endif %}">
-                                <a class="page-link" href="{% if users.has_previous %}?page={{ users.previous_page_number }}{% else %}#{% endif %}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            {% for page in page_range %}
-                            {% if page == '...' %}
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                            {% elif page == users.number %}
-                            <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
-                            {% else %}
-                            <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
-                            {% endif %}
-                            {% endfor %}
-                            <li class="page-item {% if not users.has_next %}disabled{% endif %}">
-                                <a class="page-link" href="{% if users.has_next %}?page={{ users.next_page_number }}{% else %}#{% endif %}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -163,6 +200,42 @@
                 placeholderValue: '------',
             });
         }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput = document.getElementById("searchInput");
+        const roleFilter = document.getElementById("role");
+
+        function goWithQuery() {
+            const params = new URLSearchParams(window.location.search);
+
+            if (searchInput.value) {
+                params.set("search", searchInput.value);
+            } else {
+                params.delete("search");
+            }
+
+            if (roleFilter.value && roleFilter.value !== "all") {
+                params.set("role", roleFilter.value);
+            } else {
+                params.delete("role");
+            }
+
+            params.delete("page");
+
+            window.location.search = params.toString();
+        }
+
+        searchInput.addEventListener("keydown", function(e){
+            if (e.key === "Enter") {
+                e.preventDefault();
+                goWithQuery();
+            }
+        });
+
+        roleFilter.addEventListener("change", goWithQuery);
     });
 </script>
 {% endblock js %}
