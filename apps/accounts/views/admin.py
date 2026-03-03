@@ -1,5 +1,5 @@
 import json
-from django.db.models import Q
+from django.db.models import Q, F
 from apps.accounts import utils
 from django.http import JsonResponse
 from django.contrib import messages
@@ -62,15 +62,31 @@ def admin_users(request):
         "status": "last_activity",
     }
 
-    sort_field = allowed_sorts.get(sort, "id")
-
-    if direction == "desc":
-        sort_field = f"-{sort_field}"
-
     search = request.GET.get('search', '').strip()
     role = request.GET.get('role', 'all')
 
-    users = CustomUser.objects.all().order_by(sort_field)
+    users = CustomUser.objects.all()
+
+    if not sort:
+        users = users.order_by("-id")
+    else:
+        if sort == "status":
+            if direction == "desc":
+                users = users.order_by(
+                    F("last_activity").desc(nulls_last=True)
+                )
+            else:
+                users = users.order_by(
+                    F("last_activity").asc(nulls_last=True)
+                )
+        else:
+            sort_field = allowed_sorts.get(sort, "id")
+
+            if direction == "desc":
+                sort_field = f"-{sort_field}"
+
+            users = users.order_by(sort_field)
+    
     if search:
         users = users.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(username__icontains=search))
 
