@@ -62,7 +62,7 @@ def admin_users(request):
         "status": "last_activity",
     }
 
-    sort_field = allowed_sorts.get(sort, "-id")
+    sort_field = allowed_sorts.get(sort, "id")
 
     if direction == "desc":
         sort_field = f"-{sort_field}"
