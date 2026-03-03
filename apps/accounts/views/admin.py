@@ -62,7 +62,7 @@ def admin_users(request):
         "status": "last_activity",
     }
 
-    sort_field = allowed_sorts.get(sort, "id")
+    sort_field = allowed_sorts.get(sort, "-id")
 
     if direction == "desc":
         sort_field = f"-{sort_field}"
@@ -99,6 +99,53 @@ def admin_users(request):
     }
 
     return render(request, "accounts/admin/users.html", context)
+
+@login_required
+def admin_user_add(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
+    if request.method == 'POST':
+        user_name = request.POST.get("user_name", "").strip()
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        password1 = request.POST.get("password1", "").strip()
+        password2 = request.POST.get("password2", "").strip()
+
+        email = request.POST.get("email", "").lower().strip()
+        if email and CustomUser.objects.filter(email=email).exists():
+            messages.error(request, "Bu email allaqachon mavjud!")
+            return redirect("admin-users")
+
+        if not all([user_name, password1, password2]):
+            messages.error(request, "Taxallus va parollar majburiy!")
+            return redirect('admin-users')
+        
+        if password1 != password2:
+            messages.error(request, "Parollar mos emas!")
+            return redirect("admin-users")
+        
+        if CustomUser.objects.filter(username=user_name).exists():
+            messages.error(request, "Bu taxallus allaqachon mavjud!")
+            return redirect("admin-users")
+        
+        user = CustomUser.objects.create_user(
+            username=user_name,
+            email=email,
+            password=password1,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+        avatar = request.FILES.get("avatar")
+        if avatar:
+            user.avatar = avatar
+            user.save()
+
+        messages.success(request, "Foydalanuvchi muvaffaqiyatli qo'shildi!")
+        return redirect("admin-users")
+    
+    return redirect("admin-users")
 
 @login_required
 def admin_profile_settings(request, username):
@@ -161,15 +208,15 @@ def admin_profile_settings(request, username):
         if fb_link:
             user.fb_link = fb_link 
 
-        new_password1 = request.POST.get("new_password1", "").strip()
-        new_password2 = request.POST.get("new_password2", "").strip()
+        password1 = request.POST.get("password1", "").strip()
+        password2 = request.POST.get("password2", "").strip()
 
-        if all([new_password1, new_password2]):
-            if new_password1 != new_password2:
+        if all([password1, password2]):
+            if password1 != password2:
                 messages.error(request,"Parollar mos emas!")
                 return redirect('admin-profile-settings', username=username)
         
-            user.set_password(new_password1)
+            user.set_password(password1)
             if user == request.user:
                 update_session_auth_hash(request, user)
 

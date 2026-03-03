@@ -1,0 +1,93 @@
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="container-fluid">
+    {% include 'core/admin/layout/breadcrumb.html' %}
+    <div class="row">
+
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== Role Select (Choices) =====
+        const roleFilterElement = document.getElementById("role");
+        if (roleFilterElement) {
+            new Choices(roleFilterElement, {
+                shouldSort: false,
+                searchEnabled: false,
+                itemSelectText: '',
+                placeholder: true,
+                placeholderValue: '------',
+            });
+        }
+
+        // ===== Search + Filter =====
+        const searchInput = document.getElementById("searchInput");
+        const roleFilter = document.getElementById("role");
+        function goWithQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const searchValue = searchInput.value.trim();
+            if (searchValue) {
+                params.set("search", searchValue);
+            } else {
+                params.delete("search");
+            }
+            if (roleFilter.value && roleFilter.value !== "all") {
+                params.set("role", roleFilter.value);
+            } else {
+                params.delete("role");
+            }
+            params.delete("page");
+            const query = params.toString();
+            if (query) {
+                window.location.search = "?" + query;
+            } else {
+                window.location.href = window.location.pathname;
+            }
+        }
+        if (searchInput) {
+            searchInput.addEventListener("keydown", function(e){
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    goWithQuery();
+                }
+            });
+        }
+        if (roleFilter) {
+            roleFilter.addEventListener("change", goWithQuery);
+        }
+
+        // ===== Judge Toggle =====
+        document.querySelectorAll(".judge-toggle").forEach(function(toggle) {
+            toggle.addEventListener("change", function() {
+                const userId = this.dataset.userId;
+                const checkbox = this;
+                fetch("{% url 'admin-toggle-judge' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        user_id: userId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        checkbox.checked = !checkbox.checked;
+                        alert("Xatolik yuz berdi");
+                    }
+                })
+                .catch(() => {
+                    checkbox.checked = !checkbox.checked;
+                    alert("Server xatosi");
+                });
+            });
+        });
+    });
+</script>
+{% endblock js %}
