@@ -198,8 +198,7 @@ def profile(request, username):
         'title': "Profil",
         'user': user,
         'breadcrumb': breadcrumb,
-        'days': utils.contribution(),
-        'year': 2026,
+        'days': utils.contribution()
     }
 
     return render(request, "accounts/public/profile/profile.html", context)
@@ -270,15 +269,15 @@ def profile_settings(request, username):
 
             if not all([new_password1, new_password2]):
                 messages.error(request, "Parol kiritish majburiy!")
-                return redirect('profile-settings',username=username)
+                return redirect('profile-settings', username=username)
 
             if new_password1 != new_password2:
                 messages.error(request,"Parollar mos emas!")
-                return redirect('profile-settings',username=username)
+                return redirect('profile-settings', username=username)
             
             if not utils.is_strong_password(new_password1):
                 messages.error(request,"Parol yetarli darajada kuchli emas!")
-                return redirect('profile-settings',username=username)
+                return redirect('profile-settings', username=username)
 
             user.set_password(new_password1)
             update_session_auth_hash(request, user)
@@ -313,7 +312,7 @@ def profile_settings(request, username):
         messages.success(request, "Profilingiz muvaffaqiyatli yangilandi!")
         return redirect('profile-settings', username=username)
     
-    regions = Region.objects.all()
+    regions = Region.objects.all().order_by('id')
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
@@ -329,7 +328,7 @@ def profile_settings(request, username):
         'regions': regions
     }
 
-    return render(request, "accounts/public/profile/profile-settings.html", context)
+    return render(request, "accounts/public/profile/settings.html", context)
 
 def districts(request,region_id):
     region = get_object_or_404(Region,id=region_id)

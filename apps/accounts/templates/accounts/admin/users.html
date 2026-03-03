@@ -241,7 +241,7 @@
                                             <a href="{% url 'profile' item.username %}" target="_blank" class="btn btn-default btn-icon btn-sm">
                                                 <i class="ti ti-eye fs-lg"></i>
                                             </a>
-                                            <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <a href="{% url 'admin-profile-settings' item.username %}" class="btn btn-default btn-icon btn-sm">
                                                 <i class="ti ti-edit fs-lg"></i>
                                             </a>
                                             {% if item.is_staff %}

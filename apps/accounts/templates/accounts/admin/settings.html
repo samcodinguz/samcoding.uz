@@ -1,0 +1,242 @@
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="container-fluid">
+    {% include 'core/admin/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card rounded-1">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Personal Info -->
+                        <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
+                            <i class="ti ti-user-circle fs-lg"></i>
+                            Shaxsiy ma'lumotlar
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstname" class="form-label">Ism</label>
+                                    <input type="text" class="form-control" id="firstname" name="first_name" placeholder="Ismingizni kiriting" value="{{ user.first_name|default:'' }}" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastname" class="form-label">Familiya</label>
+                                    <input type="text" class="form-control" id="lastname" name="last_name" placeholder="Familiyangizni kiriting" value="{{ user.last_name|default:'' }}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="region" class="form-label">Viloyat</label>
+                                    <select class="form-control" name="region" id="region">
+                                        {% for region in regions %}
+                                        <option value="{{ region.id }}" {% if user.region and user.region.id == region.id %}selected{% endif %}>{{ region.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="district" class="form-label">Tuman</label>
+                                    <select class="form-control" name="district" id="district"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="school" class="form-label">Ta'lim muassasasi</label>
+                                    <input type="text" class="form-control" id="school" name="school" placeholder="Maktab, Kollej, Universitet" value="{{ user.school|default:'' }}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shirt_size" class="form-label">Taxallus <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">@</span>
+                                        <input type="text" class="form-control" id="username" placeholder="Username" name="user_name" value="{{ user.username }}" aria-label="Username" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shirt_size" class="form-label">Ko'ylak o'lchami</label>
+                                    <select class="form-control" name="shirt_size" id="shirt_size">
+                                        <option value="XS" {% if user.shirt_size == 'XS' %}selected{% endif %}>XS</option>
+                                        <option value="S" {% if user.shirt_size == 'S' %}selected{% endif %}>S</option>
+                                        <option value="M" {% if user.shirt_size == 'M' %}selected{% endif %}>M</option>
+                                        <option value="L" {% if user.shirt_size == 'L' %}selected{% endif %}>L</option>
+                                        <option value="XL" {% if user.shirt_size == 'XL' %}selected{% endif %}>XL</option>
+                                        <option value="XXL" {% if user.shirt_size == 'XXL' %}selected{% endif %}>XXL</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Telefon raqami</label>
+                                    <input type="text" class="form-control" id="phone" name="phone" placeholder="+998 90 123 45 67" value="{{ user.phone|default:'' }}" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Elektron pochta</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="user@example.com" value="{{ user.email|default:'' }}" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="avatar" class="form-label">Profil rasmi</label>
+                            <input class="form-control" type="file" id="avatar" name="avatar" />
+                        </div>
+
+                        <!-- Social -->
+                        <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
+                            <i class="ti ti-world fs-lg"></i>
+                            Ijtimoiy tarmoqlar
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="social-tg" class="form-label">Telegram</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-telegram fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-tg" name="tg_link" placeholder="username" value="{{ user.tg_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="social-gh" class="form-label">GitHub</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-github fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-gh" name="gh_link" placeholder="username" value="{{ user.gh_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="social-fb" class="form-label">Facebook</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-facebook fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-fb" name="fb_link" placeholder="username" value="{{ user.fb_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="social-tw" class="form-label">Twitter X</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="ti ti-brand-x fs-4"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="social-tw" name="tw_link" placeholder="username" value="{{ user.tw_link|default:'' }}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lock -->
+                        <h5 class="mb-3 text-uppercase bg-light-subtle p-1 border-dashed border rounded border-light d-flex justify-content-center align-items-center gap-1">
+                            <i class="ti ti-lock fs-lg"></i>
+                            Maxfiylik va xavfsizlik
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Yangi parol</label>
+                                    <input type="password" name="new_password1" class="form-control" placeholder="Yangi parol">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Yangi parolni tasdiqlang</label>
+                                    <input type="password" name="new_password2" class="form-control" placeholder="Yangi parol">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submit -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const regionElement = document.getElementById("region");
+        const districtElement = document.getElementById("district");
+        const regionChoices = new Choices(regionElement, { shouldSort: false });
+        const districtChoices = new Choices(districtElement, { 
+            shouldSort: false,
+            itemSelectText: '',
+            placeholder: true,
+            placeholderValue: 'Tanlang',
+        });
+
+        const shirtSizeElement = document.getElementById("shirt_size");
+        if (shirtSizeElement) {
+            new Choices(shirtSizeElement, { 
+                shouldSort: false,
+                searchEnabled: false,
+                itemSelectText: '',
+                placeholder: true,
+                placeholderValue: 'Tanlang',
+            });
+        }
+        
+        const selectedDistrictId = "{{ user.district.id|default:'' }}";
+        function loadDistricts(regionId, selectedId = null) {
+            fetch(`/regions/${regionId}`)
+                .then(res => res.json())
+                .then(data => {
+                    districtChoices.clearStore();
+                    districtChoices.clearChoices();
+                    districtChoices.setChoices(
+                        data.map(d => ({
+                            value: String(d.id),
+                            label: d.name
+                        })),
+                        'value',
+                        'label',
+                        true
+                    );
+
+                    if (selectedId) {
+                        districtChoices.setChoiceByValue(String(selectedId));
+                    }
+                });
+        }
+        if (regionElement.value) {
+            loadDistricts(regionElement.value, selectedDistrictId);
+        }
+        regionElement.addEventListener("change", function () {
+            loadDistricts(this.value);
+        });
+        if (!regionElement.value) {
+            const firstRegion = regionElement.options[0]?.value;
+            if (firstRegion) {
+                regionChoices.setChoiceByValue(firstRegion);
+                loadDistricts(firstRegion);
+            }
+        }
+    });
+</script>
+{% endblock js %}
