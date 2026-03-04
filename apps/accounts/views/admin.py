@@ -1,10 +1,9 @@
 import json
-from django.db.models import Q
+from django.db.models import Q, F
 from apps.accounts import utils
 from django.http import JsonResponse
 from django.contrib import messages
 from django.shortcuts import render
-from apps.core.utils import get_base_context
 from apps.core.utils import get_base_context, paginate_queryset
 from django.shortcuts import render, redirect, get_object_or_404
 from apps.accounts.models import CustomUser, Region, District
@@ -49,6 +48,9 @@ def admin_users(request):
             messages.success(request, f"{deleted_count} ta user muvaffaqiyatli o'chirildi!")
         
         return redirect(request.get_full_path())
+
+    role = request.GET.get('role', 'all')
+    search = request.GET.get('search', '').strip()
     
     sort = request.GET.get("sort")
     direction = request.GET.get("direction")
@@ -56,21 +58,15 @@ def admin_users(request):
     allowed_sorts = {
         "id": "id",
         "user": "username",
-        "contact": "phone",
+        "phone": "phone",
         "region": "region__name",
-        "created": "date_joined",
-        "status": "last_activity",
+        "date_joined": "date_joined",
+        "last_activity": "last_activity",
     }
 
-    sort_field = allowed_sorts.get(sort, "id")
+    users = CustomUser.objects.select_related("region")
+    users = utils.apply_sorting(users, request, allowed_sorts, nulls_last=["last_activity", "phone", "region"], default="id")
 
-    if direction == "desc":
-        sort_field = f"-{sort_field}"
-
-    search = request.GET.get('search', '').strip()
-    role = request.GET.get('role', 'all')
-
-    users = CustomUser.objects.all().order_by(sort_field)
     if search:
         users = users.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(username__icontains=search))
 

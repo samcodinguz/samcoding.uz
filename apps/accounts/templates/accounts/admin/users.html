@@ -50,101 +50,23 @@
                                     <th class="ps-3" style="width: 1%">
                                         <input data-table-select-all class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-files" value="option" />
                                     </th>
-                                    <th style="width: 1%;">
-                                        <a href="?sort=id&direction={% if sort == 'id' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
-                                            ID
-                                            <span>
-                                                {% if sort == 'id' %}
-                                                    {% if direction == 'asc' %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
-                                                    {% else %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
-                                                {% endif %}
-                                            </span>
-                                        </a>
+                                    <th style="width:1%">
+                                        {% include "accounts/admin/layout/sort-users.html" with field="id" title="ID" %}
                                     </th>
                                     <th>
-                                        <a href="?sort=user&direction={% if sort == 'user' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
-                                            User
-                                            <span>
-                                                {% if sort == 'user' %}
-                                                    {% if direction == 'asc' %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
-                                                    {% else %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
-                                                {% endif %}
-                                            </span>
-                                        </a>
+                                        {% include "accounts/admin/layout/sort-users.html" with field="user" title="User" %}
                                     </th>
                                     <th>
-                                        <a href="?sort=phone&direction={% if sort == 'phone' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
-                                            Contact
-                                            <span>
-                                                {% if sort == 'phone' %}
-                                                    {% if direction == 'asc' %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
-                                                    {% else %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
-                                                {% endif %}
-                                            </span>
-                                        </a>
+                                        {% include "accounts/admin/layout/sort-users.html" with field="phone" title="Contact" %}
                                     </th>
                                     <th>
-                                        <a href="?sort=region&direction={% if sort == 'region' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
-                                            Region
-                                            <span>
-                                                {% if sort == 'region' %}
-                                                    {% if direction == 'asc' %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
-                                                    {% else %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
-                                                {% endif %}
-                                            </span>
-                                        </a>
+                                        {% include "accounts/admin/layout/sort-users.html" with field="region" title="Region" %}
                                     </th>
                                     <th>
-                                        <a href="?sort=date_joined&direction={% if sort == 'date_joined' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
-                                            Created at
-                                            <span>
-                                                {% if sort == 'date_joined' %}
-                                                    {% if direction == 'asc' %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
-                                                    {% else %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
-                                                {% endif %}
-                                            </span>
-                                        </a>
+                                        {% include "accounts/admin/layout/sort-users.html" with field="date_joined" title="Created at" %}
                                     </th>
                                     <th class="text-center">
-                                        <a href="?sort=last_activity&direction={% if sort == 'last_activity' and direction == 'asc' %}desc{% else %}asc{% endif %}{% if search %}&search={{ search }}{% endif %}{% if role and role != 'all' %}&role={{ role }}{% endif %}" class="link-reset">
-                                            Status
-                                            <span>
-                                                {% if sort == 'last_activity' %}
-                                                    {% if direction == 'asc' %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 9l-4 -4" /><path d="M8 9l4 -4" /></svg>
-                                                    {% else %}
-                                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="13"  height="13"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M16 15l-4 4" /><path d="M8 15l4 4" /></svg>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ms-1"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 9l4 -4l4 4m-4 -4v14" /><path d="M21 15l-4 4l-4 -4m4 4v-14" /></svg>
-                                                {% endif %}
-                                            </span>
-                                        </a>
+                                        {% include "accounts/admin/layout/sort-users.html" with field="last_activity" title="Status" %}
                                     </th>
                                     <th class="text-center">Judge</th>
                                     <th class="text-center">Actions</th>
