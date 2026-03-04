@@ -205,62 +205,62 @@
 {% endblock content %} {% block js %} 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const regionElement = document.getElementById("region");
-    const districtElement = document.getElementById("district");
-    const regionChoices = new Choices(regionElement, { shouldSort: false });
-    const districtChoices = new Choices(districtElement, { 
-        shouldSort: false,
-        itemSelectText: '',
-        placeholder: true,
-        placeholderValue: 'Tanlang',
-    });
-
-    const shirtSizeElement = document.getElementById("shirt_size");
-    if (shirtSizeElement) {
-        new Choices(shirtSizeElement, { 
+        const regionElement = document.getElementById("region");
+        const districtElement = document.getElementById("district");
+        const regionChoices = new Choices(regionElement, { shouldSort: false });
+        const districtChoices = new Choices(districtElement, { 
             shouldSort: false,
-            searchEnabled: false,
             itemSelectText: '',
             placeholder: true,
             placeholderValue: 'Tanlang',
         });
-    }
-    
-    const selectedDistrictId = "{{ user.district.id|default:'' }}";
-    function loadDistricts(regionId, selectedId = null) {
-        fetch(`/regions/${regionId}`)
-            .then(res => res.json())
-            .then(data => {
-                districtChoices.clearStore();
-                districtChoices.clearChoices();
-                districtChoices.setChoices(
-                    data.map(d => ({
-                        value: String(d.id),
-                        label: d.name
-                    })),
-                    'value',
-                    'label',
-                    true
-                );
 
-                if (selectedId) {
-                    districtChoices.setChoiceByValue(String(selectedId));
-                }
+        const shirtSizeElement = document.getElementById("shirt_size");
+        if (shirtSizeElement) {
+            new Choices(shirtSizeElement, { 
+                shouldSort: false,
+                searchEnabled: false,
+                itemSelectText: '',
+                placeholder: true,
+                placeholderValue: 'Tanlang',
             });
-    }
-    if (regionElement.value) {
-        loadDistricts(regionElement.value, selectedDistrictId);
-    }
-    regionElement.addEventListener("change", function () {
-        loadDistricts(this.value);
-    });
-    if (!regionElement.value) {
-        const firstRegion = regionElement.options[0]?.value;
-        if (firstRegion) {
-            regionChoices.setChoiceByValue(firstRegion);
-            loadDistricts(firstRegion);
         }
-    }
-});
+        
+        const selectedDistrictId = "{{ user.district.id|default:'' }}";
+        function loadDistricts(regionId, selectedId = null) {
+            fetch(`/api/regions/${regionId}/districts`)
+                .then(res => res.json())
+                .then(data => {
+                    districtChoices.clearStore();
+                    districtChoices.clearChoices();
+                    districtChoices.setChoices(
+                        data.map(d => ({
+                            value: String(d.id),
+                            label: d.name
+                        })),
+                        'value',
+                        'label',
+                        true
+                    );
+
+                    if (selectedId) {
+                        districtChoices.setChoiceByValue(String(selectedId));
+                    }
+                });
+        }
+        if (regionElement.value) {
+            loadDistricts(regionElement.value, selectedDistrictId);
+        }
+        regionElement.addEventListener("change", function () {
+            loadDistricts(this.value);
+        });
+        if (!regionElement.value) {
+            const firstRegion = regionElement.options[0]?.value;
+            if (firstRegion) {
+                regionChoices.setChoiceByValue(firstRegion);
+                loadDistricts(firstRegion);
+            }
+        }
+    });
 </script>
 {% endblock js %}

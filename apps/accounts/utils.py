@@ -13,7 +13,6 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 from datetime import timedelta
 from .models import CustomUser
-from django.db.models import F
 
 def is_strong_password(password: str) -> bool:
     if len(password) < 8:
@@ -133,21 +132,3 @@ def get_top_active_users(limit=50, online_minutes=1):
     threshold = now - timedelta(minutes=online_minutes)
     return (CustomUser.objects.filter(last_activity__gte=threshold).order_by('-last_activity')[:limit])
 
-def apply_sorting(queryset, request, allowed_sorts, nulls_last=None, default="id"):
-    sort = request.GET.get("sort")
-    direction = request.GET.get("direction")
-
-    nulls_last = nulls_last or []
-
-    field = allowed_sorts.get(sort, default)
-
-    # NULL qiymatlar bo'lishi mumkin bo'lgan ustunlar
-    if sort in nulls_last:
-        if direction == "asc":
-            return queryset.order_by(F(field).asc(nulls_last=True))
-        return queryset.order_by(F(field).desc(nulls_last=True))
-
-    if direction == "desc":
-        field = f"-{field}"
-
-    return queryset.order_by(field)

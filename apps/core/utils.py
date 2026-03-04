@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import F
 from django.core.paginator import Paginator
 
 def get_base_context(request):
@@ -35,3 +36,22 @@ def paginate_queryset(queryset, request, per_page=5):
     page_obj = paginator.get_page(page_number)
     pagination_range = get_pagination_range(page_obj.number, paginator.num_pages)
     return page_obj, pagination_range
+
+def apply_sorting(queryset, request, allowed_sorts, nulls_last=None, default="id"):
+    sort = request.GET.get("sort")
+    direction = request.GET.get("direction")
+
+    nulls_last = nulls_last or []
+
+    field = allowed_sorts.get(sort, default)
+
+    # NULL qiymatlar bo'lishi mumkin bo'lgan ustunlar
+    if sort in nulls_last:
+        if direction == "asc":
+            return queryset.order_by(F(field).asc(nulls_last=True))
+        return queryset.order_by(F(field).desc(nulls_last=True))
+
+    if direction == "desc":
+        field = f"-{field}"
+
+    return queryset.order_by(field)

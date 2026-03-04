@@ -1,10 +1,10 @@
 import json
-from django.db.models import Q, F
+from django.db.models import Q
 from apps.accounts import utils
 from django.http import JsonResponse
 from django.contrib import messages
 from django.shortcuts import render
-from apps.core.utils import get_base_context, paginate_queryset
+from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from django.shortcuts import render, redirect, get_object_or_404
 from apps.accounts.models import CustomUser, Region, District
 from django.contrib.auth import update_session_auth_hash
@@ -65,7 +65,7 @@ def admin_users(request):
     }
 
     users = CustomUser.objects.select_related("region")
-    users = utils.apply_sorting(users, request, allowed_sorts, nulls_last=["last_activity", "phone", "region"], default="id")
+    users = apply_sorting(users, request, allowed_sorts, nulls_last=["last_activity", "phone", "region"], default="id")
 
     if search:
         users = users.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(username__icontains=search))
@@ -132,11 +132,6 @@ def admin_user_add(request):
             first_name=first_name,
             last_name=last_name,
         )
-
-        avatar = request.FILES.get("avatar")
-        if avatar:
-            user.avatar = avatar
-            user.save()
 
         messages.success(request, "Foydalanuvchi muvaffaqiyatli qo'shildi!")
         return redirect("admin-users")

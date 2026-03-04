@@ -19,7 +19,7 @@
                                 </button>
                             </div>
                             <div class="col-auto pe-0">
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#addDistrictModal" class="btn btn-primary px-3">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addRegionModal" class="btn btn-primary px-3">
                                     Qo'shish
                                 </button>
                             </div>
@@ -37,28 +37,28 @@
                                         {% include "locations/admin/layout/sort.html" with field="id" title="ID" %}
                                     </th>
                                     <th>
-                                        {% include "locations/admin/layout/sort.html" with field="name" title="District name" %}
+                                        {% include "locations/admin/layout/sort.html" with field="name" title="Region name" %}
                                     </th>
                                     <th class="text-center" style="width: 1%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in districts %}
+                                {% for item in regions %}
                                 <tr>
                                     <td class="ps-3">
                                         <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" name="ids" type="checkbox" value="{{ item.id }}" />
                                     </td>
                                     <td>
                                         <h5 class="m-0">
-                                            <code class="link-reset ">#{{ item.id|stringformat:"03d" }}</code>
+                                            <code class="link-reset ">#{{ item.id|stringformat:"02d" }}</code>
                                         </h5>
                                     </td>
                                     <td>
-                                        <h5 class="fs-base link-reset mb-0">{{ item.name }} <small class="text-muted">({{ item.region.name }})</small></h5>
+                                        <h5 class="fs-base link-reset mb-0">{{ item.name }}</h5>
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-1">
-                                            <a href="{% url 'admin-districts-edit' item.id %}" class="btn btn-default btn-icon btn-sm edit-district-btn" data-bs-toggle="modal" data-bs-target="#editDistrictModal" data-id="{{ item.id }}" data-name="{{ item.name }}" data-region="{{ item.region.id }}">
+                                            <a href="{% url 'admin-regions-edit' item.id %}" class="btn btn-default btn-icon btn-sm edit-region-btn" data-bs-toggle="modal" data-bs-target="#editRegionModal" data-name="{{ item.name }}">
                                                 <i class="ti ti-edit fs-lg"></i>
                                             </a>
                                             {% if item.is_staff %}
@@ -81,22 +81,22 @@
                 <div class="card-footer border-0">
                     <div class="d-flex justify-content-between align-items-center">
                         <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
-                            <li class="page-item {% if not districts.has_previous %}disabled{% endif %}">
-                                <a class="page-link" href="{% if districts.has_previous %}?page={{ districts.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
+                            <li class="page-item {% if not regions.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="{% if regions.has_previous %}?page={{ regions.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                             {% for page in page_range %}
                             {% if page == '...' %}
                             <li class="page-item disabled"><span class="page-link">...</span></li>
-                            {% elif page == districts.number %}
+                            {% elif page == regions.number %}
                             <li class="page-item active"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}">{{ page }}</a></li>
                             {% else %}
                             <li class="page-item"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}">{{ page }}</a></li>
                             {% endif %}
                             {% endfor %}
-                            <li class="page-item {% if not districts.has_next %}disabled{% endif %}">
-                                <a class="page-link" href="{% if districts.has_next %}?page={{ districts.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
+                            <li class="page-item {% if not regions.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{% if regions.has_next %}?page={{ regions.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -106,32 +106,22 @@
             </div>
         </div>
     </div>
-    <!-- Add District Modal -->
-    <div class="modal fade" id="addDistrictModal" tabindex="-1" aria-labelledby="addDistrictModalLabel" aria-hidden="true">
+    <!-- Add Region Modal -->
+    <div class="modal fade" id="addRegionModal" tabindex="-1" aria-labelledby="addRegionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addDistrictModalLabel">Tuman yaratish</h5>
+                    <h5 class="modal-title" id="addRegionModalLabel">Viloyat yaratish</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form method="post" action="{% url 'admin-districts-add' %}">
+                <form method="post" action="{% url 'admin-regions-add' %}">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <div class="row g-3">
+                        <div class="row">
                             <div class="col-12">
-                                <label for="regionName" class="form-label">Viloyat <span class="text-danger" title="Majburiy maydon">*</span></label>
-                                <select class="form-control" name="region_id" id="regionName" required >
-                                    <option value="" selected disabled>Viloyatni tanlang</option>
-                                    {% for region in regions %}
-                                    <option value="{{ region.id }}">{{ region.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="districtName" class="form-label">Tuman <span class="text-danger" title="Majburiy maydon">*</span></label>
-                                <input type="text" class="form-control" id="districtName" name="district_name" placeholder="Tuman nomini kiriting" required />
+                                <label for="regionName" class="form-label">Viloyat nomi <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                <input type="text" class="form-control" id="regionName" name="name" placeholder="Viloyat nomini kiriting" required />
                             </div>
                         </div>
                     </div>
@@ -145,32 +135,21 @@
         </div>
     </div>
 
-    <!-- Edit District Modal -->
-    <div class="modal fade" id="editDistrictModal" tabindex="-1" aria-labelledby="editDistrictModalLabel" aria-hidden="true">
+    <!-- Edit Region Modal -->
+    <div class="modal fade" id="editRegionModal" tabindex="-1" aria-labelledby="editRegionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editDistrictModalLabel">Taxrirlash</h5>
+                    <h5 class="modal-title" id="editRegionModalLabel">Taxrirlash</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" id="editDistrictForm">
+                <form method="post" id="editRegionForm">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <div class="row g-3">
-
+                        <div class="row">
                             <div class="col-12">
-                                <label for="editRegionSelect" class="form-label">Viloyat <span class="text-danger" title="Majburiy maydon">*</span></label>
-                                <select class="form-control" name="region_id" id="editRegionSelect" required >
-                                    <option value="" disabled>Viloyatni tanlang</option>
-                                    {% for region in regions %}
-                                    <option value="{{ region.id }}">{{ region.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <div class="col-12">
-                                <label for="editDistrictName" class="form-label">Tuman nomi <span class="text-danger" title="Majburiy maydon">*</span></label>
-                                <input type="text" class="form-control" id="editDistrictName" name="district_name" placeholder="Tuman nomini kiriting" required />
+                                <label for="editRegionName" class="form-label">Viloyat nomi <span class="text-danger" title="Majburiy maydon">*</span></label>
+                                <input type="text" class="form-control" id="editRegionName" name="name" placeholder="Viloyat nomini kiriting" required />
                             </div>
                         </div>
                     </div>
@@ -188,43 +167,48 @@
 <script src="{% static 'js/pages/custom-table.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
-        const regionElement = document.getElementById("regionName");
-        const editRegionElement = document.getElementById("editRegionSelect");
-
-        const regionChoices = new Choices(regionElement,{
-            shouldSort:false,
-            itemSelectText:'',
-            placeholder:true,
-            placeholderValue:'Viloyatni tanlang'
-        });
-
-        const editRegionChoices = new Choices(editRegionElement,{
-            shouldSort:false,
-            itemSelectText:'',
-            placeholder:true,
-            placeholderValue:'Viloyatni tanlang'
-        });
-
-        const editButtons = document.querySelectorAll(".edit-district-btn");
-        const form = document.getElementById("editDistrictForm");
-        const input = document.getElementById("editDistrictName");
-
-        editButtons.forEach(function(btn){
-            btn.addEventListener("click",function(e){
+        const searchInput = document.getElementById("searchInput");
+        function goWithQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const searchValue = searchInput.value.trim();
+            if (searchValue) {
+                params.set("search", searchValue);
+            } else {
+                params.delete("search");
+            }
+            params.delete("page");
+            const query = params.toString();
+            if (query) {
+                window.location.search = "?" + query;
+            } else {
+                window.location.href = window.location.pathname;
+            }
+        }
+        if (searchInput) {
+            searchInput.addEventListener("keydown", function(e){
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    goWithQuery();
+                }
+            });
+        }
+        if (roleFilter) {
+            roleFilter.addEventListener("change", goWithQuery);
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll(".edit-region-btn");
+        const form = document.getElementById("editRegionForm");
+        const input = document.getElementById("editRegionName");
+        editButtons.forEach(btn => {
+            btn.addEventListener("click", function (e) {
                 e.preventDefault();
-
-                const name = this.dataset.name;
-                const region = this.dataset.region;
-
                 form.action = this.href;
-
-                input.value = name;
-
-                editRegionChoices.setChoiceByValue(region);
+                input.value = this.dataset.name;
             });
         });
-
     });
 </script>
 {% endblock js %}

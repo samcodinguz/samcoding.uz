@@ -330,7 +330,6 @@ def profile_settings(request, username):
 
     return render(request, "accounts/public/profile/settings.html", context)
 
-def districts(request,region_id):
-    region = get_object_or_404(Region,id=region_id)
-    districts = District.objects.filter(region=region).values("id","name")
+def districts(request, region_id):
+    districts = District.objects.filter(region_id=region_id).values("id","name")
     return JsonResponse(list(districts), safe=False)

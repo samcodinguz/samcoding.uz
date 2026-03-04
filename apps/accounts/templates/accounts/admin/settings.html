@@ -204,7 +204,7 @@
         
         const selectedDistrictId = "{{ user.district.id|default:'' }}";
         function loadDistricts(regionId, selectedId = null) {
-            fetch(`/regions/${regionId}`)
+            fetch(`/api/regions/${regionId}/districts`)
                 .then(res => res.json())
                 .then(data => {
                     districtChoices.clearStore();

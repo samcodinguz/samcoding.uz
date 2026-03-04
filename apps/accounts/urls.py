@@ -11,7 +11,7 @@ urlpatterns = [
     path('users', public.users, name='users'),
     path('profile/<str:username>', public.profile, name='profile'),
     path('profile/<str:username>/settings', public.profile_settings, name='profile-settings'),
-    path('regions/<int:region_id>', public.districts, name='districts'),
+    path('api/regions/<int:region_id>/districts', public.districts),
     # -------- JUDGE --------
     # -------- ADMIN --------
     path('dashboard/users', admin.admin_users, name='admin-users'),
