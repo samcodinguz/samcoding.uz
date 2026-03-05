@@ -198,7 +198,8 @@ def profile(request, username):
         'title': "Profil",
         'user': user,
         'breadcrumb': breadcrumb,
-        'days': utils.contribution()
+        'days': utils.contribution(),
+        'year': 2026
     }
 
     return render(request, "accounts/public/profile/profile.html", context)

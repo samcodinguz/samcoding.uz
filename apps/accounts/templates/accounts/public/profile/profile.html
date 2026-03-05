@@ -1,4 +1,7 @@
-{% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | {{ user.first_name|title }} {{ user.last_name|title }} (@{{ user.username }}){% endblock title %} {% block css %} {% endblock css %} {% block profilecss %} {% endblock profilecss %}
+{% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | {{ user.first_name|title }} {{ user.last_name|title }} (@{{ user.username }}){% endblock title %} {% block css %} 
+<!-- Contribution css -->
+<link href="{% static 'css/contribution.css' %}" rel="stylesheet" type="text/css" />
+{% endblock css %}
 {% block content %}
 <div class="container">
     {% include 'core/public/layout/breadcrumb.html' %}
