@@ -1,0 +1,173 @@
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="container-fluid">
+    {% include 'core/admin/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-12">
+            <div data-table data-table-rows-per-page="{{ 25 }}" class="card">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card-header border-light d-block justify-content-between">
+                        <div class="row align-items-center g-2 flex-nowrap">
+                            <div class="col d-flex gap-2 ps-0">
+                                <div class="app-search flex-grow-1 flex-md-grow-0 w-100 w-md-auto" style="max-width:260px;">
+                                    <input type="search" class="form-control" placeholder="Qidiruv..." id="searchInput" value="{{ search|default:'' }}">
+                                    <i class="ti ti-search app-search-icon text-muted"></i>
+                                </div>
+                                <button data-table-delete-selected type="submit" name="bulk_delete" class="btn btn-danger btn-icon px-3 d-none">
+                                    <i class="ti ti-trash fs-xl"></i>
+                                </button>
+                            </div>
+                            <div class="col-auto pe-0">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addTagModal" class="btn btn-primary px-3">
+                                    Qo'shish
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-custom table-nowrap table-centered table-select table-striped table-hover w-100 mb-0">
+                            <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                <tr class="text-uppercase fs-xxs">
+                                    <th class="ps-3" style="width: 1%">
+                                        <input data-table-select-all class="form-check-input form-check-input-light fs-14 mt-0" type="checkbox" id="select-all-files" value="option" />
+                                    </th>
+                                    <th style="width:1%">
+                                        {% include "problems/admin/layout/sort.html" with field="id" title="ID" %}
+                                    </th>
+                                    <th>
+                                        {% include "problems/admin/layout/sort.html" with field="title" title="Problem name" %}
+                                    </th>
+                                    <th>
+                                        Author
+                                    </th>
+                                    <th>
+                                        Tags
+                                    </th>
+                                    <th>
+                                        Created at
+                                    </th>
+                                    <th class="text-center" style="width: 1%;">
+                                        Time
+                                    </th>
+                                    <th class="text-center" style="width: 1%;">
+                                        Memory
+                                    </th>
+                                    <th class="text-center" style="width: 1%;">
+                                        Difficulty
+                                    </th>
+                                    <th class="text-center" style="width: 1%;">
+                                        Solved
+                                    </th>
+                                    <th class="text-center" style="width: 1%;">
+                                        Verified
+                                    </th>
+                                    <th class="text-center" style="width: 1%;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in problems %}
+                                <tr>
+                                    <td class="ps-3">
+                                        <input class="form-check-input form-check-input-light fs-14 file-item-check mt-0" name="ids" type="checkbox" value="{{ item.id }}" />
+                                    </td>
+                                    <td>
+                                        <h5 class="m-0">
+                                            <a href="#" class="link-reset">
+                                                <code>#{{ item.id|stringformat:"04d" }}</code>
+                                            </a>
+                                        </h5>
+                                    </td>
+                                    <td>
+                                        <h5 class="fs-base mb-0">
+                                            <a href="#" class="link-reset">
+                                                {{ item.title }}
+                                            </a>
+                                        </h5>
+                                    </td>
+                                    <td>
+                                        <h5 class="fs-base mb-0">
+                                            <a href="{% url 'profile' item.author.username %}" class="link-reset">
+                                                @{{ item.author.username }}
+                                            </a>
+                                        </h5>
+                                    </td>
+                                    <td>
+                                        {% for tag in item.tags.all|slice:":3" %}
+                                            <a href="#" class="link-reset">
+                                                <span class="badge badge-default link-reset">{{ tag.name }}</span>
+                                            </a>
+                                        {% empty %}
+                                            <span class="text-muted">—</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {{ item.created_at|date:"M. d, Y, H:i" }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ item.time_limit }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ item.memory_limit }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ item.difficulty }}%
+                                    </td>
+                                    <td class="text-center">
+                                        {{ item.submission_count }}/{{ item.accepted_count }}
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-check-primary form-switch d-flex justify-content-center">
+                                            <input type="checkbox" class="form-check-input verified-toggle" data-problem-id="{{ item.id }}" {% if item.is_verified %}checked{% endif %}>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="#" class="btn btn-default btn-icon btn-sm">
+                                                <i class="ti ti-edit fs-lg"></i>
+                                            </a>
+                                            <button type="submit" name="single_delete" value="{{ item.id }}" class="btn btn-default btn-icon btn-sm single-delete-btn">
+                                                <i class="ti ti-trash fs-lg"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <div class="card-footer border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
+                            <li class="page-item {% if not problems.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="{% if problems.has_previous %}?page={{ problems.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% for page in page_range %}
+                            {% if page == '...' %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% elif page == problems.number %}
+                            <li class="page-item active"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}">{{ page }}</a></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}">{{ page }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            <li class="page-item {% if not problems.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{% if problems.has_next %}?page={{ problems.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if sort %}&sort={{ sort }}{% endif %}{% if direction %}&direction={{ direction }}{% endif %}{% else %}#{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
+{% endblock js %}
