@@ -1,3 +1,4 @@
 from django.contrib import admin
+from apps.problems.models import ProblemTag
 
-# Register your models here.
+admin.site.register(ProblemTag)

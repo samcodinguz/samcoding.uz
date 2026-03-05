@@ -18,7 +18,7 @@ def sign_in(request):
         password = request.POST.get("password").strip()
         remember = request.POST.get("rememberme")
 
-        if not username or not password:
+        if not all([username, password]):
             messages.error(request, "Iltimos, barcha maydonlarni to'ldiring!")
             return redirect("sign-in")
 
@@ -55,7 +55,7 @@ def sign_up(request):
             messages.error(request, "Iltimos, foydalanish shartlariga rozilik bildiring!")
             return redirect("sign-up")
 
-        if not username or not email or not password:
+        if not all([username, email, password]):
             messages.error(request, "Iltimos, barcha maydonlarni to'ldiring!")
             return redirect("sign-up")
         
@@ -73,10 +73,9 @@ def sign_up(request):
         
         user = CustomUser.objects.create_user(username=username, email=email, password=password)
         
-        login(request, user)
-        messages.success(request, "Tizimga muvaffaqiyatli kirdingiz!")
+        messages.success(request, "Muvaffaqiyatli ro'yxatdan o'tdingiz!")
         
-        return redirect("index") 
+        return redirect("sign-in") 
     
     context = {
         **get_base_context(request),
