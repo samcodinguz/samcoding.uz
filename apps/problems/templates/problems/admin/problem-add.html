@@ -1,0 +1,63 @@
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="container-fluid">
+    {% include 'core/admin/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card rounded-1">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Vaqt <span class="text-muted">(ms)</span></label>
+                                    <input type="text" class="form-control" name="time_limit" placeholder="Time limit" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="lastname" class="form-label">Xotira <span class="text-muted">(mb)</span></label>
+                                    <input type="text" class="form-control" name="memory_limit" placeholder="Memory limit" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="lastname" class="form-label">Qiyinchilik <span class="text-muted">(%)</span></label>
+                                    <input type="text" class="form-control" name="difficulty" placeholder="Difficulty" />
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="addTagSelect" class="form-label">Toifasi</label>
+                                    <select class="form-control" id="choices-tags" name="tags" multiple>
+                                        {% for tag in tags %}
+                                            <option value="{{ tag.id }}">
+                                                {{ tag.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submit -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
+<script>
+    new Choices('#choices-tags', {
+    removeItemButton: true,
+    placeholder: true,
+    placeholderValue: 'Teglarni tanlang'
+});
+</script>
+{% endblock js %}

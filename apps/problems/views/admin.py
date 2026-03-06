@@ -20,10 +20,9 @@ def admin_tags(request):
             tag.delete()
             messages.success(request, "Teg muvaffaqiyatli o'chirildi!")
         elif ids:
-            tag = ProblemTag.objects.filter(id__in=ids)
-            deleted_count = tag.count()
-            tag.delete()
-            messages.success(request, f"{deleted_count} ta teg muvaffaqiyatli o'chirildi!")
+            tags = ProblemTag.objects.filter(id__in=ids)
+            tags.delete()
+            messages.success(request, "Teglar muvaffaqiyatli o'chirildi!")
 
         return redirect(request.get_full_path())
     
@@ -117,6 +116,38 @@ def admin_problems(request):
     if not request.user.is_superuser:
         raise PermissionDenied
     
+    if request.method == "POST":
+
+        single_id = request.POST.get("single_delete")
+        ids = request.POST.getlist("ids")
+
+        if single_id:
+            problem = get_object_or_404(Problem, id=single_id)
+            
+            if not problem.is_verified:
+                if problem.test_file:
+                    problem.test_file.delete(save=False)
+
+                problem.delete()
+                messages.success(request, "Masala muvaffaqiyatli o'chirildi!")
+            else:
+                messages.error(request, "Tasdiqlangan masalani o'chirib bo'lmaydi!")
+        
+        elif ids:
+
+            problems = Problem.objects.filter(id__in=ids, is_verified=False)
+
+            if problems.exists():
+                for problem in problems.only("test_file"):
+                    if problem.test_file:
+                        problem.test_file.delete(save=False)
+
+                problems.delete()
+                messages.success(request, "Masalalar muvaffaqiyatli o'chirildi!")
+            else:
+                messages.error(request, "Tasdiqlangan masalalarni o'chirib bo'lmaydi!")
+        return redirect(request.get_full_path())
+    
     search = request.GET.get("search", "").strip()
     
     sort = request.GET.get("sort")
@@ -152,3 +183,25 @@ def admin_problems(request):
     }
 
     return render(request, "problems/admin/problems.html", context)
+
+@login_required
+def admin_problems_add(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+    
+    tags = ProblemTag.objects.all()
+
+    breadcrumb = [
+        {"title": "dashboard", "url": "admin-index", "args": []},
+        {"title": "problems", "url": "admin-problems", "args": []},
+        {"title": "add", "url": "admin-problems-add", "args": []},
+    ]
+
+    context = {
+        **get_base_context(request),
+        "title": "Masala qo'shish",
+        "tags": tags,
+        'breadcrumb': breadcrumb,
+    }
+
+    return render(request, "problems/admin/problem-add.html", context)

@@ -38,14 +38,16 @@ def admin_users(request):
         elif ids:
 
             users = CustomUser.objects.filter(id__in=ids).exclude(is_staff=True)
-            
-            deleted_count = users.count()
-            for user in users:
-                if user.avatar:
-                    user.avatar.delete(save=False)
 
-            users.delete()
-            messages.success(request, f"{deleted_count} ta user muvaffaqiyatli o'chirildi!")
+            if users.exists():
+                for user in users.only("avatar"):
+                    if user.avatar:
+                        user.avatar.delete(save=False)
+
+                users.delete()
+                messages.success(request, "Userlar muvaffaqiyatli o'chirildi!")
+            else:
+                messages.error(request, "Staff userlarni o'chirib bo'lmaydi!")
         
         return redirect(request.get_full_path())
 
