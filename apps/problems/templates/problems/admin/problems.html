@@ -40,13 +40,13 @@
                                         {% include "problems/admin/layout/sort.html" with field="title" title="Problem name" %}
                                     </th>
                                     <th>
-                                        Author
+                                        {% include "problems/admin/layout/sort.html" with field="author" title="Author" %}
                                     </th>
                                     <th>
                                         Tags
                                     </th>
                                     <th>
-                                        Created at
+                                        {% include "problems/admin/layout/sort.html" with field="created_at" title="Created at" %}
                                     </th>
                                     <th class="text-center" style="width: 1%;">
                                         Time
@@ -61,7 +61,7 @@
                                         Solved
                                     </th>
                                     <th class="text-center" style="width: 1%;">
-                                        Verified
+                                        {% include "problems/admin/layout/sort.html" with field="verified" title="Verified" %}
                                     </th>
                                     <th class="text-center" style="width: 1%;">Actions</th>
                                 </tr>
@@ -124,7 +124,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-1">
-                                            <a href="#" class="btn btn-default btn-icon btn-sm">
+                                            <a href="{% url 'admin-problems-edit' item.id %}" class="btn btn-default btn-icon btn-sm">
                                                 <i class="ti ti-edit fs-lg"></i>
                                             </a>
                                             <button type="submit" name="single_delete" value="{{ item.id }}" class="btn btn-default btn-icon btn-sm single-delete-btn">
@@ -170,4 +170,37 @@
 {% endblock content %} {% block js %} 
 <!-- Custom table -->
 <script src="{% static 'js/pages/custom-table.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== Judge Toggle =====
+        document.querySelectorAll(".verified-toggle").forEach(function(toggle) {
+            toggle.addEventListener("change", function() {
+                const problemId = this.dataset.problemId;
+                const checkbox = this;
+                fetch("{% url 'admin-toggle-verified' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify({
+                        problem_id: problemId
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        checkbox.checked = !checkbox.checked;
+                        alert("Xatolik yuz berdi");
+                    }
+                })
+                .catch(() => {
+                    checkbox.checked = !checkbox.checked;
+                    alert("Server xatosi");
+                });
+            });
+        });
+    });
+</script>
 {% endblock js %}

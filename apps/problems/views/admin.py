@@ -1,3 +1,4 @@
+import json
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -5,6 +6,9 @@ from django.core.exceptions import PermissionDenied
 from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from apps.problems.models import ProblemTag, Problem
 from django.contrib import messages
+from apps.accounts.utils import uid_filename
+from django.core.files.base import File
+from django.http import JsonResponse
 
 @login_required
 def admin_tags(request):
@@ -156,6 +160,9 @@ def admin_problems(request):
     allowed_sorts = {
         "id": "id",
         "title": "title",
+        "author_username": "username",
+        "created_at": "created_at",
+        "is_verified": "verified",
     }
 
     problems = Problem.objects.select_related("author").prefetch_related("tags")
@@ -188,6 +195,41 @@ def admin_problems(request):
 def admin_problems_add(request):
     if not request.user.is_superuser:
         raise PermissionDenied
+
+    if request.method == "POST":
+
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip().strip("\n")
+        input_txt = request.POST.get("input_txt", "").strip().strip("\n")
+        output_txt = request.POST.get("output_txt", "").strip().strip("\n")
+        note = request.POST.get("note", "").strip().strip("\n")
+
+        time_limit = request.POST.get("time_limit")
+        memory_limit = request.POST.get("memory_limit")
+        difficulty = request.POST.get("difficulty")
+
+        tag_ids = request.POST.getlist("tags")
+
+        if not all([title, time_limit, memory_limit, difficulty]):
+            messages.error(request, "Iltimos, barcha majburiy maydonlarni to'ldiring!")
+            return redirect('admin-problems-add')
+        
+        problem = Problem.objects.create(
+            title=title,
+            description=description,
+            input_txt=input_txt,
+            output_txt=output_txt,
+            note=note,
+            time_limit=time_limit,
+            memory_limit=memory_limit,
+            difficulty=difficulty,
+            author=request.user
+        )
+        
+        problem.tags.set(tag_ids)
+        messages.success(request, "Masala muvaffaqiyatli qo'shildi!")
+        
+        return redirect('admin-problems-edit', id=problem.id)
     
     tags = ProblemTag.objects.all()
 
@@ -205,3 +247,141 @@ def admin_problems_add(request):
     }
 
     return render(request, "problems/admin/problem-add.html", context)
+
+@login_required
+def admin_problems_edit(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    problem = get_object_or_404(Problem, id=id)
+
+    if request.method == "POST":
+
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip().strip("\n")
+        input_txt = request.POST.get("input_txt", "").strip().strip("\n")
+        output_txt = request.POST.get("output_txt", "").strip().strip("\n")
+        note = request.POST.get("note", "").strip().strip("\n")
+
+        time_limit = request.POST.get("time_limit")
+        memory_limit = request.POST.get("memory_limit")
+        difficulty = request.POST.get("difficulty")
+
+        tag_ids = request.POST.getlist("tags")
+
+        if not all([title, time_limit, memory_limit, difficulty]):
+            messages.error(request, "Iltimos, barcha majburiy maydonlarni to'ldiring!")
+            return redirect('admin-problems-edit', id=problem.id)
+
+        problem.title = title
+        problem.description = description
+        problem.input_txt = input_txt
+        problem.output_txt = output_txt
+        problem.note = note
+        problem.time_limit = time_limit
+        problem.memory_limit = memory_limit
+        problem.difficulty = difficulty
+
+        problem.save()
+        problem.tags.set(tag_ids)
+
+        messages.success(request, "Masala muvaffaqiyatli yangilandi!")
+
+        return redirect("admin-problems-edit", id=problem.id)
+    
+    tags = ProblemTag.objects.all()
+
+    breadcrumb = [
+        {"title": "dashboard", "url": "admin-index", "args": []},
+        {"title": "problems", "url": "admin-problems", "args": []},
+        {"title": "edit", "url": "admin-problems-edit", "args": [id]},
+    ]
+
+    context = {
+        **get_base_context(request),
+        "title": "Masala tahrirlash",
+        "problem": problem,
+        "tags": tags,
+        'breadcrumb': breadcrumb,
+    }
+
+    return render(request, "problems/admin/problem-edit.html", context)
+
+@login_required
+def admin_problems_test_edit(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    problem = get_object_or_404(Problem, id=id)
+
+    if request.method == 'POST':
+        if request.POST.get("delete_test"):
+            if problem.test_file:
+                problem.test_file.delete(save=False)
+                problem.test_file = None
+                problem.sample_tests = 0
+                problem.save()
+                messages.success(request, "Test o'chirildi!")
+                return redirect("admin-problems-test-edit", id=id)
+        
+        test_file = request.FILES.get("test_file")
+        sample_tests = request.POST.get("sample_tests")
+
+        if test_file:
+            if not test_file.name.endswith(".zip"):
+                messages.error(request, "Faqat *.zip fayl yuklash mumkin!")
+                return redirect("admin-problems-test-edit", id=id)
+
+            if problem.test_file:
+                problem.test_file.delete(save=False)
+
+            test_file.name = uid_filename(test_file.name)
+            problem.test_file = test_file
+
+        if not problem.test_file:
+            messages.error(request, "Test yuklash majburiy!")
+            return redirect("admin-problems-test-edit", id=id)
+
+        if sample_tests:
+            problem.sample_tests = sample_tests
+
+        problem.save()
+
+        messages.success(request, "Testlar saqlandi!")
+        return redirect("admin-problems-test-edit", id=id)
+    
+    tags = ProblemTag.objects.all().order_by('id')
+
+    breadcrumb = [
+        {"title": "dashboard", "url": "admin-index", "args": []},
+        {"title": "problems", "url": "admin-problems", "args": []},
+        {"title": "test", "url": "admin-problems-test-edit", "args": [id]},
+    ]
+
+    context = {
+        **get_base_context(request),
+        "title": "TestCase",
+        "problem": problem,
+        "tags": tags,
+        'breadcrumb': breadcrumb,
+    }
+
+    return render(request, "problems/admin/test-edit.html", context)
+
+@login_required
+def toggle_verified(request):
+    if not request.user.is_superuser:
+        return JsonResponse({"success": False}, status=403)
+
+    if request.method == "POST":
+        data = json.loads(request.body)
+        problem_id = data.get("problem_id")
+
+        problem = get_object_or_404(Problem, id=problem_id)
+
+        problem.is_verified = not problem.is_verified
+        problem.save()
+
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False})

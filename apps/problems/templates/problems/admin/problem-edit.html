@@ -1,0 +1,110 @@
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} 
+<!-- Summernote Plugin CSS -->
+<link href="{% static 'plugins/summernote/summernote-bs5.min.css' %}" rel="stylesheet" />
+{% endblock css %}
+{% block content %}
+<div class="container-fluid">
+    {% include 'core/admin/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card rounded-1">
+                <div class="card-header card-tabs d-flex align-items-center">
+                    
+                    <ul class="nav nav-tabs card-header-tabs nav-bordered flex-grow-1">
+                        <li class="nav-item">
+                            <a href="{% url 'admin-problems-edit' problem.id %}" class="nav-link active">
+                                <span class="fw-bold">Masala</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'admin-problems-test-edit' problem.id %}" class="nav-link">
+                                <span class="fw-bold">Test</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div>
+                        <a href="#" class="btn btn-sm btn-light">Masalani ko'rish</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Vaqt <span class="text-danger">*</span> <span class="text-muted">(ms)</span></label>
+                                <input type="number" class="form-control" name="time_limit" placeholder="Time limit" value="{{ problem.time_limit }}" min="100" max="5000" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="lastname" class="form-label">Xotira <span class="text-danger">*</span> <span class="text-muted">(mb)</span></label>
+                                <input type="number" class="form-control" name="memory_limit" placeholder="Memory limit" value="{{ problem.memory_limit }}" min="1" max="256" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="lastname" class="form-label">Qiyinchilik <span class="text-danger">*</span> <span class="text-muted">(%)</span></label>
+                                <input type="number" class="form-control" name="difficulty" placeholder="Difficulty" value="{{ problem.difficulty }}" min="1" max="100" required />
+                            </div>
+                            <div class="col-12">
+                                <label for="addTagSelect" class="form-label">Toifasi</label>
+                                <select class="form-control" id="choices-tags" name="tags" multiple>
+                                    {% for tag in tags %}
+                                        <option value="{{ tag.id }}" {% if tag in problem.tags.all %}selected{% endif %}>
+                                            {{ tag.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Masala nomi <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="title" placeholder="Problem title" value="{{ problem.title }}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Masala sharti <a href="#">(LaTex)</a></label>
+                                <textarea name="description" class="summernote">{{ problem.description }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Kiruvchi ma'lumotlar <a href="#">(LaTex)</a></label>
+                                <textarea name="input_txt" class="summernote">{{ problem.input_txt }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Chiquchi ma'lumotlar <a href="#">(LaTex)</a></label>
+                                <textarea name="output_txt" class="summernote">{{ problem.output_txt }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Izoh <a href="#">(LaTex)</a></label>
+                                <textarea name="note" class="summernote">{{ problem.note }}</textarea>
+                            </div>
+                        </div>
+                        <!-- Submit -->
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Jquery for Summernote-->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Summernote Plugin Js -->
+<script src="{% static 'plugins/summernote/summernote-bs5.min.js' %}"></script>
+<!-- Summernote Demo Js -->
+<script src="{% static 'js/pages/summernote.js' %}"></script>
+<script>
+    MathJax = {
+        tex: { 
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+    };
+</script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+<script>
+    new Choices('#choices-tags', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Toifasini tanlang'
+    });
+</script>
+{% endblock js %}

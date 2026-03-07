@@ -1,4 +1,7 @@
-{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% extends "core/admin/index.html" %} {% load static %} {% block title %}Admin | {{ title }}{% endblock title %} {% block css %} 
+<!-- Summernote Plugin CSS -->
+<link href="{% static 'plugins/summernote/summernote-bs5.min.css' %}" rel="stylesheet" />
+{% endblock css %}
 {% block content %}
 <div class="container-fluid">
     {% include 'core/admin/layout/breadcrumb.html' %}
@@ -6,38 +9,50 @@
         <div class="col-12">
             <div class="card rounded-1">
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post">
                         {% csrf_token %}
-                        <div class="row">
+                        <div class="row g-3 mb-3">
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Vaqt <span class="text-muted">(ms)</span></label>
-                                    <input type="text" class="form-control" name="time_limit" placeholder="Time limit" />
-                                </div>
+                                <label class="form-label">Vaqt <span class="text-danger">*</span> <span class="text-muted">(ms)</span></label>
+                                <input type="number" class="form-control" name="time_limit" placeholder="Time limit" value="1000" min="100" max="5000" required />
                             </div>
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="lastname" class="form-label">Xotira <span class="text-muted">(mb)</span></label>
-                                    <input type="text" class="form-control" name="memory_limit" placeholder="Memory limit" />
-                                </div>
+                                <label for="lastname" class="form-label">Xotira <span class="text-danger">*</span> <span class="text-muted">(mb)</span></label>
+                                <input type="number" class="form-control" name="memory_limit" placeholder="Memory limit" value="64" min="1" max="256" required />
                             </div>
                             <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="lastname" class="form-label">Qiyinchilik <span class="text-muted">(%)</span></label>
-                                    <input type="text" class="form-control" name="difficulty" placeholder="Difficulty" />
-                                </div>
+                                <label for="lastname" class="form-label">Qiyinchilik <span class="text-danger">*</span> <span class="text-muted">(%)</span></label>
+                                <input type="number" class="form-control" name="difficulty" placeholder="Difficulty" value="1" min="1" max="100" required />
                             </div>
                             <div class="col-12">
-                                <div class="mb-3">
-                                    <label for="addTagSelect" class="form-label">Toifasi</label>
-                                    <select class="form-control" id="choices-tags" name="tags" multiple>
-                                        {% for tag in tags %}
-                                            <option value="{{ tag.id }}">
-                                                {{ tag.name }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                                <label for="addTagSelect" class="form-label">Toifasi</label>
+                                <select class="form-control" id="choices-tags" name="tags" multiple>
+                                    {% for tag in tags %}
+                                        <option value="{{ tag.id }}">
+                                            {{ tag.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label required">Masala nomi <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="title" placeholder="Problem title" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Masala sharti <a href="#">(LaTex)</a></label>
+                                <textarea name="description" class="summernote"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Kiruvchi ma'lumotlar <a href="#">(LaTex)</a></label>
+                                <textarea name="input_txt" class="summernote"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Chiquchi ma'lumotlar <a href="#">(LaTex)</a></label>
+                                <textarea name="output_txt" class="summernote"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Izoh <a href="#">(LaTex)</a></label>
+                                <textarea name="note" class="summernote"></textarea>
                             </div>
                         </div>
                         <!-- Submit -->
@@ -51,13 +66,30 @@
     </div>
 </div>
 {% endblock content %} {% block js %} 
-<!-- Custom table -->
-<script src="{% static 'js/pages/custom-table.js' %}"></script>
+<!-- Jquery for Summernote-->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Summernote Plugin Js -->
+<script src="{% static 'plugins/summernote/summernote-bs5.min.js' %}"></script>
+<!-- Summernote Demo Js -->
+<script src="{% static 'js/pages/summernote.js' %}"></script>
+<script>
+    MathJax = {
+        tex: { 
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+    };
+</script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
 <script>
     new Choices('#choices-tags', {
     removeItemButton: true,
     placeholder: true,
-    placeholderValue: 'Teglarni tanlang'
+    placeholderValue: 'Toifasini tanlang'
 });
+</script>
+<script>
+
 </script>
 {% endblock js %}
