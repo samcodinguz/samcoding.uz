@@ -1,4 +1,4 @@
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     display: none;
 }
 
@@ -12,7 +12,7 @@ html {
 
 body {
     -ms-overflow-style: none;
-}
+} */
 
 .auto-resize{
     font-family: monospace;
