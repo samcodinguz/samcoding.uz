@@ -1,29 +1,32 @@
+::-webkit-scrollbar {
+    display: none;
+}
 
+html, body {
+    overflow-x: hidden;
+}
+
+html {
+    scrollbar-width: none;
+}
+
+body {
+    -ms-overflow-style: none;
+}
 
 .auto-resize{
-    font-family: monospace;
-    white-space: pre;
-    line-height: 1.15;
-    overflow-x: auto;
+    font-family: monospace !important;
+    white-space: pre !important;
+    line-height: 1.15 !important;
+    overflow-x: auto !important;
 }
 
 .note-editor .note-editable {
     font-size: 15px !important;
 }
 
-/* Fix ASCII diagrams on mobile */
-pre{
-    font-family: "Courier New", Courier, monospace !important;
-    white-space: pre;
-    overflow-x: auto;
-    line-height: 1.15;
-}
-
-textarea.auto-resize{
-    font-family: "JetBrains Mono","Consolas","Courier New",monospace !important;
-    white-space: pre !important;
-    overflow-x: auto;
-    overflow-y: hidden;
-    line-height: 1.2;
-    word-break: normal !important;
+.accordion-body .note-editor {
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
 }
