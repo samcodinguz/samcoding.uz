@@ -1,4 +1,11 @@
-/* ::-webkit-scrollbar {
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+
+pre, .auto-resize{
+    font-family: "JetBrains Mono", monospace;
+    white-space: pre;
+}
+
+::-webkit-scrollbar {
     display: none;
 }
 
@@ -12,7 +19,7 @@ html {
 
 body {
     -ms-overflow-style: none;
-} */
+}
 
 .auto-resize{
     font-family: monospace;
