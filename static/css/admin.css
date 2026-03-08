@@ -32,3 +32,12 @@ pre{
     overflow-x: auto;
     line-height: 1.15;
 }
+
+textarea.auto-resize{
+    font-family: "JetBrains Mono","Consolas","Courier New",monospace !important;
+    white-space: pre !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    line-height: 1.2;
+    word-break: normal !important;
+}

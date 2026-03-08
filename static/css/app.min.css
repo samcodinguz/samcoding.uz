@@ -28769,7 +28769,7 @@ span.flatpickr-weekday {
 pre[class*=language-] {
     background: 0 0;
     scrollbar-width: thin;
-    overflow: hidden !important
+    overflow: auto !important
 }
 
 :not(pre)>code[class*=language-]:hover,
