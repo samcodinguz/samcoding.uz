@@ -117,11 +117,11 @@
                                                     <button type="button" class="btn-close remove-sample position-absolute top-0 end-0 m-2"></button>
                                                     <div class="mb-2">
                                                         <label class="form-label">Input</label>
-                                                        <textarea class="form-control auto-resize" name="sample_input[]" wrap="off">{{ item.input_data }}</textarea>
+                                                        <textarea class="form-control auto-resize" name="sample_input[]" wrap="off">{{ item.input_data|safe }}</textarea>
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label">Output</label>
-                                                        <textarea class="form-control auto-resize" name="sample_output[]" wrap="off">{{ item.output_data }}</textarea>
+                                                        <textarea class="form-control auto-resize" name="sample_output[]" wrap="off">{{ item.output_data|safe }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
