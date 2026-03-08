@@ -6,62 +6,114 @@
 <div class="container-fluid">
     {% include 'core/admin/layout/breadcrumb.html' %}
     <div class="row">
-        <div class="col-12">
-            <div class="card rounded-1">
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Vaqt <span class="text-danger">*</span> <span class="text-muted">(ms)</span></label>
-                                <input type="number" class="form-control" name="time_limit" placeholder="Time limit" value="1000" min="100" max="5000" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label for="lastname" class="form-label">Xotira <span class="text-danger">*</span> <span class="text-muted">(mb)</span></label>
-                                <input type="number" class="form-control" name="memory_limit" placeholder="Memory limit" value="64" min="1" max="256" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label for="lastname" class="form-label">Qiyinchilik <span class="text-danger">*</span> <span class="text-muted">(%)</span></label>
-                                <input type="number" class="form-control" name="difficulty" placeholder="Difficulty" value="1" min="1" max="100" required />
-                            </div>
-                            <div class="col-12">
-                                <label for="addTagSelect" class="form-label">Toifasi</label>
-                                <select class="form-control" id="choices-tags" name="tags" multiple>
-                                    {% for tag in tags %}
-                                        <option value="{{ tag.id }}">
-                                            {{ tag.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label required">Masala nomi <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="title" placeholder="Problem title" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Masala sharti <a href="#">(LaTex)</a></label>
-                                <textarea name="description" class="summernote"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Kiruvchi ma'lumotlar <a href="#">(LaTex)</a></label>
-                                <textarea name="input_txt" class="summernote"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Chiquchi ma'lumotlar <a href="#">(LaTex)</a></label>
-                                <textarea name="output_txt" class="summernote"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Izoh <a href="#">(LaTex)</a></label>
-                                <textarea name="note" class="summernote"></textarea>
+        <div class="col-md-9">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="TitleExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="TitleHeading">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#TitleCollapse" aria-expanded="true" aria-controls="TitleCollapse">
+                                        Masala nomi <span class="text-danger ms-1">*</span>
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="TitleCollapse" class="accordion-collapse collapse show" aria-labelledby="TitleHeading" data-bs-parent="#TitleExample">
+                                    <div class="accordion-body">
+                                        <input type="text" class="form-control" name="title" placeholder="Problem title" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!-- Submit -->
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="StatementExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="StatementHeading">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#StatementCollapse" aria-expanded="true" aria-controls="StatementCollapse">
+                                        Masala sharti <span class="text-danger ms-1">*</span>
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="StatementCollapse" class="accordion-collapse collapse show" aria-labelledby="StatementHeading" data-bs-parent="#StatementExample">
+                                    <div class="accordion-body">
+                                        <textarea class="summernote" name="statement"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="ImagesExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="ImagesHeading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#ImagesCollapse" aria-expanded="false" aria-controls="ImagesCollapse">
+                                        Masala rasmlari
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="ImagesCollapse" class="accordion-collapse collapse" aria-labelledby="ImagesHeading" data-bs-parent="#ImagesExample">
+                                    <div class="accordion-body">
+                                        <input type="file" class="form-control" name="images[]" id="image-upload" accept="image/*" multiple>
+                                        <div class="mt-3 d-none" id="image-table-wrapper">
+                                            <table class="table table-bordered align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rasm</th>
+                                                        <th>O'lcham</th>
+                                                        <th>Nomi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="image-preview-table"></tbody>
+                                            </table>
+                                            <span>Rasmni masala shartiga kiritish uchun <code>\includegraphics{file.png}</code> namunadan foydalaning. Rasm hajmi <code>1MB</code> dan oshmasin.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="SampleTestExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="SampleTestHeading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#SampleTestCollapse" aria-expanded="false" aria-controls="SampleTestCollapse">
+                                        Masala namuna testlari</span>
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="SampleTestCollapse" class="accordion-collapse collapse" aria-labelledby="SampleTestHeading" data-bs-parent="#SampleTestExample">
+                                    <div class="accordion-body">
+                                        <div class="alert alert-warning alert-dismissible d-flex align-items-center" role="alert">
+                                            <i class="ti ti-alert-circle fs-24 me-1"></i>
+                                            <div>
+                                                Namuna test qo'shishda masaladagi barcha formatlash qoidalari va shartlariga qat'iy rioya qiling. Javobingiz to'g'ri ekanligiga ishonch hosil qiling.
+                                            </div>
+                                        </div>
+                                        <div id="sample-tests-container"></div>
+                                                                                
+                                        <div class="d-flex justify-content-end">
+                                            <a href="#" id="add-sample-test">
+                                                <i class="ti ti-plus"></i> Test qo'shish
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+                <!-- Submit -->
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -80,7 +132,6 @@
         }
     };
 </script>
-
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
 <script>
     new Choices('#choices-tags', {
@@ -90,6 +141,80 @@
 });
 </script>
 <script>
+    document.addEventListener("DOMContentLoaded", function(){
+        const container = document.getElementById("sample-tests-container");
+        const addBtn = document.getElementById("add-sample-test");
+        addBtn.addEventListener("click", function(e){
+            e.preventDefault();
+            const card = document.createElement("div");
+            card.className = "card rounded-1 mb-3 sample-test-card";
+            card.innerHTML = `
+                <div class="card-body position-relative">
+                    <button type="button" class="btn-close remove-sample position-absolute top-0 end-0 m-2"></button>
+                    <div class="mb-2">
+                        <label class="form-label">Input</label>
+                        <textarea class="form-control auto-resize" name="sample_input[]"></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Output</label>
+                        <textarea class="form-control auto-resize" name="sample_output[]"></textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    });
 
+    document.addEventListener("click", function(e){
+        const btn = e.target.closest(".remove-sample");
+        if(btn){
+            btn.closest(".sample-test-card").remove();
+        }
+    });
+    document.addEventListener("input", function(e){
+        if(e.target.classList.contains("auto-resize")){
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+        }
+    });
+</script>
+<script>
+    const input = document.getElementById("image-upload");
+    const table = document.getElementById("image-preview-table");
+    const wrapper = document.getElementById("image-table-wrapper");
+
+    input.addEventListener("change", function(){
+        table.innerHTML = "";
+        const files = this.files;
+        if(files.length > 0){
+            wrapper.classList.remove("d-none");
+        } else {
+            wrapper.classList.add("d-none");
+        }
+        for(let i = 0; i < files.length; i++){
+            const file = files[i];
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = function(e){
+                img.src = e.target.result;
+                img.onload = function(){
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>
+                            <img src="${img.src}" style="width:120px;">
+                        </td>
+                        <td>
+                            ${img.width} × ${img.height}
+                        </td>
+                        <td>
+                            ${file.name}
+                        </td>
+                    `;
+                    table.appendChild(row);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
 {% endblock js %}

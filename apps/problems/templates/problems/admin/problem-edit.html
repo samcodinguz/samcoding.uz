@@ -6,80 +6,144 @@
 <div class="container-fluid">
     {% include 'core/admin/layout/breadcrumb.html' %}
     <div class="row">
-        <div class="col-12">
-            <div class="card rounded-1">
-                <div class="card-header card-tabs d-flex align-items-center">
+        <div class="col-md-9">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="TitleExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="TitleHeading">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#TitleCollapse" aria-expanded="true" aria-controls="TitleCollapse">
+                                        Masala nomi <span class="text-danger ms-1">*</span>
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="TitleCollapse" class="accordion-collapse collapse show" aria-labelledby="TitleHeading" data-bs-parent="#TitleExample">
+                                    <div class="accordion-body">
+                                        <input type="text" class="form-control" name="title" placeholder="Problem title" value="{{ problem.title }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <ul class="nav nav-tabs card-header-tabs nav-bordered flex-grow-1">
-                        <li class="nav-item">
-                            <a href="{% url 'admin-problems-edit' problem.id %}" class="nav-link active">
-                                <span class="fw-bold">Masala</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'admin-problems-test-edit' problem.id %}" class="nav-link">
-                                <span class="fw-bold">Test</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div>
-                        <a href="#" class="btn btn-sm btn-light">Masalani ko'rish</a>
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="StatementExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="StatementHeading">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#StatementCollapse" aria-expanded="true" aria-controls="StatementCollapse">
+                                        Masala sharti <span class="text-danger ms-1">*</span>
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="StatementCollapse" class="accordion-collapse collapse show" aria-labelledby="StatementHeading" data-bs-parent="#StatementExample">
+                                    <div class="accordion-body">
+                                        <textarea class="summernote" name="statement">{{ problem.statement }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="ImagesExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="ImagesHeading">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ImagesCollapse" aria-expanded="true" aria-controls="ImagesCollapse">
+                                        Masala rasmlari
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="ImagesCollapse" class="accordion-collapse collapse show" aria-labelledby="ImagesHeading" data-bs-parent="#ImagesExample">
+                                    <div class="accordion-body">
+                                        {% if problem.images.exists %}
+                                        <div class="mb-2">
+                                            <div class="d-flex align-items-center" id="image-list">
+                                                {% for item in problem.images.all %}
+                                                <a href="{{ item.image.url }}" target="_blank" class="image-item me-2" data-id="{{ item.id }}">
+                                                {{ item.original_name }}
+                                                </a>
+                                                {% endfor %}
+                                                <button type="button" class="btn btn-default border-0 btn-sm" id="toggle-delete-images">
+                                                    <i class="ti ti-trash text-danger"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        <input type="file" class="form-control" name="images[]" id="image-upload" accept="image/*" multiple>
+                                        <input type="hidden" name="delete_images[]" value="{{ image.id }}">
+                                        <div class="mt-3 d-none" id="image-table-wrapper">
+                                            <table class="table table-bordered align-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Rasm</th>
+                                                        <th>O'lcham</th>
+                                                        <th>Nomi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="image-preview-table"></tbody>
+                                            </table>
+                                            <span>Rasmni masala shartiga kiritish uchun <code>\includegraphics{file.png}</code> namunadan foydalaning. Rasm hajmi <code>1MB</code> dan oshmasin.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="accordion accordion-custom-icon accordion-arrow-none" id="SampleTestExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="SampleTestHeading">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#SampleTestCollapse" aria-expanded="true" aria-controls="SampleTestCollapse">
+                                        Masala namuna testlari</span>
+                                        <i class="ti ti-plus accordion-icon accordion-icon-on"></i>
+                                        <i class="ti ti-minus accordion-icon accordion-icon-off"></i>
+                                    </button>
+                                </h2>
+                                <div id="SampleTestCollapse" class="accordion-collapse collapse show" aria-labelledby="SampleTestHeading" data-bs-parent="#SampleTestExample">
+                                    <div class="accordion-body">
+                                        <div class="alert alert-warning alert-dismissible d-flex align-items-center" role="alert">
+                                            <div>
+                                                Namuna test qo'shishda masaladagi barcha formatlash qoidalari va shartlariga qat'iy rioya qiling. Javobingiz to'g'ri ekanligiga ishonch hosil qiling.
+                                            </div>
+                                        </div>
+                                        <div id="sample-tests-container">
+                                            {% for item in problem.samples.all %}
+                                            <div class="card rounded-1 mb-3 sample-test-card">
+                                                <div class="card-body position-relative">
+                                                    <button type="button" class="btn-close remove-sample position-absolute top-0 end-0 m-2"></button>
+                                                    <div class="mb-2">
+                                                        <label class="form-label">Input</label>
+                                                        <textarea class="form-control auto-resize" name="sample_input[]">{{ item.input_data }}</textarea>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label">Output</label>
+                                                        <textarea class="form-control auto-resize" name="sample_output[]">{{ item.output_data }}</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                                                                
+                                        <div class="d-flex justify-content-end">
+                                            <a href="#" id="add-sample-test">
+                                                <i class="ti ti-plus"></i> Test qo'shish
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Vaqt <span class="text-danger">*</span> <span class="text-muted">(ms)</span></label>
-                                <input type="number" class="form-control" name="time_limit" placeholder="Time limit" value="{{ problem.time_limit }}" min="100" max="5000" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label for="lastname" class="form-label">Xotira <span class="text-danger">*</span> <span class="text-muted">(mb)</span></label>
-                                <input type="number" class="form-control" name="memory_limit" placeholder="Memory limit" value="{{ problem.memory_limit }}" min="1" max="256" required />
-                            </div>
-                            <div class="col-md-4">
-                                <label for="lastname" class="form-label">Qiyinchilik <span class="text-danger">*</span> <span class="text-muted">(%)</span></label>
-                                <input type="number" class="form-control" name="difficulty" placeholder="Difficulty" value="{{ problem.difficulty }}" min="1" max="100" required />
-                            </div>
-                            <div class="col-12">
-                                <label for="addTagSelect" class="form-label">Toifasi</label>
-                                <select class="form-control" id="choices-tags" name="tags" multiple>
-                                    {% for tag in tags %}
-                                        <option value="{{ tag.id }}" {% if tag in problem.tags.all %}selected{% endif %}>
-                                            {{ tag.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Masala nomi <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="title" placeholder="Problem title" value="{{ problem.title }}" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Masala sharti <a href="#">(LaTex)</a></label>
-                                <textarea name="description" class="summernote">{{ problem.description }}</textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Kiruvchi ma'lumotlar <a href="#">(LaTex)</a></label>
-                                <textarea name="input_txt" class="summernote">{{ problem.input_txt }}</textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Chiquchi ma'lumotlar <a href="#">(LaTex)</a></label>
-                                <textarea name="output_txt" class="summernote">{{ problem.output_txt }}</textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Izoh <a href="#">(LaTex)</a></label>
-                                <textarea name="note" class="summernote">{{ problem.note }}</textarea>
-                            </div>
-                        </div>
-                        <!-- Submit -->
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Saqlash</button>
-                        </div>
-                    </form>
+                <!-- Submit -->
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -98,13 +162,133 @@
         }
     };
 </script>
-
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
 <script>
     new Choices('#choices-tags', {
-        removeItemButton: true,
-        placeholder: true,
-        placeholderValue: 'Toifasini tanlang'
+    removeItemButton: true,
+    placeholder: true,
+    placeholderValue: 'Toifasini tanlang'
+});
+</script>
+<script>
+    function resizeAllTextareas(){
+        document.querySelectorAll(".auto-resize").forEach(function(el){
+            el.style.height = "auto";
+            el.style.height = el.scrollHeight + "px";
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+        const container = document.getElementById("sample-tests-container");
+        const addBtn = document.getElementById("add-sample-test");
+        resizeAllTextareas();
+        addBtn.addEventListener("click", function(e){
+            e.preventDefault();
+            const card = document.createElement("div");
+            card.className = "card rounded-1 mb-3 sample-test-card";
+            card.innerHTML = `
+                <div class="card-body position-relative">
+                    <button type="button" class="btn-close remove-sample position-absolute top-0 end-0 m-2"></button>
+
+                    <div class="mb-2">
+                        <label class="form-label">Input</label>
+                        <textarea class="form-control auto-resize" name="sample_input[]"></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Output</label>
+                        <textarea class="form-control auto-resize" name="sample_output[]"></textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+            resizeAllTextareas();
+        });
+    });
+    document.querySelectorAll('.accordion-collapse').forEach(function(el){
+        el.addEventListener('shown.bs.collapse', function(){
+            resizeAllTextareas();
+        });
+    });
+    document.addEventListener("input", function(e){
+        if(e.target.classList.contains("auto-resize")){
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+        }
+    });
+    document.addEventListener("click", function(e){
+        const btn = e.target.closest(".remove-sample");
+        if(btn){
+            btn.closest(".sample-test-card").remove();
+        }
+    });
+</script>
+<script>
+    const input = document.getElementById("image-upload");
+    const table = document.getElementById("image-preview-table");
+    const wrapper = document.getElementById("image-table-wrapper");
+
+    input.addEventListener("change", function(){
+        table.innerHTML = "";
+        const files = this.files;
+        if(files.length > 0){
+            wrapper.classList.remove("d-none");
+        } else {
+            wrapper.classList.add("d-none");
+        }
+        for(let i = 0; i < files.length; i++){
+            const file = files[i];
+            const img = new Image();
+            const reader = new FileReader();
+            reader.onload = function(e){
+                img.src = e.target.result;
+                img.onload = function(){
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>
+                            <img src="${img.src}" style="width:120px;">
+                        </td>
+                        <td>
+                            ${img.width} × ${img.height}
+                        </td>
+                        <td>
+                            ${file.name}
+                        </td>
+                    `;
+                    table.appendChild(row);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+<script>
+    const toggleBtn = document.getElementById("toggle-delete-images");
+    const images = document.querySelectorAll(".image-item");
+    const form = document.querySelector("form");
+    let deleted = false;
+    toggleBtn.addEventListener("click", function(){
+        if(!deleted){
+            images.forEach(function(img){
+                img.style.textDecoration = "line-through";
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "delete_images[]";
+                input.value = img.dataset.id;
+                input.classList.add("delete-image-hidden");
+                form.appendChild(input);
+            });
+            toggleBtn.innerHTML = `<i class="ti ti-arrow-back-up text-success"></i>`;
+            deleted = true;
+        } else {
+            images.forEach(function(img){
+                img.style.textDecoration = "none";
+            });
+            document.querySelectorAll(".delete-image-hidden").forEach(function(el){
+                el.remove();
+            });
+            toggleBtn.innerHTML = `<i class="ti ti-trash text-danger"></i>`;
+            deleted = false;
+        }
     });
 </script>
 {% endblock js %}

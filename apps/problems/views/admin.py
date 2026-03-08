@@ -4,10 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
-from apps.problems.models import ProblemTag, Problem
+from apps.problems.models import ProblemTag, Problem, ProblemImage, SampleTest
 from django.contrib import messages
 from apps.accounts.utils import uid_filename
-from django.core.files.base import File
+from apps.problems.utils import validate_statement
 from django.http import JsonResponse
 
 @login_required
@@ -198,38 +198,58 @@ def admin_problems_add(request):
 
     if request.method == "POST":
 
-        title = request.POST.get("title", "").strip()
-        description = request.POST.get("description", "").strip().strip("\n")
-        input_txt = request.POST.get("input_txt", "").strip().strip("\n")
-        output_txt = request.POST.get("output_txt", "").strip().strip("\n")
-        note = request.POST.get("note", "").strip().strip("\n")
+        title = request.POST.get("title")
+        statement = request.POST.get("statement")
 
-        time_limit = request.POST.get("time_limit")
-        memory_limit = request.POST.get("memory_limit")
-        difficulty = request.POST.get("difficulty")
-
-        tag_ids = request.POST.getlist("tags")
-
-        if not all([title, time_limit, memory_limit, difficulty]):
+        if not all([title, statement]):
             messages.error(request, "Iltimos, barcha majburiy maydonlarni to'ldiring!")
-            return redirect('admin-problems-add')
+            return redirect("admin-problems-add")
+        
+        if Problem.objects.filter(title=title).exists():
+            messages.error(request, "Bu nomli masala allaqachon mavjud")
+            return redirect("admin-problems-add")
+        
+        missing = validate_statement(statement)
+        if missing:
+            messages.error(request, f"{missing} bo'limi mavjud emas!")
+            return redirect("admin-problems-add")
         
         problem = Problem.objects.create(
             title=title,
-            description=description,
-            input_txt=input_txt,
-            output_txt=output_txt,
-            note=note,
-            time_limit=time_limit,
-            memory_limit=memory_limit,
-            difficulty=difficulty,
+            statement=statement,
             author=request.user
         )
+
+        inputs = request.POST.getlist("sample_input[]")
+        outputs = request.POST.getlist("sample_output[]")
+
+        for i, (inp, out) in enumerate(zip(inputs, outputs)):
+            if inp and out:
+                SampleTest.objects.create(
+                    problem=problem,
+                    input_data=inp,
+                    output_data=out,
+                    order=i
+                )
         
-        problem.tags.set(tag_ids)
+        images = request.FILES.getlist("images[]")
+        for img in images:
+            if not img.content_type.startswith("image"):
+                messages.error(request, "Faqat rasm yuklash mumkin")
+                return redirect("admin-problems-add")
+            
+            if img.size > 1024 * 1024:
+                messages.error(request, "Rasm 1MB dan katta bo'lmasligi kerak!")
+                return redirect("admin-problems-add")
+
+            ProblemImage.objects.create(
+                problem=problem,
+                image=img,
+                original_name=img.name
+            )
+
         messages.success(request, "Masala muvaffaqiyatli qo'shildi!")
-        
-        return redirect('admin-problems-edit', id=problem.id)
+        return redirect("admin-problems-edit", id=problem.id)
     
     tags = ProblemTag.objects.all()
 
@@ -257,36 +277,63 @@ def admin_problems_edit(request, id):
 
     if request.method == "POST":
 
-        title = request.POST.get("title", "").strip()
-        description = request.POST.get("description", "").strip().strip("\n")
-        input_txt = request.POST.get("input_txt", "").strip().strip("\n")
-        output_txt = request.POST.get("output_txt", "").strip().strip("\n")
-        note = request.POST.get("note", "").strip().strip("\n")
+        title = request.POST.get("title")
+        statement = request.POST.get("statement")
 
-        time_limit = request.POST.get("time_limit")
-        memory_limit = request.POST.get("memory_limit")
-        difficulty = request.POST.get("difficulty")
-
-        tag_ids = request.POST.getlist("tags")
-
-        if not all([title, time_limit, memory_limit, difficulty]):
+        if not all([title, statement]):
             messages.error(request, "Iltimos, barcha majburiy maydonlarni to'ldiring!")
-            return redirect('admin-problems-edit', id=problem.id)
-
+            return redirect("admin-problems-edit", id=problem.id)
+        
+        if Problem.objects.exclude(id=problem.id).filter(title=title).exists():
+            messages.error(request, "Bu nomli masala allaqachon mavjud")
+            return redirect("admin-problems-edit", id=problem.id)
+        
+        missing = validate_statement(statement)
+        if missing:
+            messages.error(request, f"{missing} bo'limi mavjud emas!")
+            return redirect("admin-problems-edit", id=problem.id)
+        
         problem.title = title
-        problem.description = description
-        problem.input_txt = input_txt
-        problem.output_txt = output_txt
-        problem.note = note
-        problem.time_limit = time_limit
-        problem.memory_limit = memory_limit
-        problem.difficulty = difficulty
-
+        problem.statement = statement
         problem.save()
-        problem.tags.set(tag_ids)
 
-        messages.success(request, "Masala muvaffaqiyatli yangilandi!")
+        inputs = request.POST.getlist("sample_input[]")
+        outputs = request.POST.getlist("sample_output[]")
+        problem.samples.all().delete()
 
+        for i, (inp, out) in enumerate(zip(inputs, outputs)):
+            if inp and out:
+                SampleTest.objects.create(
+                    problem=problem,
+                    input_data=inp,
+                    output_data=out,
+                    order=i
+                )
+
+        delete_images = request.POST.getlist("delete_images[]")
+        delete_images = [i for i in delete_images if i]
+
+        if delete_images:
+            images = ProblemImage.objects.filter(id__in=delete_images, problem=problem)
+
+            for img in images:
+                if img.image:
+                    img.image.delete(save=False)
+
+            images.delete()
+
+        images = request.FILES.getlist("images[]")
+        for img in images:
+            if not img.content_type.startswith("image"):
+                messages.error(request, "Rasm formati noto'g'ri!")
+                return redirect("admin-problems-edit", id=problem.id)
+            
+            if img.size > 1024 * 1024:
+                messages.error(request, "Rasm hajmi 1MB dan oshmasligi kerak")
+                return redirect("admin-problems-edit", id=problem.id)
+            ProblemImage.objects.create(problem=problem, image=img, original_name=img.name)
+
+        messages.success(request, "Masala muvaffaqiyatli yangilandi")
         return redirect("admin-problems-edit", id=problem.id)
     
     tags = ProblemTag.objects.all()
