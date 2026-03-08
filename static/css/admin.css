@@ -17,7 +17,7 @@ body {
 .auto-resize{
     font-family: monospace;
     white-space: pre;
-    line-height: 1.18;
+    line-height: 1.15;
     overflow-x: auto;
 }
 
