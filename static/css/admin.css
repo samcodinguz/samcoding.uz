@@ -15,12 +15,20 @@ body {
 }
 
 .auto-resize{
-    font-family: monospace !important;
-    white-space: pre !important;
-    line-height: 1.15 !important;
-    overflow-x: auto !important;
+    font-family: monospace;
+    white-space: pre;
+    line-height: 1.15;
+    overflow-x: auto;
 }
 
 .note-editor .note-editable {
     font-size: 15px !important;
+}
+
+/* Fix ASCII diagrams on mobile */
+pre,
+pre[class*="language-"]{
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: pre;
 }
