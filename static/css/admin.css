@@ -1,18 +1,4 @@
-::-webkit-scrollbar {
-    display: none;
-}
 
-html, body {
-    overflow-x: hidden;
-}
-
-html {
-    scrollbar-width: none;
-}
-
-body {
-    -ms-overflow-style: none;
-}
 
 .auto-resize{
     font-family: monospace;
