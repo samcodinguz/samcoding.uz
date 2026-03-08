@@ -12,6 +12,7 @@ void 0 !== jQuery.fn.summernote &&
             "italic",
             "underline",
             "strikethrough",
+            "clear",
           ],
         ],
         ["fontsize", ["fontsize"]],

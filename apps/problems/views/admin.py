@@ -7,7 +7,7 @@ from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from apps.problems.models import ProblemTag, Problem, ProblemImage, SampleTest
 from django.contrib import messages
 from apps.accounts.utils import uid_filename
-from apps.problems.utils import validate_statement
+from apps.problems.utils import validate_statement, parse_statement
 from django.http import JsonResponse
 
 @login_required
@@ -287,7 +287,7 @@ def admin_problems_edit(request, id):
         if Problem.objects.exclude(id=problem.id).filter(title=title).exists():
             messages.error(request, "Bu nomli masala allaqachon mavjud")
             return redirect("admin-problems-edit", id=problem.id)
-        
+
         missing = validate_statement(statement)
         if missing:
             messages.error(request, f"{missing} bo'limi mavjud emas!")
@@ -337,7 +337,7 @@ def admin_problems_edit(request, id):
         return redirect("admin-problems-edit", id=problem.id)
     
     tags = ProblemTag.objects.all()
-
+    sections = parse_statement(problem.statement, problem)
     breadcrumb = [
         {"title": "dashboard", "url": "admin-index", "args": []},
         {"title": "problems", "url": "admin-problems", "args": []},
@@ -348,6 +348,7 @@ def admin_problems_edit(request, id):
         **get_base_context(request),
         "title": "Masala tahrirlash",
         "problem": problem,
+        "sections": sections,
         "tags": tags,
         'breadcrumb': breadcrumb,
     }
