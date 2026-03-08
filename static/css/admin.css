@@ -26,9 +26,9 @@ body {
 }
 
 /* Fix ASCII diagrams on mobile */
-pre,
-pre[class*="language-"]{
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
+pre{
+    font-family: "Courier New", Courier, monospace !important;
     white-space: pre;
+    overflow-x: auto;
+    line-height: 1.15;
 }
