@@ -8,47 +8,28 @@
         <meta name="description" content="..." />
         <meta name="keywords" content="..." />
         <meta name="author" content="..." />
-        <!-- App favicon -->
-        <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
-        <!-- Theme Config Js -->
-        <script src="{% static 'js/config.js' %}"></script>
-        <!-- Vendor css -->
-        <link href="{% static 'css/vendors.min.css' %}" rel="stylesheet" type="text/css" />
-        <!-- App css -->
-        <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" />
-        <!-- Public css -->
-        <link href="{% static 'css/public.css' %}" rel="stylesheet" type="text/css">
-        {% block css %} {% endblock css %}
     </head>
 
     <body>
-        {% include 'core/public/layout/messages.html' %}
-        <div class="wrapper">
-            {% include 'core/public/layout/topbar.html' %}
-            {% include 'core/public/layout/topnav.html' %}
-            <div class="content-page">
-                {% block content %}
-                <div class="container">
-                    {% include 'core/public/layout/breadcrumb.html' %}
-                    {% include 'core/public/layout/alert-profile.html' %}
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <h4 class="m-0">Your custom content here {{ request.user.username }} </h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endblock content %}
-                {% include 'core/public/layout/footer.html' %}
-            </div>
-        </div>
-        <!-- Vendor js -->
-        <script src="{% static 'js/vendors.min.js' %}"></script>
-        <!-- App js -->
-        <script src="{% static 'js/app.js' %}"></script>
-        {% block js %} {% endblock js %}
+        <pre>
+            8 8
+┌───┬───────────────────┬───────┐
+│ A │                   │       │
+│   ╵   ┌───────────┐   ├───╴   │
+│       │           │   │       │
+├───────┴───────╴   │   ╵   ╷   │
+│                   │       │   │
+│   ╷   ┌───────┐   ├───────┤   │
+│   │   │     B │   │       │   │
+├───┘   │   ╶───┤   │   ╷   │   │
+│       │       │   │   │   │   │
+│   ╶───┴───┐   ╵   └───┘   │   │
+│           │               │   │
+│   ╶───┐   ├───────────────┘   │
+│       │   │                   │
+├───╴   │   ╵   ╶───────────────┤
+│       │                       │
+└───────┴───────────────────────┘
+        </pre>
     </body>
 </html>
