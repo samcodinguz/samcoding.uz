@@ -74,14 +74,14 @@
                                     </td>
                                     <td>
                                         <h5 class="m-0">
-                                            <a href="#" class="link-reset">
+                                            <a href="{% url 'problem' item.id %}" class="link-reset">
                                                 <code>#{{ item.id|stringformat:"04d" }}</code>
                                             </a>
                                         </h5>
                                     </td>
                                     <td>
                                         <h5 class="fs-base mb-0">
-                                            <a href="#" class="link-reset">
+                                            <a href="{% url 'problem' item.id %}" class="link-reset">
                                                 {{ item.title }}
                                             </a>
                                         </h5>

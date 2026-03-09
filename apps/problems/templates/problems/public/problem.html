@@ -8,9 +8,9 @@
                 <div class="card-header d-block">
                     <h3 class="mb-2">{{ problem.title }}</h3>
                     <div class="d-flex gap-1">
-                        <span class="badge text-bg-primary rounded-1 p-1">Vaqt: {{ problem.time_limit }} ms</span>
-                        <span class="badge text-bg-success rounded-1 p-1">Xotira: {{ problem.memory_limit }} mb</span>
-                        <span class="badge text-bg-danger rounded-1 p-1">Qiyinchilik: {{ problem.difficulty }} %</span>
+                        <span class="badge badge-soft-primary rounded-1 p-1">Vaqt: {{ problem.time_limit }} ms</span>
+                        <span class="badge badge-soft-success rounded-1 p-1">Xotira: {{ problem.memory_limit }} mb</span>
+                        <span class="badge badge-soft-danger rounded-1 p-1">Qiyinchilik: {{ problem.difficulty }} %</span>
                     </div>
                 </div>
                 <div class="card-body">
@@ -26,6 +26,43 @@
                     <h4>Chiquvchi ma'lumotlar</h4>
                     <div>
                         {{ sections.output|safe }}
+                    </div>
+
+                    <h4>Misollar</h4>
+                    <div class="table-responsive mb-3">
+                        <table class="table custom-table table-bordered table-hover w-100 mb-0 table-fixed">
+                            <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                                <tr class="fs-xxs">
+                                    <th class="text-center" style="width:40px;">#</th>
+                                    <th style="width:50%;">Input TXT</th>
+                                    <th style="width:50%;">Output TXT</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for test in problem.samples.all %}
+                                <tr>
+                                    <td class="text-center">{{ forloop.counter }}</td>
+                                    <td class="position-relative">
+                                        <button class="btn btn-sm btn-primary btn-icon copy-btn" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Nusxalash">
+                                            <i class="ti ti-copy"></i>
+                                        </button>
+                                        <div class="sample-cell">
+                                            <pre class="copy-content">{{ test.input_data }}</pre>
+                                        </div>
+                                    </td>
+                                    <td class="position-relative">
+                                        <button class="btn btn-sm btn-primary btn-icon copy-btn" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Nusxalash">
+                                            <i class="ti ti-copy"></i>
+                                        </button>
+                                        <div class="sample-cell">
+                                            <pre class="copy-content">{{ test.output_data }}</pre>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
 
                     <h4>Izoh</h4>
@@ -51,7 +88,7 @@
         </div>
     </div>
 </div>
-{% endblock content %} {% block js %} 
+{% endblock content %} {% block js %}
 <!-- Custom table -->
 <script src="{% static 'js/pages/custom-table.js' %}"></script>
 <script>
@@ -63,4 +100,24 @@
     };
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+<script>
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+        const tooltip = new bootstrap.Tooltip(btn)
+        btn.addEventListener("click", function(){
+            const td = btn.closest("td")
+            const text = td.querySelector(".copy-content").innerText
+            navigator.clipboard.writeText(text)
+            const icon = btn.querySelector("i")
+            icon.classList.remove("ti-copy")
+            icon.classList.add("ti-check")
+            tooltip.setContent({'.tooltip-inner': 'Nusxalandi'})
+            tooltip.show()
+            setTimeout(()=>{
+                icon.classList.remove("ti-check")
+                icon.classList.add("ti-copy")
+                tooltip.setContent({'.tooltip-inner': 'Nusxalash'})
+            },1200)
+        })
+    })
+</script>
 {% endblock js %}

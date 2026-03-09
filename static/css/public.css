@@ -31,3 +31,27 @@ body {
     margin-bottom: 0 !important;
     padding: 15px 15px 0px 15px !important;
 }
+
+.table-fixed {
+    table-layout: fixed;
+}
+
+.table-fixed td {
+    vertical-align: top;
+}
+
+.sample-cell {
+    overflow: auto;
+}
+
+.sample-cell pre {
+    margin: 0;
+    white-space: pre;
+}
+
+.copy-btn{
+    position:absolute;
+    top:8px;
+    right:8px;
+    z-index:2;
+}
