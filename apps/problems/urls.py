@@ -3,6 +3,8 @@ from .views import public, judge, admin
 
 urlpatterns = [
     # -------- PUBLIC --------
+    path('problems', public.problems, name='problems'),
+    path('problems/<int:id>', public.problem, name='problem'),
     # -------- JUDGE --------
     # -------- ADMIN --------
     path('dashboard/problems', admin.admin_problems, name='admin-problems'),

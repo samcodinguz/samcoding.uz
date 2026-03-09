@@ -1,0 +1,66 @@
+{% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% block content %}
+<div class="container">
+    {% include 'core/public/layout/breadcrumb.html' %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card rounded-1">
+                <div class="card-header d-block">
+                    <h3 class="mb-2">{{ problem.title }}</h3>
+                    <div class="d-flex gap-1">
+                        <span class="badge text-bg-primary rounded-1 p-1">Vaqt: {{ problem.time_limit }} ms</span>
+                        <span class="badge text-bg-success rounded-1 p-1">Xotira: {{ problem.memory_limit }} mb</span>
+                        <span class="badge text-bg-danger rounded-1 p-1">Qiyinchilik: {{ problem.difficulty }} %</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="problem-statement">
+                        {{ sections.statement|safe }}
+                    </div>
+
+                    <h4>Kiruvchi ma'lumotlar</h4>
+                    <div>
+                        {{ sections.input|safe }}
+                    </div>
+
+                    <h4>Chiquvchi ma'lumotlar</h4>
+                    <div>
+                        {{ sections.output|safe }}
+                    </div>
+
+                    <h4>Izoh</h4>
+                    <div>
+                        {{ sections.note|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 d-none d-md-block">
+            <div class="card rounded-1">
+                <div class="card-header d-block">
+                    <h3 class="card-title">Masala teglari</h3>
+                </div>
+                <div class="card-body d-flex flex-wrap gap-1">
+                    {% for tag in problem.tags.all %}
+                    <a href="#" class="btn btn-light btn-sm">
+                        #{{ tag }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %} {% block js %} 
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
+<script>
+    MathJax = {
+        tex: { 
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+    };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+{% endblock js %}
