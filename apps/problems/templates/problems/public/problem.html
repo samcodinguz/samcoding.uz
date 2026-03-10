@@ -21,19 +21,19 @@
                         {{ sections.statement|safe }}
                     </div>
 
-                    <h4>Kiruvchi ma'lumotlar</h4>
+                    <h3 class="card-title">Kiruvchi ma'lumotlar</h3>
                     <div>
                         {{ sections.input|safe }}
                     </div>
 
-                    <h4>Chiquvchi ma'lumotlar</h4>
+                    <h3 class="card-title">Chiquvchi ma'lumotlar</h3>
                     <div>
                         {{ sections.output|safe }}
                     </div>
 
-                    <h4>Misollar</h4>
-                    <div class="table-responsive mb-3">
-                        <table class="table custom-table table-bordered table-hover w-100 mb-0 table-fixed">
+                    <h3 class="card-title">Misollar</h3>
+                    <div class="table-responsive my-3">
+                        <table class="table table-bordered table-hover w-100 mb-0 table-fixed">
                             <thead class="bg-light align-middle bg-opacity-25 thead-sm">
                                 <tr class="fs-xxs">
                                     <th class="text-center" style="width:40px;">#</th>
@@ -68,15 +68,54 @@
                         </table>
                     </div>
 
-                    <div class="my-5">
-                        <textarea class="form-control border-0" id="editor"></textarea>
-                    </div>
-
-                    <h4>Izoh</h4>
+                    <h3 class="card-title">Izoh</h3>
                     <div>
                         {{ sections.note|safe }}
                     </div>
                 </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="#" title="Telegram">
+                            <span class="badge text-bg-primary rounded-1">
+                                <i class="ti ti-brand-telegram"></i>
+                                Telegram
+                            </span>
+                        </a>
+                        <a href="#" title="GitHub">
+                            <span class="badge text-bg-dark">
+                                <i class="ti ti-brand-github"></i>
+                                GitHub
+                            </span>
+                        </a>
+                        <a href="#" title="Facebook">
+                            <span class="badge text-bg-primary">
+                                <i class="ti ti-brand-facebook"></i>
+                                Facebook
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card rounded-1">
+                <div class="card-header gap-3">
+                    <h3 class="card-title">Yechimni yuborish</h3>
+                </div>
+                <div>
+                    <textarea class="form-control border-0" id="editor"></textarea>
+                </div>
+                <div class="card-footer">
+                    <div class="mb-2" style="width: 170px;">
+                        <select class="form-select" name="code-languages" id="code-languages">
+                            <option value="1">Python 3</option>
+                            <option value="2">Python 2</option>
+                            <option value="3">C++ 18.9</option>
+                        </select>
+                    </div>
+                    <input type="file" class="form-control mb-2">
+                    <button type="submit" class="btn btn-primary">Yuborish</button>
+                </div>
+                
+                
             </div>
         </div>
         <div class="col-md-3 d-none d-md-block">
@@ -146,8 +185,25 @@
             tabSize: 4,
             indentWithTabs: false,
             lineWrapping: false,
-            styleActiveLine: true
+            styleActiveLine: false
         }
     );
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const languageElement = document.getElementById("code-languages");
+        const districtChoices = new Choices(languageElement, { 
+            shouldSort: false,
+            itemSelectText: '',
+            placeholder: true,
+            searchEnabled: false,
+            placeholderValue: 'Tilni tanlang',
+        });
+
+        if (wrapper) {
+            wrapper.style.width = 'auto';
+            wrapper.style.display = 'inline-block';
+        }
+    })
 </script>
 {% endblock js %}
