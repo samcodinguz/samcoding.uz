@@ -55,3 +55,10 @@ body {
     right:8px;
     z-index:2;
 }
+
+#editor {
+  border:1px solid #ddd;
+  border-radius:8px;
+  height:400px;
+  font-size:14px;
+}

@@ -32817,3 +32817,7 @@ div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=tip] {
 }
 
 /*# sourceMappingURL=app.min.css.map */
+
+.CodeMirror {
+    border: 1px solid var(--theme-theme-card-border-color) !important;
+}

@@ -1,4 +1,7 @@
-{% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} {% endblock css %}
+{% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} 
+<link rel="stylesheet" href="{% static 'codemirror-5.65.21/lib/codemirror.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror-5.65.21/theme/3024-night.css' %}">
+{% endblock css %}
 {% block content %}
 <div class="container">
     {% include 'core/public/layout/breadcrumb.html' %}
@@ -44,7 +47,7 @@
                                 <tr>
                                     <td class="text-center">{{ forloop.counter }}</td>
                                     <td class="position-relative">
-                                        <button class="btn btn-sm btn-primary btn-icon copy-btn" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Nusxalash">
+                                        <button class="btn btn-sm btn-primary btn-icon copy-btn" data-bs-toggle="tooltip" data-bs-title="Nusxalash">
                                             <i class="ti ti-copy"></i>
                                         </button>
                                         <div class="sample-cell">
@@ -52,7 +55,7 @@
                                         </div>
                                     </td>
                                     <td class="position-relative">
-                                        <button class="btn btn-sm btn-primary btn-icon copy-btn" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-title="Nusxalash">
+                                        <button class="btn btn-sm btn-primary btn-icon copy-btn" data-bs-toggle="tooltip" data-bs-title="Nusxalash">
                                             <i class="ti ti-copy"></i>
                                         </button>
                                         <div class="sample-cell">
@@ -63,6 +66,10 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="my-5">
+                        <textarea class="form-control border-0" id="editor"></textarea>
                     </div>
 
                     <h4>Izoh</h4>
@@ -86,20 +93,22 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </div>
 {% endblock content %} {% block js %}
-<!-- Custom table -->
-<script src="{% static 'js/pages/custom-table.js' %}"></script>
+
 <script>
     MathJax = {
-        tex: { 
+        tex: {
             inlineMath: [['$', '$'], ['\\(', '\\)']],
             displayMath: [['$$', '$$'], ['\\[', '\\]']]
         }
     };
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+
+<script src="{% static 'mathJax-4.1.1/tex-chtml.js' %}"></script>
+
 <script>
     document.querySelectorAll(".copy-btn").forEach(btn => {
         const tooltip = new bootstrap.Tooltip(btn)
@@ -119,5 +128,26 @@
             },1200)
         })
     })
+</script>
+<script src="{% static 'codemirror-5.65.21/lib/codemirror.js' %}"></script>
+<script src="{% static 'codemirror-5.65.21/mode/clike/clike.js' %}"></script>
+<script src="{% static 'codemirror-5.65.21/addon/edit/closebrackets.js' %}"></script>
+<script src="{% static 'codemirror-5.65.21/addon/edit/matchbrackets.js' %}"></script>
+<script src="{% static 'codemirror-5.65.21/addon/selection/active-line.js' %}"></script>
+<script>
+    var editor = CodeMirror.fromTextArea(
+        document.getElementById("editor"), {
+            mode: "text/x-c++src",
+            theme: "3024-night",
+            lineNumbers: true,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: false,
+            styleActiveLine: true
+        }
+    );
 </script>
 {% endblock js %}
