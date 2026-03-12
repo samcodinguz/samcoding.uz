@@ -1,6 +1,6 @@
 {% extends "core/public/index.html" %} {% load static %} {% block title %}SamCoding | {{ title }}{% endblock title %} {% block css %} 
 <link rel="stylesheet" href="{% static 'codemirror-5.65.21/lib/codemirror.css' %}">
-<link rel="stylesheet" href="{% static 'codemirror-5.65.21/theme/3024-night.css' %}">
+<link rel="stylesheet" href="{% static 'codemirror-5.65.21/theme/monokai.css' %}">
 {% endblock css %}
 {% block content %}
 <div class="container">
@@ -106,16 +106,14 @@
                 <div class="card-footer">
                     <div class="mb-2" style="width: 170px;">
                         <select class="form-select" name="code-languages" id="code-languages">
-                            <option value="1">Python 3</option>
-                            <option value="2">Python 2</option>
-                            <option value="3">C++ 18.9</option>
+                            {% for item in languages %}
+                            <option value="{{ item.id }}" data-mime="{{ item.mime }}" {% if item.id == last_language.id %}selected{% endif %}>{{ item.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <input type="file" class="form-control mb-2">
                     <button type="submit" class="btn btn-primary">Yuborish</button>
-                </div>
-                
-                
+                </div>  
             </div>
         </div>
         <div class="col-md-3 d-none d-md-block">
@@ -132,11 +130,9 @@
                 </div>
             </div>
         </div>
-        
     </div>
 </div>
 {% endblock content %} {% block js %}
-
 <script>
     MathJax = {
         tex: {
@@ -145,9 +141,7 @@
         }
     };
 </script>
-
 <script src="{% static 'mathJax-4.1.1/tex-chtml.js' %}"></script>
-
 <script>
     document.querySelectorAll(".copy-btn").forEach(btn => {
         const tooltip = new bootstrap.Tooltip(btn)
@@ -169,41 +163,48 @@
     })
 </script>
 <script src="{% static 'codemirror-5.65.21/lib/codemirror.js' %}"></script>
-<script src="{% static 'codemirror-5.65.21/mode/clike/clike.js' %}"></script>
+<script src="{% static 'codemirror-5.65.21/mode/meta.js' %}"></script>
+<script src="{% static 'codemirror-5.65.21/addon/mode/loadmode.js' %}"></script>
 <script src="{% static 'codemirror-5.65.21/addon/edit/closebrackets.js' %}"></script>
 <script src="{% static 'codemirror-5.65.21/addon/edit/matchbrackets.js' %}"></script>
 <script src="{% static 'codemirror-5.65.21/addon/selection/active-line.js' %}"></script>
 <script>
-    var editor = CodeMirror.fromTextArea(
-        document.getElementById("editor"), {
-            mode: "text/x-c++src",
-            theme: "3024-night",
-            lineNumbers: true,
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            indentUnit: 4,
-            tabSize: 4,
-            indentWithTabs: false,
-            lineWrapping: false,
-            styleActiveLine: false
-        }
-    );
-</script>
-<script>
     document.addEventListener("DOMContentLoaded", function () {
         const languageElement = document.getElementById("code-languages");
-        const districtChoices = new Choices(languageElement, { 
+        const choices = new Choices(languageElement, {
             shouldSort: false,
             itemSelectText: '',
             placeholder: true,
             searchEnabled: false,
             placeholderValue: 'Tilni tanlang',
         });
-
-        if (wrapper) {
-            wrapper.style.width = 'auto';
-            wrapper.style.display = 'inline-block';
+        CodeMirror.modeURL = "/static/codemirror-5.65.21/mode/%N/%N.js";
+        const editor = CodeMirror.fromTextArea(
+            document.getElementById("editor"), {
+                mode: "",
+                theme: "monokai",
+                lineNumbers: true,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                indentUnit: 4,
+                tabSize: 4,
+                indentWithTabs: false,
+                styleActiveLine: true
+            }
+        );
+        function setModeByMime(mime) {
+            const info = CodeMirror.findModeByMIME(mime);
+            if (info) {
+                editor.setOption("mode", mime);
+                CodeMirror.autoLoadMode(editor, info.mode);
+            }
         }
-    })
+        languageElement.addEventListener("change", function () {
+            const mime = this.options[this.selectedIndex].dataset.mime;
+            setModeByMime(mime);
+        });
+        const defaultMime = languageElement.options[languageElement.selectedIndex].dataset.mime;
+        setModeByMime(defaultMime);
+    });
 </script>
 {% endblock js %}

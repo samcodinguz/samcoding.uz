@@ -1,5 +1,8 @@
+import os
 import json
+import zipfile
 from django.db.models import Q
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -7,7 +10,7 @@ from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from apps.problems.models import ProblemTag, Problem, ProblemImage, SampleTest
 from django.contrib import messages
 from apps.accounts.utils import uid_filename
-from apps.problems.utils import validate_statement, parse_statement
+from apps.problems.utils import validate_statement, parse_statement, delete_test
 from django.http import JsonResponse
 
 @login_required
@@ -356,65 +359,98 @@ def admin_problems_edit(request, id):
     return render(request, "problems/admin/problem-edit.html", context)
 
 @login_required
-def admin_problems_test_edit(request, id):
+def admin_problems_test_add(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
 
     problem = get_object_or_404(Problem, id=id)
 
     if request.method == 'POST':
+    
         if request.POST.get("delete_test"):
+
             if problem.test_file:
-                problem.test_file.delete(save=False)
-                problem.test_file = None
-                problem.sample_tests = 0
-                problem.save()
+                delete_test(problem)
                 messages.success(request, "Test o'chirildi!")
-                return redirect("admin-problems-test-edit", id=id)
-        
-        test_file = request.FILES.get("test_file")
-        sample_tests = request.POST.get("sample_tests")
+            else:
+                messages.error(request, "Test mavjud emas!")
+            
+            return redirect("admin-problems-edit", id=id)
 
-        if test_file:
-            if not test_file.name.endswith(".zip"):
+        new_file = request.FILES.get("test_file")
+
+        if new_file:
+
+            if not zipfile.is_zipfile(new_file):
                 messages.error(request, "Faqat *.zip fayl yuklash mumkin!")
-                return redirect("admin-problems-test-edit", id=id)
+                return redirect("admin-problems-edit", id=id)
 
             if problem.test_file:
-                problem.test_file.delete(save=False)
+                delete_test(problem)
 
-            test_file.name = uid_filename(test_file.name)
-            problem.test_file = test_file
+            test_dir = os.path.join(settings.MEDIA_ROOT, f"problems/test/{id:04d}")
+            os.makedirs(test_dir, exist_ok=True)
 
-        if not problem.test_file:
-            messages.error(request, "Test yuklash majburiy!")
-            return redirect("admin-problems-test-edit", id=id)
+            with zipfile.ZipFile(new_file, 'r') as zip_ref:
+                zip_ref.extractall(test_dir)
 
-        if sample_tests:
-            problem.sample_tests = sample_tests
+            zip_path = os.path.join(settings.MEDIA_ROOT, f"problems/test/{id:04d}.zip")
+
+            with open(zip_path, "wb+") as destination:
+                for chunk in new_file.chunks():
+                    destination.write(chunk)
+
+            problem.test_file.name = f"problems/test/{id:04d}.zip"
+            problem.save()
+
+            messages.success(request, "Test muvaffaqiyatli yuklandi!")
+
+            return redirect("admin-problems-edit", id=id)
+        
+        return redirect("admin-problems-edit", id=id)
+
+    return redirect("admin-problems-edit", id=id)
+
+def admin_problems_tag_add(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    problem = get_object_or_404(Problem, id=id)
+
+    if request.method == "POST":
+
+        tag_ids = request.POST.getlist("tags_ids")
+        problem.tags.set(tag_ids)
+        messages.success(request, "Teglar muvaffaqiyatli saqlandi!")
+    
+    return redirect("admin-problems-edit", id=id)
+
+def admin_problems_config(request, id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    problem = get_object_or_404(Problem, id=id)
+
+    if request.method == "POST":
+
+        time_limit = request.POST.get("time_limit")
+        memory_limit = request.POST.get("memory_limit")
+        difficulty = request.POST.get("difficulty")
+
+        if time_limit:
+            problem.time_limit = time_limit
+        
+        if memory_limit:
+            problem.memory_limit = memory_limit
+
+        if difficulty:
+            problem.difficulty = difficulty
 
         problem.save()
 
-        messages.success(request, "Testlar saqlandi!")
-        return redirect("admin-problems-test-edit", id=id)
+        messages.success(request, "Masala sozlamalari muvaffaqiyatli saqlandi!")
     
-    tags = ProblemTag.objects.all().order_by('id')
-
-    breadcrumb = [
-        {"title": "dashboard", "url": "admin-index", "args": []},
-        {"title": "problems", "url": "admin-problems", "args": []},
-        {"title": "test", "url": "admin-problems-test-edit", "args": [id]},
-    ]
-
-    context = {
-        **get_base_context(request),
-        "title": "TestCase",
-        "problem": problem,
-        "tags": tags,
-        'breadcrumb': breadcrumb,
-    }
-
-    return render(request, "problems/admin/test-edit.html", context)
+    return redirect("admin-problems-edit", id=id)
 
 @login_required
 def toggle_verified(request):

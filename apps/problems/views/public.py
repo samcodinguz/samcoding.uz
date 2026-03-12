@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.contrib import messages
 from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from django.shortcuts import render, redirect, get_object_or_404
-from apps.problems.models import Problem
+from apps.problems.models import Problem, Language
 from apps.problems.utils import validate_statement, parse_statement
 
 def problems(request):
@@ -17,7 +17,7 @@ def problems(request):
         "accepted_count": "accepted_count",
     }
 
-    problems = Problem.objects.all()
+    problems = Problem.objects.filter(is_verified=True)
     problems = apply_sorting(problems, request, allowed_sorts, default="-id")
     if search:
         problems = problems.filter(Q(title__icontains=search))
@@ -46,18 +46,21 @@ def problem(request, id):
 
     problem = get_object_or_404(Problem, id=id)
     sections = parse_statement(problem.statement, problem)
+    languages = Language.objects.all().order_by('order')
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
         {"title": "problems", "url": "problems", 'args': []},
         {"title": f"{id:04d}", "url": "problem", 'args': [id]}
     ]
-
+    
     context = {
         **get_base_context(request),
         "title": f"Masala #{id:04d}",
         "breadcrumb": breadcrumb,
         "problem": problem,
+        "languages": languages,
+        "last_language": languages.first(),
         "sections": sections,
     }
 

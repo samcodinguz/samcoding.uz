@@ -1,4 +1,37 @@
+import os
 import re
+import shutil
+import zipfile
+from django.conf import settings
+
+def delete_test(problem):
+
+    zip_path = problem.test_file.path
+    folder_path = os.path.join(settings.MEDIA_ROOT, f"problems/test/{problem.id:04d}")
+    
+    problem.test_file.delete(save=False)
+    
+    if os.path.exists(zip_path):
+        os.remove(zip_path)
+    
+    if os.path.exists(folder_path):
+        shutil.rmtree(folder_path)
+    
+    problem.save()
+
+def unzip_tests(zip_path, id):
+
+    path = os.path.join(settings.MEDIA_ROOT, f"{zip_path}/{id:04d}")
+
+    if os.path.exists(path):
+        shutil.rmtree(path)
+
+    os.makedirs(path, exist_ok=True)
+
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(path)
+
+    return path
 
 def validate_statement(statement):
 

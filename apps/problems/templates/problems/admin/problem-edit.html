@@ -6,7 +6,7 @@
 <div class="container-fluid">
     {% include 'core/admin/layout/breadcrumb.html' %}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-9 mb-3">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row g-3">
@@ -140,9 +140,84 @@
                 </div>
                 <!-- Submit -->
                 <div class="text-end mt-3">
+                    <a href="{% url 'admin-problems-edit' problem.id %}" class="btn btn-danger me-1">Yo'q</a>
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
+        </div>
+        <div class="col-md-3">
+            <div class="card rounded-1">
+                <div class="card-header">
+                    <h3 class="card-title">Masala testlari</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'admin-problems-test-add' problem.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row gap-3">
+                            <div class="col-12">
+                                <label class="form-label">Test Case yuklash {% if problem.test_file %}<a href="{{ problem.test_file.url }}">({{ problem.test_file.name|slice:"14:" }}) <i class="ti ti-download"></i></a>{% endif %}</label>
+                                <input type="file" class="form-control" name="test_file" accept=".zip" {% if not problem.test_file %}required{% endif %}>
+                                <small class="form-text fst-italic text-muted">Testni *.zip formatida yuklang: 001.in, 001.out, ...</small>
+                            </div>
+                            <div class="col-12">
+                                <div class="text-end">
+                                    {% if problem.test_file %}
+                                    <button type="submit" name="delete_test" value="1" class="btn btn-danger me-1">Tozalash</button>
+                                    {% endif %}
+                                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card rounded-1">
+                <div class="card-header">
+                    <h3 class="card-title">Masala toifasi</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'admin-problems-tag-add' problem.id  %}">
+                        {% csrf_token %}
+                        <select class="form-control" name="tags_ids" id="tags" multiple>
+                            {% for tag in tags %}
+                            <option value="{{ tag.id }}" {% if tag in problem.tags.all %}selected{% endif %}>{{ tag.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card rounded-1">
+                <div class="card-header">
+                    <h3 class="card-title">Masala sozlamalar</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'admin-problems-config' problem.id  %}">
+                        {% csrf_token %}
+                        <div class="row gap-3">
+                            <div class="col-12">
+                                <label for="time_limit" class="form-label">Vaqt <span>(ms)</span></label>
+                                <input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="Time limit" value="{{ problem.time_limit }}" required />
+                            </div>
+                            <div class="col-12">
+                                <label for="memory_limit" class="form-label">Xotira <span>(mb)</span></label>
+                                <input type="text" class="form-control" id="memory_limit" name="memory_limit" placeholder="Memory limit" value="{{ problem.memory_limit }}" required />
+                            </div>
+                            <div class="col-12">
+                                <label for="difficulty" class="form-label">Qiyinchiligi <span>(%)</span></label>
+                                <input type="text" class="form-control" id="difficulty" name="difficulty" placeholder="Difficulty" value="{{ problem.difficulty }}" required />
+                            </div>
+                            <div class="col-12">
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -163,11 +238,16 @@
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
 <script>
-    new Choices('#choices-tags', {
-    removeItemButton: true,
-    placeholder: true,
-    placeholderValue: 'Toifasini tanlang'
-});
+    new Choices('#tags', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Toifasini tanlang'
+    });
+    new Choices('#languages', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Til tanlang'
+    });
 </script>
 <script>
     function resizeAllTextareas(){

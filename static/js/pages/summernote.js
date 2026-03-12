@@ -94,6 +94,13 @@ void 0 !== jQuery.fn.summernote &&
               this.classList.remove("btn-outline-secondary"));
           });
         },
+        onPaste: function (e) {
+          e.preventDefault();
+
+          let text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+          document.execCommand('insertText', false, text);
+        }
       },
     });
   });

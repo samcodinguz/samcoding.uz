@@ -1,6 +1,22 @@
 from django.db import models
 from apps.accounts.models import CustomUser
 
+class Language(models.Model):
+    name = models.CharField(max_length=255)
+    logo = models.ImageField(upload_to="languages/", null=True, blank=True)
+    
+    language = models.CharField(max_length=255)
+    version = models.CharField(max_length=255)
+    runtime = models.CharField(max_length=255, null=True, blank=True)
+    
+    mime = models.CharField(max_length=255)
+    
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
 class ProblemTag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
