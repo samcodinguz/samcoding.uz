@@ -105,7 +105,7 @@
                     <h4 class="card-title mb-3">Faol foydalanuvchilar</h4>
                     <div class="d-flex flex-wrap gap-1">
                         {% for item in online_users %}
-                        <a class="link-reset btn btn-light btn-sm" href="{% url 'profile' item.username %}">
+                        <a class="link-reset btn btn-light btn-sm fs-xs" href="{% url 'profile' item.username %}">
                             {% if item.first_name or item.last_name %}
                                 {{ item.first_name }} {{ item.last_name }}
                             {% else %}

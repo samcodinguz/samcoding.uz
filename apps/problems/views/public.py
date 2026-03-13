@@ -3,6 +3,7 @@ from django.contrib import messages
 from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from django.shortcuts import render, redirect, get_object_or_404
 from apps.problems.models import Problem, Language
+from apps.submissions.models import Submission
 from apps.problems.utils import validate_statement, parse_statement
 
 def problems(request):
@@ -47,6 +48,27 @@ def problem(request, id):
     problem = get_object_or_404(Problem, id=id)
     sections = parse_statement(problem.statement, problem)
     languages = Language.objects.all().order_by('order')
+
+    if request.method == "POST":
+        
+        code = request.POST.get("code")
+        language = request.POST.get("language")
+
+        if not all([code, language]):
+            messages.error(request, "Yechim yuborilmadi!")
+            return redirect("problem", id=id)
+        
+        if not request.user.is_authenticated:
+            messages.error(request, "Yechim yuborish uchun tizimga kiring!")
+            return redirect("sign-in")
+        
+        Submission.objects.create(
+            user=request.user,
+            problem=problem,
+            language_id=language,
+            code=code,
+        )
+        return redirect('problem', id=id)
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},

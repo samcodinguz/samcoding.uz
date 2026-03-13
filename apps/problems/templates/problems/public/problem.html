@@ -96,25 +96,47 @@
                     </div>
                 </div>
             </div>
+            {% if request.user.is_authenticated %}
             <div class="card rounded-1">
                 <div class="card-header gap-3">
                     <h3 class="card-title">Yechimni yuborish</h3>
                 </div>
-                <div>
-                    <textarea class="form-control border-0" id="editor"></textarea>
-                </div>
-                <div class="card-footer">
-                    <div class="mb-2" style="width: 170px;">
-                        <select class="form-select" name="code-languages" id="code-languages">
-                            {% for item in languages %}
-                            <option value="{{ item.id }}" data-mime="{{ item.mime }}" {% if item.id == last_language.id %}selected{% endif %}>{{ item.name }}</option>
-                            {% endfor %}
-                        </select>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="editor-wrapper position-relative">
+                        <div class="editor-actions">
+                            <button type="button" id="copyEditor" class="btn btn-sm btn-primary">
+                                <i class="ti ti-copy"></i>
+                            </button>
+
+                            <button type="button" id="clearEditor" class="btn btn-sm btn-danger">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </div>
+
+                        <textarea class="form-control border-0" name="code" id="editor"></textarea>
                     </div>
-                    <input type="file" class="form-control mb-2">
-                    <button type="submit" class="btn btn-primary">Yuborish</button>
-                </div>  
+                    <div class="card-footer">
+                        <div class="mb-2" style="width: 170px;">
+                            <select class="form-select" name="language" id="code-languages" required>
+                                {% for item in languages %}
+                                <option value="{{ item.id }}" data-mime="{{ item.mime }}" {% if item.id == last_language.id %}selected{% endif %}>{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input type="file" id="fileInput" class="form-control mb-2">
+                        <button type="submit" class="btn btn-primary">Yuborish</button>
+                    </div> 
+                </form> 
             </div>
+            {% else %}
+            <div class="alert alert-warning alert-dismissible d-flex align-items-center">
+                <i class="ti ti-alert-circle fs-24 me-1"></i>
+                <div>
+                    Yechim yuborish uchun tizimga <a href="{% url 'sign-in' %}">kiring</a> yoki <a href="{% url 'sign-up' %}">ro'yxatdan o'ting</a>.
+                </div>
+            </div>
+            {% endif %}
         </div>
         <div class="col-md-3 d-none d-md-block">
             <div class="card rounded-1">
@@ -123,9 +145,11 @@
                 </div>
                 <div class="card-body d-flex flex-wrap gap-1">
                     {% for tag in problem.tags.all %}
-                    <a href="#" class="btn btn-light btn-sm">
-                        #{{ tag }}
-                    </a>
+                    <h4>
+                        <span class="badge badge-soft-dark text-muted rounded-1">
+                            #{{ tag }}
+                        </span>
+                    </h4>
                     {% endfor %}
                 </div>
             </div>
@@ -169,6 +193,7 @@
 <script src="{% static 'codemirror-5.65.21/addon/edit/matchbrackets.js' %}"></script>
 <script src="{% static 'codemirror-5.65.21/addon/selection/active-line.js' %}"></script>
 <script>
+    let editor;
     document.addEventListener("DOMContentLoaded", function () {
         const languageElement = document.getElementById("code-languages");
         const choices = new Choices(languageElement, {
@@ -179,7 +204,7 @@
             placeholderValue: 'Tilni tanlang',
         });
         CodeMirror.modeURL = "/static/codemirror-5.65.21/mode/%N/%N.js";
-        const editor = CodeMirror.fromTextArea(
+        editor = CodeMirror.fromTextArea(
             document.getElementById("editor"), {
                 mode: "",
                 theme: "monokai",
@@ -205,6 +230,35 @@
         });
         const defaultMime = languageElement.options[languageElement.selectedIndex].dataset.mime;
         setModeByMime(defaultMime);
+    });
+</script>
+<script>
+    document.getElementById("fileInput").addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const content = event.target.result;
+            editor.setValue(content);
+            e.target.value = "";
+        };
+        reader.readAsText(file);
+    });
+    document.getElementById("copyEditor").addEventListener("click", function(){
+        const code = editor.getValue();
+        if(!code) return;
+        navigator.clipboard.writeText(code);
+        const icon = this.querySelector("i");
+        icon.classList.remove("ti-copy");
+        icon.classList.add("ti-check");
+        setTimeout(()=>{
+            icon.classList.remove("ti-check");
+            icon.classList.add("ti-copy");
+        },1200);
+    });
+
+    document.getElementById("clearEditor").addEventListener("click", function(){
+        editor.setValue("");
     });
 </script>
 {% endblock js %}

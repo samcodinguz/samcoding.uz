@@ -140,7 +140,6 @@
                 </div>
                 <!-- Submit -->
                 <div class="text-end mt-3">
-                    <a href="{% url 'admin-problems-edit' problem.id %}" class="btn btn-danger me-1">Yo'q</a>
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
@@ -148,22 +147,26 @@
         <div class="col-md-3">
             <div class="card rounded-1">
                 <div class="card-header">
-                    <h3 class="card-title">Masala testlari</h3>
+                    <h3 class="card-title">Masala sozlamalar</h3>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="{% url 'admin-problems-test-add' problem.id %}" enctype="multipart/form-data">
+                    <form method="post" action="{% url 'admin-problems-config' problem.id  %}">
                         {% csrf_token %}
                         <div class="row gap-3">
                             <div class="col-12">
-                                <label class="form-label">Test Case yuklash {% if problem.test_file %}<a href="{{ problem.test_file.url }}">({{ problem.test_file.name|slice:"14:" }}) <i class="ti ti-download"></i></a>{% endif %}</label>
-                                <input type="file" class="form-control" name="test_file" accept=".zip" {% if not problem.test_file %}required{% endif %}>
-                                <small class="form-text fst-italic text-muted">Testni *.zip formatida yuklang: 001.in, 001.out, ...</small>
+                                <label for="time_limit" class="form-label">Vaqt <span>(ms)</span></label>
+                                <input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="Time limit" value="{{ problem.time_limit }}" required />
+                            </div>
+                            <div class="col-12">
+                                <label for="memory_limit" class="form-label">Xotira <span>(mb)</span></label>
+                                <input type="text" class="form-control" id="memory_limit" name="memory_limit" placeholder="Memory limit" value="{{ problem.memory_limit }}" required />
+                            </div>
+                            <div class="col-12">
+                                <label for="difficulty" class="form-label">Qiyinchiligi <span>(%)</span></label>
+                                <input type="text" class="form-control" id="difficulty" name="difficulty" placeholder="Difficulty" value="{{ problem.difficulty }}" required />
                             </div>
                             <div class="col-12">
                                 <div class="text-end">
-                                    {% if problem.test_file %}
-                                    <button type="submit" name="delete_test" value="1" class="btn btn-danger me-1">Tozalash</button>
-                                    {% endif %}
                                     <button type="submit" class="btn btn-primary">Saqlash</button>
                                 </div>
                             </div>
@@ -191,26 +194,22 @@
             </div>
             <div class="card rounded-1">
                 <div class="card-header">
-                    <h3 class="card-title">Masala sozlamalar</h3>
+                    <h3 class="card-title">Masala testlari</h3>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="{% url 'admin-problems-config' problem.id  %}">
+                    <form method="post" action="{% url 'admin-problems-test-add' problem.id %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="row gap-3">
                             <div class="col-12">
-                                <label for="time_limit" class="form-label">Vaqt <span>(ms)</span></label>
-                                <input type="text" class="form-control" id="time_limit" name="time_limit" placeholder="Time limit" value="{{ problem.time_limit }}" required />
-                            </div>
-                            <div class="col-12">
-                                <label for="memory_limit" class="form-label">Xotira <span>(mb)</span></label>
-                                <input type="text" class="form-control" id="memory_limit" name="memory_limit" placeholder="Memory limit" value="{{ problem.memory_limit }}" required />
-                            </div>
-                            <div class="col-12">
-                                <label for="difficulty" class="form-label">Qiyinchiligi <span>(%)</span></label>
-                                <input type="text" class="form-control" id="difficulty" name="difficulty" placeholder="Difficulty" value="{{ problem.difficulty }}" required />
+                                <label class="form-label">Test Case yuklash {% if problem.test_file %}<a href="{{ problem.test_file.url }}">({{ problem.test_file.name|slice:"14:" }}) <i class="ti ti-download"></i></a>{% endif %}</label>
+                                <input type="file" class="form-control" name="test_file" accept=".zip" {% if not problem.test_file %}required{% endif %}>
+                                <small class="form-text fst-italic text-muted">Testni *.zip formatida yuklang: 001.in, 001.out, ...</small>
                             </div>
                             <div class="col-12">
                                 <div class="text-end">
+                                    {% if problem.test_file %}
+                                    <button type="submit" name="delete_test" value="1" class="btn btn-soft-danger btn-icon me-1"><i class="ti ti-trash fs-xl"></i></button>
+                                    {% endif %}
                                     <button type="submit" class="btn btn-primary">Saqlash</button>
                                 </div>
                             </div>

@@ -62,3 +62,16 @@ body {
   height:400px;
   font-size:14px;
 }
+
+.editor-wrapper {
+    position: relative;
+}
+
+.editor-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 6px;
+}
