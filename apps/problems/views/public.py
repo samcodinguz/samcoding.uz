@@ -46,8 +46,6 @@ def problems(request):
 def problem(request, id):
 
     problem = get_object_or_404(Problem, id=id)
-    sections = parse_statement(problem.statement, problem)
-    languages = Language.objects.all().order_by('order')
 
     if request.method == "POST":
         
@@ -69,6 +67,12 @@ def problem(request, id):
             code=code,
         )
         return redirect('problem', id=id)
+    
+    sections = parse_statement(problem.statement, problem)
+    languages = Language.objects.all().order_by('order')
+    submissions = Submission.objects.filter(user=request.user, problem=problem).select_related('user', 'problem', 'language').order_by('-created_at')
+    last_submission = submissions.first()
+    submissions, page_range = paginate_queryset(submissions, request, per_page=5)
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
@@ -82,7 +86,9 @@ def problem(request, id):
         "breadcrumb": breadcrumb,
         "problem": problem,
         "languages": languages,
-        "last_language": languages.first(),
+        "submissions": submissions,
+        "page_range": page_range,
+        "last_submission": last_submission,
         "sections": sections,
     }
 

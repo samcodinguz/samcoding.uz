@@ -104,23 +104,23 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="editor-wrapper position-relative">
-                        <div class="editor-actions">
-                            <button type="button" id="copyEditor" class="btn btn-sm btn-primary">
+                        <div class="editor-actions d-flex flex-column">
+                            <button type="button" id="copyEditor" class="btn btn-sm btn-primary btn-icon">
                                 <i class="ti ti-copy"></i>
                             </button>
 
-                            <button type="button" id="clearEditor" class="btn btn-sm btn-danger">
+                            <button type="button" id="clearEditor" class="btn btn-sm btn-danger btn-icon">
                                 <i class="ti ti-trash"></i>
                             </button>
                         </div>
 
-                        <textarea class="form-control border-0" name="code" id="editor"></textarea>
+                        <textarea class="form-control border-0" name="code" id="editor">{{ last_submission.code }}</textarea>
                     </div>
                     <div class="card-footer">
                         <div class="mb-2" style="width: 170px;">
                             <select class="form-select" name="language" id="code-languages" required>
                                 {% for item in languages %}
-                                <option value="{{ item.id }}" data-mime="{{ item.mime }}" {% if item.id == last_language.id %}selected{% endif %}>{{ item.name }}</option>
+                                <option value="{{ item.id }}" data-mime="{{ item.mime }}" {% if item == last_submission.language %}selected{% endif %}>{{ item.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -128,6 +128,64 @@
                         <button type="submit" class="btn btn-primary">Yuborish</button>
                     </div> 
                 </form> 
+            </div>
+            <div data-table data-table-rows-per-page="{{ 5 }}" class="card rounded-1">
+                <div class="card-header">
+                    <h3 class="card-title">So'ngi urinishlar</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom table-nowrap table-centered table-select table-striped table-hover w-100 mb-0">
+                        <thead class="bg-light align-middle bg-opacity-25 thead-sm">
+                            <tr class="fs-xxs">
+                                <th class="text-center" style="width: 1%;">#ID</th>
+                                <th>Masala</th>
+                                <th class="text-center">Holati</th>
+                                <th class="text-center">Til</th>
+                                <th class="text-center">Vaqt</th>
+                                <th class="text-center">Xotira</th>
+                                <th class="text-center">Yuborilgan vaqt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in submissions %}
+                            <tr>
+                                <td class="text-center">{{ item.id }}</td>
+                                <td>{{ item.problem.title }}</td>
+                                <td class="text-center">{{ item.status }}</td>
+                                <td class="text-center">{{ item.language }}</td>
+                                <td class="text-center">{{ item.time_used }}</td>
+                                <td class="text-center">{{ item.memory_used }}</td>
+                                <td class="text-center">{{ item.created_at|date:"d-m-Y H:i" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <ul class="pagination pagination-sm pagination-boxed mb-0 mx-auto">
+                            <li class="page-item {% if not submissions.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="{% if submissions.has_previous %}?page={{ submissions.previous_page_number }}{% else %}#{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% for page in page_range %}
+                            {% if page == '...' %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% elif page == submissions.number %}
+                            <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            <li class="page-item {% if not submissions.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{% if submissions.has_next %}?page={{ submissions.next_page_number }}{% else %}#{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             {% else %}
             <div class="alert alert-warning alert-dismissible d-flex align-items-center">
@@ -157,6 +215,8 @@
     </div>
 </div>
 {% endblock content %} {% block js %}
+<!-- Custom table -->
+<script src="{% static 'js/pages/custom-table.js' %}"></script>
 <script>
     MathJax = {
         tex: {
