@@ -1,0 +1,13 @@
+{% load static %}
+<div class="card rounded-1">
+    <div class="card-header">
+        <h3 class="card-title">Masalalar xaritasi</h3>
+    </div>
+    <div class="card-body problem-map">
+        {% for item in problems %}
+        <a href="{% url 'problem' item.id %}" class="btn btn-{% if item.user_status == -1 %}danger text-white{% elif item.user_status == 1 %}primary text-white{% else %}light{% endif %} btn-sm link-reset">
+            <code>{{ item.id|stringformat:"04d"}}</code>
+        </a>
+        {% endfor %}
+    </div>
+</div>

@@ -68,3 +68,12 @@ class ProblemImage(models.Model):
 
     def __str__(self):
         return f"{self.problem.title} image"
+
+class ProblemStatus(models.Model):
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    status = models.SmallIntegerField(default=0)
+
+    def __str__(self):
+        return self.status

@@ -2,7 +2,8 @@ from django.db.models import Q
 from django.contrib import messages
 from apps.core.utils import get_base_context, paginate_queryset, apply_sorting
 from django.shortcuts import render, redirect, get_object_or_404
-from apps.problems.models import Problem, Language
+from django.db.models import OuterRef, Subquery
+from apps.problems.models import Problem, Language, ProblemStatus
 from apps.submissions.models import Submission
 from apps.problems.utils import validate_statement, parse_statement
 
@@ -19,6 +20,11 @@ def problems(request):
     }
 
     problems = Problem.objects.filter(is_verified=True)
+
+    if request.user.is_authenticated:
+        status_subquery = ProblemStatus.objects.filter(user=request.user, problem=OuterRef("pk")).values("status")[:1]
+        problems = problems.annotate(user_status=Subquery(status_subquery))
+
     problems = apply_sorting(problems, request, allowed_sorts, default="-id")
     if search:
         problems = problems.filter(Q(title__icontains=search))
@@ -69,10 +75,15 @@ def problem(request, id):
         return redirect('problem', id=id)
     
     sections = parse_statement(problem.statement, problem)
-    languages = Language.objects.all().order_by('order')
-    submissions = Submission.objects.filter(user=request.user, problem=problem).select_related('user', 'problem', 'language').order_by('-created_at')
-    last_submission = submissions.first()
-    submissions, page_range = paginate_queryset(submissions, request, per_page=5)
+
+    if request.user.is_authenticated:
+        languages = Language.objects.all().order_by('order')
+        submissions = Submission.objects.filter(user=request.user, problem=problem).select_related('user', 'problem', 'language').order_by('-created_at')
+        last_submission = submissions.first()
+        submissions, page_range = paginate_queryset(submissions, request, per_page=5)
+    else:
+        submissions = None
+        last_submission = None
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
@@ -85,11 +96,13 @@ def problem(request, id):
         "title": f"Masala #{id:04d}",
         "breadcrumb": breadcrumb,
         "problem": problem,
-        "languages": languages,
-        "submissions": submissions,
-        "page_range": page_range,
-        "last_submission": last_submission,
         "sections": sections,
     }
+
+    if request.user.is_authenticated:
+        context["submissions"] = submissions
+        context["page_range"] = page_range
+        context["last_submission"] = last_submission
+        context["languages"] = languages
 
     return render(request, "problems/public/problem.html", context)

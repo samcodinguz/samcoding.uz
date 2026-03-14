@@ -25,10 +25,13 @@
                                 <th style="width:1%">
                                     {% include "problems/public/layout/sort.html" with field="id" title="T/R" %}
                                 </th>
+                                {% if request.user.is_authenticated %}
+                                <th class="text-center" style="width: 1%;"></th>
+                                {% endif %}
                                 <th>
                                     Masala nomi
                                 </th>
-                                <th style="width: 1%;">
+                                <th>
                                     Toifasi
                                 </th>
                                 <th class="text-center" style="width: 1%;">
@@ -42,20 +45,31 @@
                         <tbody>
                             {% for item in problems %}
                             <tr>
-                                <td class="text-center">
-                                    <a href="{% url 'problem' item.id %}" class="link-reset">
-                                        {{ problems.start_index|add:forloop.counter0 }}
-                                    </a>
+                                <td class="text-center fw-semibold">
+                                    {{ problems.start_index|add:forloop.counter0 }}
                                 </td>
+                                {% if request.user.is_authenticated %}
                                 <td>
-                                    <a href="{% url 'problem' item.id %}" class="link-reset">
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                                        {% if item.user_status == -1 %}
+                                        <i class="ti ti-x text-danger fw-semibold fs-xl"></i>
+                                        {% elif item.user_status == 1 %}
+                                        <i class="ti ti-check text-primary fw-semibold fs-xl"></i>
+                                        {% else %}
+                                        <i class="ti ti-minus text-muted fs-xl"></i>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                {% endif %}
+                                <td>
+                                    <a href="{% url 'problem' item.id %}" class="fw-semibold">
                                         {{ item.title }}
                                     </a>
                                 </td>
                                 <td>
                                     {% for tag in item.tags.all|slice:":6" %}
                                         <a href="#" class="link-reset">
-                                            <span class="badge badge-default link-reset">{{ tag.name }}</span>
+                                            <span class="badge badge-default link-reset rounded-1">{{ tag.name }}</span>
                                         </a>
                                     {% empty %}
                                         <span class="text-muted">—</span>

@@ -32,8 +32,8 @@
                         <tbody>
                             {% for item in users %}
                             <tr class="{% if item == request.user %}bg-primary-subtle{% endif %}">
-                                <td>
-                                    <a href="{% url 'profile' item.username %}" class="fw-medium link-reset ms-1">{{ users.start_index|add:forloop.counter0 }}</a>
+                                <td class="text-center fw-semibold">
+                                    {{ users.start_index|add:forloop.counter0 }}
                                 </td>
                                 <td>
                                     <div class="avatar-xs d-inline-block me-1">
@@ -51,7 +51,7 @@
                                         </span>
                                         {% endif %}
                                     </div>
-                                    <a href="{% url 'profile' item.username %}" class="link-reset">
+                                    <a href="{% url 'profile' item.username %}" class="fw-semibold">
                                         {% if item.first_name or item.last_name %}
                                             {{ item.first_name }} {{ item.last_name }}
                                         {% else %}

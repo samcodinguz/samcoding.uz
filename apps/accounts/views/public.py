@@ -8,6 +8,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from apps.accounts.models import CustomUser, PasswordResetToken
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from apps.locations.models import Region, District
+from apps.problems.models import Problem, ProblemStatus, ProblemTag
+from django.db.models import OuterRef, Subquery
 
 def sign_in(request):
     if request.user.is_authenticated:
@@ -184,7 +186,12 @@ def users(request):
     return render(request, "accounts/public/users/users.html", context)
 
 def profile(request, username):
+
     user = get_object_or_404(CustomUser, username=username)
+
+    problems = Problem.objects.filter(is_verified=True)
+    status_subquery = ProblemStatus.objects.filter(user=user, problem=OuterRef("pk")).values("status")[:1]
+    problems = problems.annotate(user_status=Subquery(status_subquery))
 
     breadcrumb = [
         {"title": "home", "url": "index", 'args': []},
@@ -194,11 +201,12 @@ def profile(request, username):
 
     context = {
         **get_base_context(request),
-        'title': "Profil",
-        'user': user,
-        'breadcrumb': breadcrumb,
-        'days': utils.contribution(),
-        'year': 2026
+        "title": "Profil",
+        "user": user,
+        "problems": problems,
+        "breadcrumb": breadcrumb,
+        "days": utils.contribution(),
+        "year": 2026
     }
 
     return render(request, "accounts/public/profile/profile.html", context)
